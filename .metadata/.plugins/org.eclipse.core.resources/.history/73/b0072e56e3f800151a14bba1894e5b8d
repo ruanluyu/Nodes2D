@@ -1,0 +1,14 @@
+package main;
+
+public class Node {
+
+}
+
+class NodePoint{
+	boolean input ,output;
+	String title;
+	NodePoint(boolean input,boolean output){
+		this.input = input;
+		this.output = output;
+	}
+}

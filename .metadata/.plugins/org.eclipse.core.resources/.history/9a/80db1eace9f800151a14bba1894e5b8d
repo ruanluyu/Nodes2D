@@ -1,0 +1,20 @@
+package main;
+
+abstract class Node {
+public static int id = 0;
+
+}
+
+class NodePoint{
+	boolean input ,output;
+	static final String defaultTitle = "Undefined";
+	String title;
+	NodePoint(){
+		this(defaultTitle,true,true);
+	}
+	NodePoint(String title,boolean input,boolean output,){
+		this.input = input;
+		this.output = output;
+		this.title = title;
+	}
+}

@@ -1,0 +1,8 @@
+package main;
+
+public class NodeException extends Exception{
+	String message;
+	public NodeException(String msg){
+		message = msg;
+	}
+}
