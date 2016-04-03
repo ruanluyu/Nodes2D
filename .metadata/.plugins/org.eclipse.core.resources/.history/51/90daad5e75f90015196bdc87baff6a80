@@ -1,0 +1,65 @@
+package main;
+/**TODO basic object of all Nodes
+ * @version v1.0
+ * @author ZzStarSound
+ *@see main.NodePoint
+ */
+abstract class Node {
+public static int id = 0;
+
+}
+
+
+
+/**TODO elements of Nodes
+ * @author ZzStarSound
+ * @see main.Node
+ */
+class NodePoint{
+	
+	static int id = 0;
+	static final String defaultTitle = "Undefined";
+	private int thisId = 0;
+	private boolean input ,output;
+	private String title;
+	/**this(defaultTitle,true,true);
+	 */
+	NodePoint(){
+		this(defaultTitle,true,true);
+	}
+	/**
+	 * 
+	 * @param title
+	 * name of point
+	 * @param input
+	 * it can be installed in input area while it is true.<BR/>
+	 * ! DON NOT set false while output is false.
+	 * @param output
+	 * it can be installed in output area while it is true.<BR/>
+	 *  ! DON NOT set false while input is false.
+	 *  @throws NodeException
+	 */
+	NodePoint(String title,boolean input,boolean output){
+		try{
+			if((!input)&&(!output)){
+				thisId = id++;
+				this.input = input;
+				this.output = output;
+				this.title = title;
+			}else{
+				throw new NodeException(0,"NodePoint id:"+id);
+			}
+		}catch(NodeException error){
+			error.println();
+		}
+	}
+	boolean inputable(){
+		return input;
+	}
+	boolean outputable(){
+		return output;
+	}
+	String getTitle(){
+		return title;
+	}
+}

@@ -1,0 +1,41 @@
+package main;
+/**
+ * 
+ * @author ZzStarSound
+ *
+ */
+abstract class Node {
+public static int id = 0;
+
+}
+/**TODO an element of a Node
+ * 
+ * @author Administrator
+ * @see main.Node
+ */
+class NodePoint{
+	boolean input ,output;
+	static int id = 0;
+	private int thisId = 0;
+	static final String defaultTitle = "Undefined";
+	String title;
+	NodePoint(){
+		this(defaultTitle,true,true);
+	}
+	NodePoint(String title,boolean input,boolean output){
+		try{
+			if((!input)&&(!output)){
+				thisId = id++;
+				this.input = input;
+				this.output = output;
+				this.title = title;
+			}else{
+				throw new NodeException(0,"NodePoint id:"+id);
+			}
+		}catch(NodeException error){
+			error.println();
+		}
+		
+		
+	}
+}

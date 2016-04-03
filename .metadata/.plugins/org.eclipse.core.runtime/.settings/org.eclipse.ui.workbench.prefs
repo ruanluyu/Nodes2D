@@ -3,4 +3,4 @@ ColorsAndFontsPreferencePage.expandedCategories=Torg.eclipse.ui.workbenchMisc
 ColorsAndFontsPreferencePage.selectedElement=Forg.eclipse.jface.textfont
 PLUGINS_NOT_ACTIVATED_ON_STARTUP=org.eclipse.m2e.discovery;
 eclipse.preferences.version=1
-org.eclipse.jface.textfont=1|\u5FAE\u8F6F\u96C5\u9ED1|24.0|0|WINDOWS|1|-32|0|0|0|400|0|0|0|0|3|2|1|34|\u5FAE\u8F6F\u96C5\u9ED1;
+org.eclipse.jface.textfont=1|\u5FAE\u8F6F\u96C5\u9ED1|21.75|0|WINDOWS|1|-29|0|0|0|400|0|0|0|0|3|2|1|34|\u5FAE\u8F6F\u96C5\u9ED1;
