@@ -1,12 +1,0 @@
-Adobe After Effects v13.5 Windows 64 render log for project “Untitled Project.aep”
-
-Rendering started on 2016/4/3 at 14:47:58
-
-  2016/4/3 14:47:58: Starting composition “Comp 1”.
-
-  Output To: H:\works\E\Nodes2D\AeIconDesign\Comp 1\Comp 1_[##].png    2016/4/3 14:47:58: Finished composition “Comp 1”.
-
-
-  Total Time Elapsed: 0 Seconds
-Log closed on 2016/4/3 at 14:47:58
-
