@@ -6,12 +6,40 @@ import java.util.List;
 
 class NodesSystem {
 	public static int id = 0;
-	public static final String className = "NodeSystem";
+	public static final String className = "NodesSystem";
 	private String title;
 	private int thisId;
 	private List<NodeLine> lineList = new ArrayList<NodeLine>();
 	private List<Node> nodeList = new ArrayList<Node>();
-
+	
+	public void println(){
+		println("No message");
+	}
+	
+	public void println(String message){
+		System.out.println(this.title+"(NodesSystem "+thisId+") : "+message);
+	}
+	
+	public void disconnect(NodeLine line) {
+		line.getInPoint().disconnect();
+		line.getOutPoint().disconnect(line);
+		println(line.getOutPoint().getTitle()+" - / - "+line.getInPoint().getTitle()+" (disconnected)");
+	}
+	
+	public NodeLine connect(NodePoint a, NodePoint b) {
+		if ((a.isInput() && b.isInput()) || (a.isOutput() && b.isOutput())) {
+			try {
+				throw new NodeException(0, "NodePoint : " + a.getTitle() + " and NodePoint : " + b.getTitle() + " .");
+			} catch (NodeException e) {
+				e.println();
+			}
+			return null;
+		} else {
+			println(a.getTitle()+" ----- "+b.getTitle()+" (connected)");
+			return new NodeLine(a, b);
+		}
+	}
+	
 	NodesSystem() {
 		this(className + " " + id);
 	}
@@ -49,7 +77,7 @@ class Node {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-
+/*
 	public static void disconnect(NodeLine line) {
 		line.getInPoint().disconnect();
 		line.getOutPoint().disconnect(line);
@@ -67,9 +95,9 @@ class Node {
 		} else {
 			return new NodeLine(a, b);
 		}
-	}
+	}*/
 	
-	public void add(NodePoint point){
+	public void add(NodePoint<?> point){
 		if(point.isInput()){
 			inPointList.add(point);
 		}else{

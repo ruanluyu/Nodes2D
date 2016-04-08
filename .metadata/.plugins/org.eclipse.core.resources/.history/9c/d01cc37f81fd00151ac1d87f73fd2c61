@@ -1,0 +1,18 @@
+package main;
+
+public class NData {
+	int length = 8;
+	int getLength(){
+		return length;
+	}
+}
+
+class NDouble extends NData{
+	
+}
+
+class NInt extends NData{
+	
+}
+
+class 
