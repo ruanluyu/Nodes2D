@@ -2,15 +2,23 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="" key="selection"/>
+		<item value="NData" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="NNumber"/>
+			<item value="(boolean)"/>
+			<item value="nSet"/>
+			<item value="nGet"/>
+			<item value="throw"/>
 			<item value="equals"/>
 		</list>
 		<list key="replacehistory">
+			<item value="NData"/>
+			<item value="set"/>
+			<item value="get"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

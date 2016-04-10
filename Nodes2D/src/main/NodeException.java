@@ -6,15 +6,15 @@ package main;
  * @author ZzStarSound
  * @version v1.0
  * @see java.lang.Exception
- * @see main.NodePoint
- * @see main.Node
+ * @see Node.NodePoint
+ * @see Node.Node
  */
 public class NodeException extends Exception {
 	private static final long serialVersionUID = 1L;
 	private String message;
 
 	public NodeException() {
-		this("Error(s) occured unexpectedly(NodeErrorId:-1)");
+		this("Error(s) occured unexpectedly(NodeErrorId=-1)");
 	}
 
 	public NodeException(String msg) {
@@ -30,6 +30,8 @@ public class NodeException extends Exception {
 	 *            type.<BR/>
 	 *            case 1 : disconnection at NodeLine failed.<BR/>
 	 *            case 2 : array boundary exceeded.<BR/>
+	 *            case 3 : data type of NodePoint is not an instance of NData.<BR/>
+	 *            case 4 : data overflowed.<BR/>
 	 *            .<BR/>
 	 *            .<BR/>
 	 *            .<BR/>
@@ -53,8 +55,18 @@ public class NodeException extends Exception {
 			message += "array boundary exceeded.";
 			message += "This occured while working on" + actionName + ".";
 			break;
+		case 3:
+			message = "NodeError(id:" + 3 + ") : ";
+			message += "data type of NodePoint is not an instance of NData.";
+			message += "This occured while working on" + actionName + ".";
+			break;
+		case 4:
+			message = "NodeError(id:" + 4 + ") : ";
+			message += "data overflowed.";
+			message += "This occured while working on" + actionName + ".";
+			break;
 		default:
-			message = "Error(s) occured unexpectedly(NodeErrorId:-1)";
+			message = "Error(s) occured unexpectedly(NodeErrorId=-1)";
 			break;
 		}
 	}

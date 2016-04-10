@@ -1,9 +1,0 @@
-package main;
-
-public class NData {
-	
-}
-
-class NDouble extends NData{
-	
-}
