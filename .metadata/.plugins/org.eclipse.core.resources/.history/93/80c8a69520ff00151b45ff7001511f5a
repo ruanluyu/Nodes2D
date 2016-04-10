@@ -1,0 +1,5 @@
+package main;
+
+public class NStream extends NObject{
+	private static final String CLASSNAME = "NStream";
+}

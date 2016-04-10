@@ -11,6 +11,7 @@ import java.util.List;
  * @see main.Node
  */
 class NodePoint<E> extends NObject {
+	public static int nameId = 0;
 	private static int id = 0;
 	private static final String CLASSNAME = "NodePoint";
 	private boolean input;
@@ -20,7 +21,7 @@ class NodePoint<E> extends NObject {
 	private E data = null;
 
 	NodePoint(Node master, boolean input) {
-		this(CLASSNAME + " " + id, master, input);
+		this(CLASSNAME + " " + nameId, master, input);
 	}
 
 	/**
@@ -36,6 +37,7 @@ class NodePoint<E> extends NObject {
 		thisId = id++;
 		this.input = input;
 		this.title = title;
+		nameId++;
 		this.master = master;
 	}
 	

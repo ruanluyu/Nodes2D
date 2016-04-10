@@ -12,7 +12,6 @@ import java.util.List;
  * @see main.NodePoint
  */
 class Node extends NObject {
-
 	private static int id = 0;
 	private static final String CLASSNAME = "Node";
 	private List<NodePoint> inPointList = new ArrayList<NodePoint>();
@@ -26,6 +25,21 @@ class Node extends NObject {
 		super();
 		thisId = id++;
 		this.title = title;
+	}
+
+	protected void addInPoint(int num,Node master) {
+		NodePoint.nameId = inPointList.size();
+		for(int i = 0 ; i < num;i++){
+			inPointList.add(new NodePoint(master, true));
+		}
+		
+	}
+
+	protected void addOutPoint(int num,Node master) {
+		NodePoint.nameId = outPointList.size();
+		for(int i = 0 ; i < num;i++){
+			outPointList.add(new NodePoint(master, false));
+		}
 	}
 
 	public void setTitle(String title) {
@@ -59,6 +73,35 @@ class Node extends NObject {
 	 */
 }
 
+class NodeDelayer extends Node {
+	private static int id = 0;
+	private static final String CLASSNAME = "NodeDelayer";
+	private double delayTime = 0;
+
+	public NodeDelayer() {
+		this(0);
+	}
+
+	public NodeDelayer(int delayTime) {
+		super();
+		thisId = id;
+		this.delayTime = delayTime;
+	}
+}
+
 class NodeCalculator extends Node {
 	
+}
+
+class Node_Pluser extends NodeCalculator {
+	public Node_Pluser(){
+		this(2);
+	}
+	public Node_Pluser(int numOfIn){
+		if(numOfIn > 2){
+			addInPoint(numOfIn,this);
+			addOutPoint(1,this);
+		}
+		
+	}
 }
