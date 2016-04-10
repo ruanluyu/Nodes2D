@@ -60,5 +60,5 @@ class Node extends NObject {
 }
 
 class NodeCalculator extends Node {
-	
+
 }
