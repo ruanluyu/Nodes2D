@@ -2,25 +2,26 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="double" key="selection"/>
+		<item value="NData" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="E"/>
+			<item value="NodePoint&lt;?&gt;"/>
 			<item value="float"/>
 			<item value="className"/>
 			<item value="NNumber"/>
 			<item value="(boolean)"/>
 			<item value="nSet"/>
 			<item value="nGet"/>
-			<item value="throw"/>
-			<item value="equals"/>
 		</list>
 		<list key="replacehistory">
+			<item value="NData"/>
+			<item value="NodePoint"/>
 			<item value="double"/>
 			<item value="CLASSNAME"/>
-			<item value="NData"/>
 			<item value="set"/>
 			<item value="get"/>
 		</list>
@@ -29,7 +30,7 @@
 		<item value="273" key="DIALOG_WIDTH"/>
 		<item value="1|Microsoft YaHei UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Microsoft YaHei UI" key="DIALOG_FONT_NAME"/>
 		<item value="400" key="DIALOG_HEIGHT"/>
-		<item value="832" key="DIALOG_X_ORIGIN"/>
-		<item value="282" key="DIALOG_Y_ORIGIN"/>
+		<item value="220" key="DIALOG_X_ORIGIN"/>
+		<item value="273" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

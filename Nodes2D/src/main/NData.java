@@ -1,10 +1,20 @@
 package main;
 
-
 class NData extends NObject {
+	private static final String CLASSNAME = "NData";
+	public static final int NDOUBLE = 0;
+	public static final int NINT = 1;
+	public static final int NSTRING = 2;
+	public static final int NVECTOR = 3;
+	protected static final int TYPE = -1;
+	
 	protected static int id = 0;
 	private int thisId = 0;
-
+	
+	public int getType(){
+		return TYPE;
+	}
+	
 	NData() {
 		thisId = id;
 		id++;
@@ -13,7 +23,16 @@ class NData extends NObject {
 
 class NDouble extends NData {
 	private static final String CLASSNAME = "Ndouble";
+	protected static final int TYPE = NDOUBLE;
 	private double data = 0;
+
+	public NDouble() {
+		this(0);
+	}
+
+	public NDouble(double data) {
+		this.data = data;
+	}
 
 	public void set(double value) {
 		data = value;
@@ -25,8 +44,17 @@ class NDouble extends NData {
 }
 
 class NInt extends NData {
+	protected static final int TYPE = NINT;
 	private static final String CLASSNAME = "NInt";
 	private int data = 0;
+
+	public NInt() {
+		this(0);
+	}
+
+	public NInt(int data) {
+		this.data = data;
+	}
 
 	public void set(int value) {
 		data = value;
@@ -38,8 +66,17 @@ class NInt extends NData {
 }
 
 class NString extends NData {
+	protected static final int TYPE = NSTRING;
 	private static final String CLASSNAME = "NString";
 	private String data = "";
+
+	public NString() {
+		this("");
+	}
+
+	public NString(String data) {
+		this.data = data;
+	}
 
 	public void set(String value) {
 		data = value;
@@ -50,20 +87,51 @@ class NString extends NData {
 	}
 }
 
-class NVector extends NData{
+class NVector extends NData {
+	protected static final int TYPE = NVECTOR;
 	private static final String CLASSNAME = "NVector";
+	private String info = "";
 	NData data[];
-	NVector(int num){
-		data = new NData[num];
+
+	public NVector() {
+		this(2);
 	}
-	public void set(int id,NData data){
+
+	public NVector(int num) {
+		data = new NData[num];
+		for (int i = 0; i < num; i++) {
+			data[i] = new NDouble(0);
+		}
+	}
+
+	public void setInfo(int num, NData data) {
+		info += num;
+		NData cur = data;
+		if (cur instanceof NVector) {
+			while (cur instanceof NVector) {
+				info += cur.getClassName();
+				cur = ((NVector) cur).get(0);
+			}
+			cur.getClassName();
+		} else {
+			info += cur.getClassName();
+		}
+	}
+
+	public void set(int id, NData data) {
 		this.data[id] = data;
 	}
-	public NData[] get(){
+
+	public NData[] get() {
 		return data;
 	}
-	public NData get(int id){
+
+	public NData get(int id) {
 		return get()[id];
+	}
+
+	public int getSize() {
+		return data.length;
 	}
 }
 

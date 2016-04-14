@@ -10,7 +10,7 @@ import java.util.List;
  * @author ZzStarSound
  * @see main.Node
  */
-class NodePoint<E> extends NObject {
+class NodePoint extends NObject {
 	public static int nameId = 0;
 	private static int id = 0;
 	private static final String CLASSNAME = "NodePoint";
@@ -18,7 +18,7 @@ class NodePoint<E> extends NObject {
 	private Node master;
 	private List<NodeLine> outLinesList = new ArrayList<NodeLine>();
 	private NodeLine inLine;
-	private E data = null;
+	private NData data = null;
 
 	NodePoint(Node master, boolean input) {
 		this(CLASSNAME + " " + nameId, master, input);
@@ -41,10 +41,43 @@ class NodePoint<E> extends NObject {
 		this.master = master;
 	}
 	
-	void setData(E data){
-		if(data!=null) this.data = data;
+	NodePoint(String title, Node master, boolean input,int mode){
+		thisId = id++;
+		this.input = input;
+		this.title = title;
+		nameId++;
+		this.master = master;
+		switch(mode){
+		case NData.NDOUBLE:
+			data =  new NDouble();
+			break;
+		case NData.NINT:
+			data =  new NInt();
+			break;
+		case NData.NSTRING:
+			data =  new NString();
+			break;
+		case NData.NVECTOR:
+			data =  new NVector();
+			break;
+		default :
+			try{
+				throw new NodeException(6,this.title);
+			}catch(NodeException e){
+				e.println();
+			}
+			break;
+		}
 	}
-	public E getData(){
+	
+	public static boolean connectable(NodePoint np1,NodePoint np2){
+		return (np1.getData().getClassName())==(((NData)(np2.getData())).getClassName());
+	}
+	
+	public void setData(NData data){
+		this.data = data;
+	}
+	public NData getData(){
 		if(data != null)return data;
 		else return null;
 	}
@@ -61,7 +94,7 @@ class NodePoint<E> extends NObject {
 		return title;
 	}
 
-	void setTitle(String title) {
+	public void setTitle(String title) {
 		this.title = title;
 	}
 

@@ -27,17 +27,35 @@ class Node extends NObject {
 		this.title = title;
 	}
 
-	protected void addInPoint(int num,Node master) {
+	protected void addInPoint(int num, Node master) {
 		NodePoint.nameId = inPointList.size();
-		for(int i = 0 ; i < num;i++){
+		for (int i = 0; i < num; i++) {
 			inPointList.add(new NodePoint(master, true));
 		}
-		
+
 	}
 
-	protected void addOutPoint(int num,Node master) {
+	protected void addOutPoint(int num, Node master) {
 		NodePoint.nameId = outPointList.size();
-		for(int i = 0 ; i < num;i++){
+		for (int i = 0; i < num; i++) {
+			outPointList.add(new NodePoint(master, false));
+		}
+	}
+
+	protected void setInputPoint(int num, Node master) {
+		NodePoint.nameId = 0;
+		if (inPointList.size() > 0)
+			inPointList.clear();
+		for (int i = 0; i < num; i++) {
+			inPointList.add(new NodePoint(master, true));
+		}
+	}
+
+	protected void setOutputPoint(int num, Node master) {
+		NodePoint.nameId = 0;
+		if (outPointList.size() > 0)
+			outPointList.clear();
+		for (int i = 0; i < num; i++) {
 			outPointList.add(new NodePoint(master, false));
 		}
 	}
@@ -55,7 +73,7 @@ class Node extends NObject {
 	 * e.println(); } return null; } else { return new NodeLine(a, b); } }
 	 */
 
-	public void add(NodePoint<?> point) {
+	public void add(NodePoint point) {
 		if (point.isInput()) {
 			inPointList.add(point);
 		} else {
@@ -63,7 +81,7 @@ class Node extends NObject {
 		}
 	}
 	/*
-	 * private NodePoint<?> selectPoint(boolean input,int index){ if(input){
+	 * private NodePoint selectPoint(boolean input,int index){ if(input){
 	 * if(index<inPointList.size()&&index>=0){ return inPointList.get(index);
 	 * }else{ try{ throw new NodeException("Node : "+title);
 	 * }catch(NodeException e){ e.println(); } } }else{
@@ -71,6 +89,64 @@ class Node extends NObject {
 	 * }else{ try{ throw new NodeException("Node : "+title);
 	 * }catch(NodeException e){ e.println(); } } } return null; }
 	 */
+}
+
+interface NStreamGenerator {
+	NStream generateStream();
+}
+
+class NodeGenerator extends Node implements NStreamGenerator {
+	private static final String CLASSNAME = "NodeGenerator";
+	private static int id = 0;
+	protected boolean stillGenerating = false;
+	protected int times = 1;
+
+	@Override
+	public NStream generateStream() {
+		return null;
+	}
+
+	public boolean isGenerating() {
+		return stillGenerating;
+	}
+
+	public void setGenerating(boolean flag) {
+		stillGenerating = flag;
+	}
+
+	public int getTimes() {
+		return times;
+	}
+
+	public void setTimes(int times) {
+		this.times = times;
+	}
+
+	public void addTimes(int times) {
+		this.times += times;
+	}
+
+}
+
+class Node_SolidNumber extends NodeGenerator {
+	private static int id = 0;
+	private static final String CLASSNAME = "Node_SolidNumber";
+
+	NData data;
+
+	Node_SolidNumber() {
+		this(0);
+	}
+
+	Node_SolidNumber(double value) {
+		data = new NDouble(value);
+	}
+
+	@Override
+	public NStream generateStream() {
+		return new NStream();
+	}
+
 }
 
 class NodeDelayer extends Node {
@@ -90,18 +166,23 @@ class NodeDelayer extends Node {
 }
 
 class NodeCalculator extends Node {
-	
+	private static int id = 0;
+	private static final String CLASSNAME = "NodeCalculator";
 }
 
 class Node_Pluser extends NodeCalculator {
-	public Node_Pluser(){
+	private static int id = 0;
+	private static final String CLASSNAME = "Node_Pluser";
+
+	public Node_Pluser() {
 		this(2);
 	}
-	public Node_Pluser(int numOfIn){
-		if(numOfIn > 2){
-			addInPoint(numOfIn,this);
-			addOutPoint(1,this);
+
+	public Node_Pluser(int numOfIn) {
+		if (numOfIn > 2) {
+			addInPoint(numOfIn, this);
+			addOutPoint(1, this);
 		}
-		
+
 	}
 }

@@ -4,7 +4,7 @@ package main;
 class NObject {
 	public static int nameId = 0;//Local this id.
 	private static int id = 0;//Global all ids' number.
-	private static final String CLASSNAME = "NodesSystem";
+	private static final String CLASSNAME = "NObject";
 	protected String title;
 	protected int thisId = 0;//Global this id.
 	public NObject() {
@@ -21,4 +21,7 @@ class NObject {
 		this.title = title;
 	}
 	
+	public String getClassName(){
+		return CLASSNAME;
+	}
 }

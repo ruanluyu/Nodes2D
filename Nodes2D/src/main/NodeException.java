@@ -32,6 +32,8 @@ public class NodeException extends Exception {
 	 *            case 2 : array boundary exceeded.<BR/>
 	 *            case 3 : data type of NodePoint is not an instance of NData.<BR/>
 	 *            case 4 : data overflowed.<BR/>
+	 *            case 5 : types of tow points are different.<BR/>
+	 *            case 6 : unknown point mode.<BR/>
 	 *            .<BR/>
 	 *            .<BR/>
 	 *            .<BR/>
@@ -39,6 +41,7 @@ public class NodeException extends Exception {
 	 *            source name
 	 */
 	public NodeException(int errorId, String actionName) {
+		message = "";
 		switch (errorId) {
 		case 0:
 			message = "NodeError(id:" + 0 + ") : ";
@@ -63,6 +66,16 @@ public class NodeException extends Exception {
 		case 4:
 			message = "NodeError(id:" + 4 + ") : ";
 			message += "data overflowed.";
+			message += "This occured while working on" + actionName + ".";
+			break;
+		case 5:
+			message = "NodeError(id:" + 5 + ") : ";
+			message += "types of tow points are different.";
+			message += "This occured while working on" + actionName + ".";
+			break;
+		case 6:
+			message = "NodeError(id:" + 6 + ") : ";
+			message += "unknown point mode.";
 			message += "This occured while working on" + actionName + ".";
 			break;
 		default:

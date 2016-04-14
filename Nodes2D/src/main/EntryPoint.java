@@ -8,23 +8,55 @@ import javax.imageio.ImageIO;
 
 public class EntryPoint extends JFrame {
 	private static final long serialVersionUID = 1L;
-	public EntryPoint(String title,String path){
-		try{
+
+	public EntryPoint(String title, String path) {
+		try {
 			Image img = ImageIO.read(this.getClass().getResource(path));
 			this.setIconImage(img);
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setBounds(300,300,500,500);
-		this.setTitle(title); 
+		this.setBounds(300, 300, 500, 500);
+		this.setTitle(title);
 		this.setVisible(true);
+
+	}
+
+	public static void main(String[] args) {
+		System.out.println("EntryPoint begin");
+		// JFrame nodeWindow = new EntryPoint("Nodes2D","../icon/Icon_L.png");
+		System.out.println("All done");
+
+		C b = new C();
+		b.println();
+	}
+
+}
+
+class A {
+	protected int a = 0;
+	
+	public A(){
 		
 	}
-	public static void main(String[] args){
-		System.out.println("EntryPoint begin");
-		//JFrame nodeWindow = new EntryPoint("Nodes2D","../icon/Icon_L.png");
-		System.out.println("All done");
-		
+	
+	public void println() {
+		System.out.println(100 * a);
+	}
+}
+
+class B extends A {
+	protected int a = 1;
+
+	public B() {
+		super.a = 1;
+	}
+}
+
+class C extends B{
+	protected int a = 1;
+	public C(){
+		super.a = 2;
 	}
 }

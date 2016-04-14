@@ -7,11 +7,17 @@ public class NStream extends NObject {
 	private boolean stop = false;
 	private boolean pause = false;
 	private NData data;
+	private NodePoint nowPoint;
 
-	NStream() {
+	public NStream() {
 		super();
 		thisId = id;
 		id++;
+	}
+	
+	public NStream(NData data,NodePoint nowPoint){
+		this.data = data;
+		this.nowPoint = nowPoint;
 	}
 
 	public void setData(NData data) {
