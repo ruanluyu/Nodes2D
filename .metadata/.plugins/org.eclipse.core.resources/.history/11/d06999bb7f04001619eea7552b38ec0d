@@ -1,0 +1,74 @@
+package main;
+
+import java.awt.Image;
+import java.io.IOException;
+
+import javax.swing.JFrame;
+import javax.imageio.ImageIO;
+
+public class EntryPoint extends JFrame {
+	private static final long serialVersionUID = 1L;
+
+	public EntryPoint(String title, String path) {
+		try {
+			Image img = ImageIO.read(this.getClass().getResource(path));
+			this.setIconImage(img);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setBounds(300, 300, 500, 500);
+		this.setTitle(title);
+		this.setVisible(true);
+
+	}
+
+	public static void main(String[] args) {
+		System.out.println("EntryPoint begin");
+		// JFrame nodeWindow = new EntryPoint("Nodes2D","../icon/Icon_L.png");
+		System.out.println("All done");
+		B b = new B();
+		b.pr();
+		b.pr2();
+		b.thisName();
+		b.prName();
+		A a = new A();
+		a.pr2();
+	}
+
+}
+
+class A {
+	int a = 0;
+	static int b = 8;
+	int name = 0;
+	public void  pr(){
+		System.out.println(a);
+	}
+	public void  pr2(){
+		System.out.println(b);
+	}
+	public void setA(int a){
+		this.a = a;
+	}
+	public void setB(int a){
+		this.b = a;
+	}
+	public void setName(int i){
+		name = i;
+	}
+	public void thisName(){
+		name = b+a;
+	}
+	public void prName(){
+		System.out.println(name);
+	}
+}
+
+class B extends A{
+	static int b = 10;
+	B(){
+		setA(2);
+		setB(10);
+	}
+}

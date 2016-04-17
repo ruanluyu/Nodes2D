@@ -1,8 +1,6 @@
 package main;
 
 public class NStream extends NObject {
-	private static final String CLASSNAME = "NStream";
-	private static int id = 0;
 	private int delay = 0;
 	private boolean stop = false;
 	private boolean pause = false;
@@ -10,12 +8,16 @@ public class NStream extends NObject {
 	private NodePoint nowPoint;
 
 	public NStream() {
-		super();
-		thisId = id;
-		id++;
+		super(false);
+		setRegularTitle("NStream");
+	}
+
+	protected NStream(boolean flag) {
+		super(flag);
 	}
 	
 	public NStream(NData data,NodePoint nowPoint){
+		this();
 		this.data = data;
 		this.nowPoint = nowPoint;
 	}

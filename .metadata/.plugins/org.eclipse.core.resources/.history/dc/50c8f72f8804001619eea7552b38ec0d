@@ -1,0 +1,55 @@
+package main;
+
+import java.awt.Image;
+import java.io.IOException;
+
+import javax.swing.JFrame;
+import javax.imageio.ImageIO;
+
+public class EntryPoint extends JFrame {
+	private static final long serialVersionUID = 1L;
+
+	public EntryPoint(String title, String path) {
+		try {
+			Image img = ImageIO.read(this.getClass().getResource(path));
+			this.setIconImage(img);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setBounds(300, 300, 500, 500);
+		this.setTitle(title);
+		this.setVisible(true);
+
+	}
+
+	public static void main(String[] args) {
+		System.out.println("EntryPoint begin");
+		// JFrame nodeWindow = new EntryPoint("Nodes2D","../icon/Icon_L.png");
+		System.out.println("All done");
+		Node nd = new Node();
+		Node nd2 = new Node();
+		System.out.println(nd.getTitle());
+		System.out.println(nd2.getTitle());
+		A a = new B();
+		System.out.println(a.a);
+		System.out.println(((B)a).a);
+	}
+
+}
+
+class A{
+	public static int a = 1;
+	A(){
+		add();
+	}
+	public void add(){
+		a++;
+	}
+}
+class B extends A{
+	B(){
+		add();
+	}
+	public static int a = 93;
+}

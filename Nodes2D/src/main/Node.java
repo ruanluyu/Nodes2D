@@ -12,21 +12,25 @@ import java.util.List;
  * @see main.NodePoint
  */
 class Node extends NObject {
-	private static int id = 0;
-	private static final String CLASSNAME = "Node";
+	// private static int id = 0;
+	// private static final String CLASSNAME = "Node";
 	private List<NodePoint> inPointList = new ArrayList<NodePoint>();
 	private List<NodePoint> outPointList = new ArrayList<NodePoint>();
-
+//////////////////////////
 	public Node() {
-		this(CLASSNAME + " " + id);
+		super(true);
+		setRegularTitle("Node");
+	}
+
+	protected Node(boolean flag) {
+		super(flag);
 	}
 
 	public Node(String title) {
-		super();
-		thisId = id++;
-		this.title = title;
+		this();
+		setTitle(title);
 	}
-
+//////////////////////
 	protected void addInPoint(int num, Node master) {
 		NodePoint.nameId = inPointList.size();
 		for (int i = 0; i < num; i++) {
@@ -96,10 +100,22 @@ interface NStreamGenerator {
 }
 
 class NodeGenerator extends Node implements NStreamGenerator {
-	private static final String CLASSNAME = "NodeGenerator";
-	private static int id = 0;
 	protected boolean stillGenerating = false;
 	protected int times = 1;
+
+	public NodeGenerator() {
+		super(true);
+		setRegularTitle("NodeGenerator");
+	}
+
+	protected NodeGenerator(boolean flag) {
+		super(flag);
+	}
+
+	public NodeGenerator(String title) {
+		this();
+		setTitle(title);
+	}
 
 	@Override
 	public NStream generateStream() {
@@ -129,17 +145,21 @@ class NodeGenerator extends Node implements NStreamGenerator {
 }
 
 class Node_SolidNumber extends NodeGenerator {
-	private static int id = 0;
-	private static final String CLASSNAME = "Node_SolidNumber";
 
-	NData data;
+	NDouble data;
 
-	Node_SolidNumber() {
-		this(0);
+	public Node_SolidNumber() {
+		super(true);
+		setRegularTitle("Node_SolidNumber");
 	}
 
-	Node_SolidNumber(double value) {
-		data = new NDouble(value);
+	protected Node_SolidNumber(boolean flag) {
+		super(flag);
+	}
+
+	public Node_SolidNumber(String title) {
+		this();
+		setTitle(title);
 	}
 
 	@Override
@@ -147,38 +167,69 @@ class Node_SolidNumber extends NodeGenerator {
 		return new NStream();
 	}
 
+	public void setData(double value) {
+		data = new NDouble(value);
+	}
+
 }
 
 class NodeDelayer extends Node {
-	private static int id = 0;
-	private static final String CLASSNAME = "NodeDelayer";
 	private double delayTime = 0;
 
 	public NodeDelayer() {
-		this(0);
+		super(true);
+		setRegularTitle("NodeDelayer");
 	}
 
-	public NodeDelayer(int delayTime) {
-		super();
-		thisId = id;
+	protected NodeDelayer(boolean flag) {
+		super(flag);
+	}
+
+	public NodeDelayer(String title) {
+		this();
+		setTitle(title);
+	}
+
+	public void setDelayTime(int delayTime) {
 		this.delayTime = delayTime;
 	}
 }
 
 class NodeCalculator extends Node {
-	private static int id = 0;
-	private static final String CLASSNAME = "NodeCalculator";
+
+	public NodeCalculator() {
+		super(true);
+		setRegularTitle("NodeCalculator");
+	}
+
+	protected NodeCalculator(boolean flag) {
+		super(flag);
+	}
+
+	public NodeCalculator(String title) {
+		this();
+		setTitle(title);
+	}
+
 }
 
 class Node_Pluser extends NodeCalculator {
-	private static int id = 0;
-	private static final String CLASSNAME = "Node_Pluser";
-
 	public Node_Pluser() {
-		this(2);
+		super(true);
+		setRegularTitle("Node_Pluser");
+		Build(2);
 	}
 
-	public Node_Pluser(int numOfIn) {
+	protected Node_Pluser(boolean flag) {
+		super(flag);
+	}
+
+	public Node_Pluser(String title) {
+		this();
+		setTitle(title);
+	}
+
+	public void Build(int numOfIn) {
 		if (numOfIn > 2) {
 			addInPoint(numOfIn, this);
 			addOutPoint(1, this);

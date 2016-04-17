@@ -27,36 +27,6 @@ public class EntryPoint extends JFrame {
 		System.out.println("EntryPoint begin");
 		// JFrame nodeWindow = new EntryPoint("Nodes2D","../icon/Icon_L.png");
 		System.out.println("All done");
-
-		C b = new C();
-		b.println();
 	}
 
-}
-
-class A {
-	protected int a = 0;
-	
-	public A(){
-		
-	}
-	
-	public void println() {
-		System.out.println(100 * a);
-	}
-}
-
-class B extends A {
-	protected int a = 1;
-
-	public B() {
-		super.a = 1;
-	}
-}
-
-class C extends B{
-	protected int a = 1;
-	public C(){
-		super.a = 2;
-	}
 }

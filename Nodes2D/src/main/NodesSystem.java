@@ -4,24 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 class NodesSystem extends NObject {
-	private static int id = 0;
-	private static final String CLASSNAME = "NodesSystem";
-	private List<NodeLine> lineList = new ArrayList<NodeLine>();
 	private List<Node> nodeList = new ArrayList<Node>();
+	private List<NodeLine> lineList = new ArrayList<NodeLine>();
 	private List<NStream> streamList = new ArrayList<NStream>();
-
+	
 	public NodesSystem() {
-		this(CLASSNAME + " " + id);
+		super(true);
+		setRegularTitle("NodesSystem");
+	}
+
+	protected NodesSystem(boolean flag) {
+		super(flag);
 	}
 
 	public NodesSystem(String title) {
-		super();
-		thisId = id++;
-		this.title = title;
-	}
-
-	public void println(String message) {
-		System.out.println(this.title + "(NodesSystem " + thisId + ") : " + message);
+		this();
+		setTitle(title);
 	}
 
 	public void disconnect(NodeLine line) {
@@ -42,10 +40,11 @@ class NodesSystem extends NObject {
 			if (NodePoint.connectable(a, b)) {
 				println(a.getTitle() + " ----- " + b.getTitle() + " (connected)");
 				return new NodeLine(a, b);
-			}else{
-				try{
-					throw new NodeException(6,"NodePoint : " + a.getTitle() + " and NodePoint : " + b.getTitle() + " .");
-				}catch(NodeException e){
+			} else {
+				try {
+					throw new NodeException(6,
+							"NodePoint : " + a.getTitle() + " and NodePoint : " + b.getTitle() + " .");
+				} catch (NodeException e) {
 					e.println();
 				}
 				return null;

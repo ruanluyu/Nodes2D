@@ -1,36 +1,57 @@
 package main;
 
 class NData extends NObject {
-	private static final String CLASSNAME = "NData";
+	protected static final int TYPE = -1;
 	public static final int NDOUBLE = 0;
 	public static final int NINT = 1;
 	public static final int NSTRING = 2;
 	public static final int NVECTOR = 3;
-	protected static final int TYPE = -1;
-	
+
+	public NData() {
+		super(false);
+		setRegularTitle("NData");
+	}
+
+	protected NData(boolean flag) {
+		super(flag);
+	}
+
+	public NData(String title) {
+		this();
+		setTitle(title);
+	}
+
+	public static boolean typeConnectable(int a, int b) {
+		if (a == b)
+			return true;
+		else
+			return false;
+	}
+
 	protected static int id = 0;
 	private int thisId = 0;
-	
-	public int getType(){
+
+	public int getType() {
 		return TYPE;
 	}
-	
-	NData() {
-		thisId = id;
-		id++;
-	}
+
 }
 
 class NDouble extends NData {
-	private static final String CLASSNAME = "Ndouble";
 	protected static final int TYPE = NDOUBLE;
 	private double data = 0;
 
-	public NDouble() {
-		this(0);
+	protected NDouble() {
+		super(false);
+		setRegularTitle("NDouble");
+	}
+
+	protected NDouble(boolean flag) {
+		super(flag);
 	}
 
 	public NDouble(double data) {
+		this();
 		this.data = data;
 	}
 
@@ -45,14 +66,19 @@ class NDouble extends NData {
 
 class NInt extends NData {
 	protected static final int TYPE = NINT;
-	private static final String CLASSNAME = "NInt";
 	private int data = 0;
 
-	public NInt() {
-		this(0);
+	protected NInt() {
+		super(false);
+		setRegularTitle("NInt");
+	}
+
+	protected NInt(boolean flag) {
+		super(flag);
 	}
 
 	public NInt(int data) {
+		this();
 		this.data = data;
 	}
 
@@ -67,14 +93,19 @@ class NInt extends NData {
 
 class NString extends NData {
 	protected static final int TYPE = NSTRING;
-	private static final String CLASSNAME = "NString";
 	private String data = "";
+	
+	protected NString() {
+		super(false);
+		setRegularTitle("NString");
+	}
 
-	public NString() {
-		this("");
+	protected NString(boolean flag) {
+		super(flag);
 	}
 
 	public NString(String data) {
+		this();
 		this.data = data;
 	}
 
@@ -89,15 +120,20 @@ class NString extends NData {
 
 class NVector extends NData {
 	protected static final int TYPE = NVECTOR;
-	private static final String CLASSNAME = "NVector";
 	private String info = "";
 	NData data[];
 
-	public NVector() {
-		this(2);
+	protected NVector() {
+		super(false);
+		setRegularTitle("NVector");
+	}
+
+	protected NVector(boolean flag) {
+		super(flag);
 	}
 
 	public NVector(int num) {
+		this();
 		data = new NData[num];
 		for (int i = 0; i < num; i++) {
 			data[i] = new NDouble(0);
