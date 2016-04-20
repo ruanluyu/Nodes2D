@@ -7,19 +7,13 @@ class NData extends NObject {
 	public static final int NSTRING = 2;
 	public static final int NVECTOR = 3;
 
-	public NData() {
-		super(false);
-		setRegularTitle("NData");
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NData";
+		idAddable = false;
 	}
-
-	protected NData(boolean flag) {
-		super(flag);
-	}
-
-	public NData(String title) {
-		this();
-		setTitle(title);
-	}
+	///////////////
 
 	public static boolean typeConnectable(int a, int b) {
 		if (a == b)
@@ -41,20 +35,22 @@ class NDouble extends NData {
 	protected static final int TYPE = NDOUBLE;
 	private double data = 0;
 
-	protected NDouble() {
-		super(false);
-		setRegularTitle("NDouble");
+	/////////////// initialObject
+	public NDouble() {
+		data = 0;
 	}
 
-	protected NDouble(boolean flag) {
-		super(flag);
+	public NDouble(double value) {
+		data = value;
 	}
 
-	public NDouble(double data) {
-		this();
-		this.data = data;
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NDouble";
+		idAddable = false;
 	}
 
+	///////////////
 	public void set(double value) {
 		data = value;
 	}
@@ -68,20 +64,22 @@ class NInt extends NData {
 	protected static final int TYPE = NINT;
 	private int data = 0;
 
-	protected NInt() {
-		super(false);
-		setRegularTitle("NInt");
+	/////////////// initialObject
+	public NInt() {
+		data = 0;
 	}
 
-	protected NInt(boolean flag) {
-		super(flag);
+	public NInt(int value) {
+		data = value;
 	}
 
-	public NInt(int data) {
-		this();
-		this.data = data;
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NInt";
+		idAddable = false;
 	}
 
+	///////////////
 	public void set(int value) {
 		data = value;
 	}
@@ -94,21 +92,23 @@ class NInt extends NData {
 class NString extends NData {
 	protected static final int TYPE = NSTRING;
 	private String data = "";
-	
-	protected NString() {
-		super(false);
-		setRegularTitle("NString");
+
+	/////////////// initialObject
+	public NString() {
+		data = "";
 	}
 
-	protected NString(boolean flag) {
-		super(flag);
+	public NString(String value) {
+		data = value;
 	}
 
-	public NString(String data) {
-		this();
-		this.data = data;
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NString";
+		idAddable = false;
 	}
 
+	///////////////
 	public void set(String value) {
 		data = value;
 	}
@@ -120,38 +120,42 @@ class NString extends NData {
 
 class NVector extends NData {
 	protected static final int TYPE = NVECTOR;
-	private String info = "";
+	private String type = "";
 	NData data[];
 
-	protected NVector() {
-		super(false);
-		setRegularTitle("NVector");
-	}
-
-	protected NVector(boolean flag) {
-		super(flag);
+	/////////////// initialObject
+	public NVector() {
+		this(2);
 	}
 
 	public NVector(int num) {
-		this();
 		data = new NData[num];
-		for (int i = 0; i < num; i++) {
-			data[i] = new NDouble(0);
+	}
+
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NVector";
+		idAddable = false;
+	}
+
+	///////////////
+	public void computeType() {
+		type += CLASSNAME + "[" + data.length + "]";
+		NData cur = data[0];
+		if (cur instanceof NVector) {
+
+			while (cur instanceof NVector) {
+				type += "{" + cur.getClassName() + "}~" + cur.getClassName() + "[" + ((NVector) cur).getNum() + "]";
+				cur = ((NVector) cur).get(0);
+			}
+			type += "{" + cur.getClassName() + "}";
+		} else {
+			type += "{" + cur.getClassName() + "}";
 		}
 	}
 
-	public void setInfo(int num, NData data) {
-		info += num;
-		NData cur = data;
-		if (cur instanceof NVector) {
-			while (cur instanceof NVector) {
-				info += cur.getClassName();
-				cur = ((NVector) cur).get(0);
-			}
-			cur.getClassName();
-		} else {
-			info += cur.getClassName();
-		}
+	public int getNum() {
+		return data.length;
 	}
 
 	public void set(int id, NData data) {

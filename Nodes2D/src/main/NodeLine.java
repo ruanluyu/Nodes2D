@@ -4,23 +4,16 @@ class NodeLine extends NObject {
 	private Node inN, outN;
 	private NodePoint inP, outP;
 
-	public NodeLine() {
-		super(false);
-		setRegularTitle("NodeLine");
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NodeLine";
+		idAddable = true;
 	}
 
-	protected NodeLine(boolean flag) {
-		super(flag);
-	}
-
-	public NodeLine(String title) {
-		this();
-		setTitle(title);
-	}
-
+	///////////////
 	NodeLine(NodePoint p1, NodePoint p2) {
-		this();
-		thisId = id++;
+		super();
 		if (p1.isInput() && p2.isOutput()) {
 			inP = p1;
 			outP = p2;

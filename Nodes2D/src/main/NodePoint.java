@@ -18,14 +18,14 @@ class NodePoint extends NObject {
 	private int type = -1;
 	private NStream data;
 
-	public NodePoint() {
-		super(true);
-		setRegularTitle("NodePoint");
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NodePoint";
+		idAddable = true;
 	}
 
-	protected NodePoint(boolean flag) {
-		super(flag);
-	}
+	///////////////
 
 	NodePoint(Node master, boolean input) {
 		this("NodePoint" + " " + nameId, master, input);
@@ -45,7 +45,7 @@ class NodePoint extends NObject {
 	}
 
 	NodePoint(String title, Node master, boolean input, int mode) {
-		this();
+		super();
 		this.input = input;
 		setTitle(title);
 		this.master = master;
@@ -73,7 +73,7 @@ class NodePoint extends NObject {
 	}
 
 	public static boolean connectable(NodePoint np1, NodePoint np2) {
-		return NData.typeConnectable(np1.getType(),np2.getType());
+		return NData.typeConnectable(np1.getType(), np2.getType());
 	}
 
 	public void setStream(NStream data) {

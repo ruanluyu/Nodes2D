@@ -3,30 +3,31 @@ package main;
 class NObject {
 	protected static int nameId = 0;// Local this id.
 	protected static int id = 0;// Global all ids' number.
-	protected String CLASSNAME;
+	protected String CLASSNAME = "N_NULL";
 	protected String title;
 	protected int thisId = 0;// Global this id.
+	protected boolean idAddable = true;
+	///////////////
 
 	public NObject() {
-		thisId = id++;
-		setRegularTitle("NObject");
+		initializeObject();
+		if (idAddable) {
+			thisId = id++;
+			title = CLASSNAME + " " + nameId;
+			nameId++;
+		} else {
+			thisId = -1;
+			title = CLASSNAME;
+		}
+
 	}
 
-	public NObject(boolean flag) {
-		if(flag) thisId = id++;
-		else thisId = -1;
+	protected void initializeObject() {
+		CLASSNAME = "NObject";
+		idAddable = true;
 	}
 
-	public NObject(String title) {
-		this();
-		setTitle(title);
-	}
-
-	public void setRegularTitle(String classname) {
-		CLASSNAME = classname;
-		title = classname + " " + nameId;
-		nameId++;
-	}
+	//////////////
 
 	public static void setNameId(int id) {
 		nameId = id;
@@ -47,8 +48,8 @@ class NObject {
 	public String getClassName() {
 		return CLASSNAME;
 	}
-	
+
 	public void println(String message) {
-		System.out.println(this.title + "( class : "+ CLASSNAME + "----global_id "+thisId+") : \n" + message);
+		System.out.println(this.title + "( class : " + CLASSNAME + "----global_id " + thisId + ") : \n" + message);
 	}
 }

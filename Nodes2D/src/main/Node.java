@@ -16,21 +16,15 @@ class Node extends NObject {
 	// private static final String CLASSNAME = "Node";
 	private List<NodePoint> inPointList = new ArrayList<NodePoint>();
 	private List<NodePoint> outPointList = new ArrayList<NodePoint>();
-//////////////////////////
-	public Node() {
-		super(true);
-		setRegularTitle("Node");
-	}
 
-	protected Node(boolean flag) {
-		super(flag);
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "Node";
+		idAddable = true;
 	}
+	///////////////
 
-	public Node(String title) {
-		this();
-		setTitle(title);
-	}
-//////////////////////
 	protected void addInPoint(int num, Node master) {
 		NodePoint.nameId = inPointList.size();
 		for (int i = 0; i < num; i++) {
@@ -93,6 +87,10 @@ class Node extends NObject {
 	 * }else{ try{ throw new NodeException("Node : "+title);
 	 * }catch(NodeException e){ e.println(); } } } return null; }
 	 */
+
+	public int getId() {
+		return thisId;
+	}
 }
 
 interface NStreamGenerator {
@@ -103,20 +101,14 @@ class NodeGenerator extends Node implements NStreamGenerator {
 	protected boolean stillGenerating = false;
 	protected int times = 1;
 
-	public NodeGenerator() {
-		super(true);
-		setRegularTitle("NodeGenerator");
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NodeGenerator";
+		idAddable = true;
 	}
 
-	protected NodeGenerator(boolean flag) {
-		super(flag);
-	}
-
-	public NodeGenerator(String title) {
-		this();
-		setTitle(title);
-	}
-
+	///////////////
 	@Override
 	public NStream generateStream() {
 		return null;
@@ -148,20 +140,14 @@ class Node_SolidNumber extends NodeGenerator {
 
 	NDouble data;
 
-	public Node_SolidNumber() {
-		super(true);
-		setRegularTitle("Node_SolidNumber");
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "Node_SolidNumber";
+		idAddable = true;
 	}
 
-	protected Node_SolidNumber(boolean flag) {
-		super(flag);
-	}
-
-	public Node_SolidNumber(String title) {
-		this();
-		setTitle(title);
-	}
-
+	///////////////
 	@Override
 	public NStream generateStream() {
 		return new NStream();
@@ -176,58 +162,37 @@ class Node_SolidNumber extends NodeGenerator {
 class NodeDelayer extends Node {
 	private double delayTime = 0;
 
-	public NodeDelayer() {
-		super(true);
-		setRegularTitle("NodeDelayer");
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NodeDelayer";
+		idAddable = true;
 	}
 
-	protected NodeDelayer(boolean flag) {
-		super(flag);
-	}
-
-	public NodeDelayer(String title) {
-		this();
-		setTitle(title);
-	}
-
+	///////////////
 	public void setDelayTime(int delayTime) {
 		this.delayTime = delayTime;
 	}
 }
 
 class NodeCalculator extends Node {
-
-	public NodeCalculator() {
-		super(true);
-		setRegularTitle("NodeCalculator");
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NodeCalculator";
+		idAddable = true;
 	}
-
-	protected NodeCalculator(boolean flag) {
-		super(flag);
-	}
-
-	public NodeCalculator(String title) {
-		this();
-		setTitle(title);
-	}
-
+	///////////////
 }
 
 class Node_Pluser extends NodeCalculator {
-	public Node_Pluser() {
-		super(true);
-		setRegularTitle("Node_Pluser");
-		Build(2);
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "Node_Pluser";
+		idAddable = true;
 	}
-
-	protected Node_Pluser(boolean flag) {
-		super(flag);
-	}
-
-	public Node_Pluser(String title) {
-		this();
-		setTitle(title);
-	}
+	///////////////
 
 	public void Build(int numOfIn) {
 		if (numOfIn > 2) {

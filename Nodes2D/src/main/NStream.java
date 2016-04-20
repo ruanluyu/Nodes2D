@@ -7,17 +7,17 @@ public class NStream extends NObject {
 	private NData data;
 	private NodePoint nowPoint;
 
-	public NStream() {
-		super(false);
-		setRegularTitle("NStream");
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NStream";
+		idAddable = false;
 	}
 
-	protected NStream(boolean flag) {
-		super(flag);
-	}
+	///////////////
 	
 	public NStream(NData data,NodePoint nowPoint){
-		this();
+		super();
 		this.data = data;
 		this.nowPoint = nowPoint;
 	}
@@ -30,6 +30,22 @@ public class NStream extends NObject {
 		return data;
 	}
 
+	public void stop(){
+		stop = true;
+	}
+	
+	public void stop(boolean flag){
+		stop = flag;
+	}
+	
+	public void pause(){
+		pause = true;
+	}
+	
+	public void pause(boolean flag){
+		pause = flag;
+	}
+	
 	public boolean isStop() {
 		return stop;
 	}

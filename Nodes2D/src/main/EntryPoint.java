@@ -27,6 +27,7 @@ public class EntryPoint extends JFrame {
 		System.out.println("EntryPoint begin");
 		// JFrame nodeWindow = new EntryPoint("Nodes2D","../icon/Icon_L.png");
 		System.out.println("All done");
+
 	}
 
 }

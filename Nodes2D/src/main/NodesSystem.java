@@ -7,19 +7,44 @@ class NodesSystem extends NObject {
 	private List<Node> nodeList = new ArrayList<Node>();
 	private List<NodeLine> lineList = new ArrayList<NodeLine>();
 	private List<NStream> streamList = new ArrayList<NStream>();
-	
-	public NodesSystem() {
-		super(true);
-		setRegularTitle("NodesSystem");
+
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NodesSystem";
+		idAddable = true;
 	}
 
-	protected NodesSystem(boolean flag) {
-		super(flag);
+	///////////////
+	public void addNode(Node node) {
+		nodeList.add(node);
 	}
 
-	public NodesSystem(String title) {
-		this();
-		setTitle(title);
+	// Node control:
+	public void removeNode() {
+		removeNode(0);
+	}
+
+	public void removeNode(int index) {
+		nodeList.remove(index);
+	}
+
+	public void removeAllNode() {
+		nodeList.clear();
+	}
+
+	public int getNodeNum() {
+		return nodeList.size();
+	}
+
+	protected Node selectNode(int id) {
+		for (Node cur : nodeList) {
+			if (cur.getId() == id) {
+				return cur;
+			}
+		}
+		println("Error : nothing selected.");
+		return null;
 	}
 
 	public void disconnect(NodeLine line) {
@@ -51,4 +76,9 @@ class NodesSystem extends NObject {
 			}
 		}
 	}
+
+	/////////////////
+	///// RUN//////
+	////////////////
+
 }
