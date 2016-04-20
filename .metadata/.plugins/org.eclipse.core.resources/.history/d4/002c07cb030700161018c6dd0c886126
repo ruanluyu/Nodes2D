@@ -12,6 +12,8 @@ import java.util.List;
  * @see main.NodePoint
  */
 class Node extends NObject {
+	// private static int id = 0;
+	// private static final String CLASSNAME = "Node";
 	protected List<NodePoint> inPointList = new ArrayList<NodePoint>();
 	protected List<NodePoint> outPointList = new ArrayList<NodePoint>();
 
@@ -40,10 +42,11 @@ class Node extends NObject {
 		for (int i = 0; i < num; i++) {
 			inPointList.add(new NodePoint(master, true));
 		}
+
 	}
 
 	protected void addOutPoint(int num, Node master, int mode) {
-		NodePoint.setNameId(outPointList.size());
+		NodePoint.setNameId(inPointList.size());
 		for (int i = 0; i < num; i++) {
 			outPointList.add(new NodePoint(master, false, mode));
 		}

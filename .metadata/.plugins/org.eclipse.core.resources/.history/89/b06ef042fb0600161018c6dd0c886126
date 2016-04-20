@@ -12,9 +12,11 @@ import java.util.List;
  * @see main.NodePoint
  */
 class Node extends NObject {
+	// private static int id = 0;
+	// private static final String CLASSNAME = "Node";
 	protected List<NodePoint> inPointList = new ArrayList<NodePoint>();
 	protected List<NodePoint> outPointList = new ArrayList<NodePoint>();
-
+	
 	/////////////// initialObject
 	@Override
 	protected void initializeObject() {
@@ -28,22 +30,22 @@ class Node extends NObject {
 	}
 
 	///////////////
-	public NStream getStream(int id, int indexOfLine) {
+	public NStream getStream(int id) {
 		if (id < getOutPointNum()) {
-			return outPointList.get(id).getStream(indexOfLine);
-		} else
-			return null;// TODO Exception system
+			return outPointList.get(id).getStream();
+		}else return null;//TODO Exception system
 	}
 
 	protected void addInPoint(int num, Node master, int mode) {
-		NodePoint.setNameId(inPointList.size());
+		NodePoint.nameId = inPointList.size();
 		for (int i = 0; i < num; i++) {
 			inPointList.add(new NodePoint(master, true));
 		}
+
 	}
 
 	protected void addOutPoint(int num, Node master, int mode) {
-		NodePoint.setNameId(outPointList.size());
+		NodePoint.nameId = outPointList.size();
 		for (int i = 0; i < num; i++) {
 			outPointList.add(new NodePoint(master, false, mode));
 		}
@@ -114,13 +116,13 @@ class NodeGenerator extends Node {
 		CLASSNAME = "NodeGenerator";
 		idAddable = true;
 	}
-
-	protected void initializeGenerator() {
+	
+	protected void initializeGenerator(){
 		stillGenerating = false;
 		times = 1;
 	}
-
-	public NodeGenerator() {
+	
+	public NodeGenerator(){
 		super();
 		initializeGenerator();
 	}
@@ -150,7 +152,7 @@ class NodeGenerator extends Node {
 
 class Node_SolidNumber extends NodeGenerator {
 
-	NData data;
+	NDouble data;
 
 	/////////////// initialObject
 	@Override
@@ -166,13 +168,15 @@ class Node_SolidNumber extends NodeGenerator {
 	///////////////
 	@Override
 	public boolean generateStream() {
-		outPointList.get(0).setStream(new NStream(data, outPointList.get(0), null));
+		(outPointList.get(0)).setStream(new NStream(data));
 		return true;
 	}
 
 	public void setData(double value) {
 		data = new NDouble(value);
 	}
+	
+	
 
 }
 

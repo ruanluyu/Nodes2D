@@ -150,9 +150,9 @@ class NodePoint extends NObject {
 	}
 	
 	public boolean haveStream(){
-		if(streamList.size() > 0){
-			return true;
+		if(streamList.size() == 0){
+			return false;
 		}
-		return false;
+		return true;
 	}
 }

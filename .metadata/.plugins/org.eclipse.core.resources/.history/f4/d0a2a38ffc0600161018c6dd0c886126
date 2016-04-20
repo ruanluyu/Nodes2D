@@ -80,6 +80,8 @@ class NodePoint extends NObject {
 		return NData.typeConnectable(np1.getType(), np2.getType());
 	}
 
+
+
 	public int getType() {
 		return type;
 	}
@@ -128,11 +130,9 @@ class NodePoint extends NObject {
 			}
 		}
 	}
-
-	public int streamNum() {
+	public int streamNum(){
 		return streamList.size();
 	}
-
 	public void cleanStream() {
 		streamList.clear();
 	}
@@ -140,19 +140,8 @@ class NodePoint extends NObject {
 	public void removeStream(int index) {
 		streamList.remove(index);
 	}
-
-	public void setStream(NStream nst) {
-		streamList.add(nst);
-	}
-
-	public NStream getStream(int id) {
-		return streamList.get(id);
-	}
 	
-	public boolean haveStream(){
-		if(streamList.size() > 0){
-			return true;
-		}
-		return false;
+	public void setStream(NStream nst){
+		
 	}
 }

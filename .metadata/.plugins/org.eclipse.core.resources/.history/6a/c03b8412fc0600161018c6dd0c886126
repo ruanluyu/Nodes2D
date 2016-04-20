@@ -14,9 +14,9 @@ class NodePoint extends NObject {
 	private boolean input;
 	private Node master;
 	private List<NodeLine> outLinesList = new ArrayList<NodeLine>();
-	private List<NStream> streamList = new ArrayList<NStream>();
 	private NodeLine inLine;
 	private int type = -1;
+	private NStream data;
 
 	/////////////// initialObject
 	@Override
@@ -30,9 +30,8 @@ class NodePoint extends NObject {
 	NodePoint(Node master, boolean input) {
 		this("NodePoint" + " " + nameId, master, input);
 	}
-
-	NodePoint(Node master, boolean input, int mode) {
-		this("NodePoint" + " " + nameId, master, input, mode);
+	NodePoint(Node master, boolean input,int mode){
+		this("NodePoint" + " " + nameId, master, input,mode);
 	}
 
 	/**
@@ -78,6 +77,17 @@ class NodePoint extends NObject {
 
 	public static boolean connectable(NodePoint np1, NodePoint np2) {
 		return NData.typeConnectable(np1.getType(), np2.getType());
+	}
+
+	public void setStream(NStream data) {
+		this.data = data;
+	}
+
+	public NStream getStream() {
+		if (data != null)
+			return data;
+		else
+			return null;
 	}
 
 	public int getType() {
@@ -128,31 +138,8 @@ class NodePoint extends NObject {
 			}
 		}
 	}
-
-	public int streamNum() {
-		return streamList.size();
-	}
-
-	public void cleanStream() {
-		streamList.clear();
-	}
-
-	public void removeStream(int index) {
-		streamList.remove(index);
-	}
-
-	public void setStream(NStream nst) {
-		streamList.add(nst);
-	}
-
-	public NStream getStream(int id) {
-		return streamList.get(id);
-	}
 	
-	public boolean haveStream(){
-		if(streamList.size() > 0){
-			return true;
-		}
-		return false;
+	void cleanStream(){
+		data = null;
 	}
 }

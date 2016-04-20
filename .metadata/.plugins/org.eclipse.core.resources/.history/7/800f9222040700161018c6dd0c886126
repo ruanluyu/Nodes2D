@@ -12,9 +12,11 @@ import java.util.List;
  * @see main.NodePoint
  */
 class Node extends NObject {
+	// private static int id = 0;
+	// private static final String CLASSNAME = "Node";
 	protected List<NodePoint> inPointList = new ArrayList<NodePoint>();
 	protected List<NodePoint> outPointList = new ArrayList<NodePoint>();
-
+	
 	/////////////// initialObject
 	@Override
 	protected void initializeObject() {

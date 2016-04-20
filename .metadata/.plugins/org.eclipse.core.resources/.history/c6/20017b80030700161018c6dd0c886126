@@ -148,11 +148,4 @@ class NodePoint extends NObject {
 	public NStream getStream(int id) {
 		return streamList.get(id);
 	}
-	
-	public boolean haveStream(){
-		if(streamList.size() > 0){
-			return true;
-		}
-		return false;
-	}
 }

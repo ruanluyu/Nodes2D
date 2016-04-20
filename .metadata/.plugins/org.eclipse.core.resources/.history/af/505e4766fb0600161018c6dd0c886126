@@ -13,14 +13,6 @@ class NData extends NObject {
 		CLASSNAME = "NData";
 		idAddable = false;
 	}
-	
-	protected void initializeData(){
-		TYPE = -1;
-	}
-	public NData(){
-		super();
-		initializeData();
-	}
 	///////////////
 
 	public static boolean typeConnectable(int a, int b) {
@@ -40,13 +32,10 @@ class NData extends NObject {
 }
 
 class NDouble extends NData {
+	protected static final int TYPE = NDOUBLE;
 	private double data = 0;
 
 	/////////////// initialObject
-	@Override
-	protected void initializeData(){
-		TYPE = NDOUBLE;
-	}
 	public NDouble() {
 		data = 0;
 	}
@@ -72,13 +61,10 @@ class NDouble extends NData {
 }
 
 class NInt extends NData {
+	protected static final int TYPE = NINT;
 	private int data = 0;
 
 	/////////////// initialObject
-	@Override
-	protected void initializeData(){
-		TYPE = NINT;
-	}
 	public NInt() {
 		data = 0;
 	}
@@ -104,13 +90,10 @@ class NInt extends NData {
 }
 
 class NString extends NData {
+	protected static final int TYPE = NSTRING;
 	private String data = "";
 
 	/////////////// initialObject
-	@Override
-	protected void initializeData(){
-		TYPE = NSTRING;
-	}
 	public NString() {
 		data = "";
 	}
@@ -136,14 +119,11 @@ class NString extends NData {
 }
 
 class NVector extends NData {
+	protected static final int TYPE = NVECTOR;
 	private String type = "";
 	NData data[];
 
 	/////////////// initialObject
-	@Override
-	protected void initializeData(){
-		TYPE = NVECTOR;
-	}
 	public NVector() {
 		this(2);
 	}

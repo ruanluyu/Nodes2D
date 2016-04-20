@@ -17,10 +17,6 @@ class NData extends NObject {
 	protected void initializeData(){
 		TYPE = -1;
 	}
-	public NData(){
-		super();
-		initializeData();
-	}
 	///////////////
 
 	public static boolean typeConnectable(int a, int b) {
