@@ -31,12 +31,10 @@ class Node extends NObject {
 
 	///////////////
 	public NStream getStream(int id) {
-		if (id < getOutPointNum()) {
-			return outPointList.get(id).getStream();
-		}else return null;//TODO Exception system
+		return null;
 	}
 
-	protected void addInPoint(int num, Node master, int mode) {
+	protected void addInPoint(int num, Node master) {
 		NodePoint.nameId = inPointList.size();
 		for (int i = 0; i < num; i++) {
 			inPointList.add(new NodePoint(master, true));
@@ -44,23 +42,23 @@ class Node extends NObject {
 
 	}
 
-	protected void addOutPoint(int num, Node master, int mode) {
+	protected void addOutPoint(int num, Node master,int mode) {
 		NodePoint.nameId = outPointList.size();
 		for (int i = 0; i < num; i++) {
-			outPointList.add(new NodePoint(master, false, mode));
+			outPointList.add(new NodePoint(master, false));
 		}
 	}
 
-	protected void setInputPoint(int num, Node master, int mode) {
+	protected void setInputPoint(int num, Node master,int mode) {
 		NodePoint.resetNameId();
 		if (inPointList.size() > 0)
 			inPointList.clear();
 		for (int i = 0; i < num; i++) {
-			inPointList.add(new NodePoint(master, true, mode));
+			inPointList.add(new NodePoint(master, true));
 		}
 	}
 
-	protected void setOutputPoint(int num, Node master, int mode) {
+	protected void setOutputPoint(int num, Node master) {
 		NodePoint.resetNameId();
 		if (outPointList.size() > 0)
 			outPointList.clear();
@@ -150,14 +148,20 @@ class Node_SolidNumber extends NodeGenerator {
 		CLASSNAME = "Node_SolidNumber";
 		idAddable = true;
 	}
-
-	public Node_SolidNumber() {
-		setOutputPoint(1, this, NData.NDOUBLE);
+	
+	public Node_SolidNumber(){
+		setOutputPoint(1,this);
 	}
-
+	
 	///////////////
 	@Override
 	public void generateStream() {
+	}
+
+	public NStream getStream(int id) {
+		if (id < getOutPointNum()) {
+			return 
+		}else return null;//TODO Exception system
 	}
 
 	public void setData(double value) {
@@ -203,8 +207,8 @@ class Node_Pluser extends NodeCalculator {
 
 	public void Build(int numOfIn) {
 		if (numOfIn > 2) {
-			addInPoint(numOfIn, this, NData.NDOUBLE);
-			addOutPoint(1, this, NData.NDOUBLE);
+			addInPoint(numOfIn, this);
+			addOutPoint(1, this);
 		}
 
 	}

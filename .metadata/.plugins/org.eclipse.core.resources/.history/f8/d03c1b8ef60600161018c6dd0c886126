@@ -30,9 +30,6 @@ class NodePoint extends NObject {
 	NodePoint(Node master, boolean input) {
 		this("NodePoint" + " " + nameId, master, input);
 	}
-	NodePoint(Node master, boolean input,int mode){
-		this("NodePoint" + " " + nameId, master, input,mode);
-	}
 
 	/**
 	 * @param title

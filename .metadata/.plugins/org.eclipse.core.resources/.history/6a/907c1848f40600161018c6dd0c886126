@@ -52,8 +52,4 @@ class NObject {
 	public void println(String message) {
 		System.out.println(this.title + "( class : " + CLASSNAME + "----global_id " + thisId + ") : \n" + message);
 	}
-
-	public int getId() {
-		return thisId;
-	}
 }

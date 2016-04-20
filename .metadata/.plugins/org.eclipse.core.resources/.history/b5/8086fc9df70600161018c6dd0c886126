@@ -32,7 +32,7 @@ class Node extends NObject {
 	///////////////
 	public NStream getStream(int id) {
 		if (id < getOutPointNum()) {
-			return outPointList.get(id).getStream();
+			return 
 		}else return null;//TODO Exception system
 	}
 
