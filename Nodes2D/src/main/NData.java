@@ -5,54 +5,139 @@ class NData extends NObject {
 	public static final int NDOUBLE = 0;
 	public static final int NINT = 1;
 	public static final int NSTRING = 2;
-	public static final int NVECTOR = 3;
+	public static final int NBOOLEAN = 3;
+	public static final int NVECTOR = 4;
 
+	protected double doubleData = 0;
+	protected int intData = 0;
+	protected String stringData = "";
+	protected boolean booleanData = false;
+
+	public void convertType(int forcus) {
+		switch (forcus) {
+		case NDOUBLE:
+			intData = Math.round((float) doubleData);
+			if (doubleData != 0)
+				booleanData = true;
+			else
+				booleanData = false;
+			stringData = "" + doubleData;
+			break;
+		case NINT:
+			doubleData = intData;
+			if (intData != 0)
+				booleanData = true;
+			else
+				booleanData = false;
+			stringData = "" + intData;
+			break;
+		case NSTRING:
+			doubleData = Double.parseDouble(stringData);
+			intData = Math.round((float) doubleData);
+			if (intData != 0)
+				booleanData = true;
+			else
+				booleanData = false;
+			stringData = "" + intData;
+			break;
+		case NBOOLEAN:
+			if (booleanData) {
+				doubleData = 1;
+				intData = 1;
+				stringData = "true";
+			} else {
+				doubleData = 0;
+				intData = 0;
+				stringData = "false";
+			}
+			break;
+		default:
+			println("Unknow data type");
+		}
+	}
+
+	public static NData copyData(NData data,int type){
+		switch(type){
+		case NDOUBLE:
+			return new NDouble(data.getDoubleData());
+		case NINT:
+			return new NInt(data.getIntData());
+		case NSTRING:
+			return new NString(data.getStringData());
+		case NBOOLEAN:
+			return new NBoolean(data.getBooleanData());
+		}
+		return null;
+	}
+	
+	
 	/////////////// initialObject
 	@Override
 	protected void initializeObject() {
 		CLASSNAME = "NData";
 		idAddable = false;
 	}
-	
-	protected void initializeData(){
+
+	protected void initializeData() {
 		TYPE = -1;
 	}
-	public NData(){
+
+	public NData() {
 		super();
 		initializeData();
 	}
 	///////////////
 
-	public static boolean typeConnectable(int a, int b) {
-		if (a == b)
+	public static boolean typeConnectable(int outpoint, int inpoint) {
+		if ((outpoint == inpoint) || (outpoint == NINT && inpoint == NDOUBLE)
+
+		)
 			return true;
 		else
 			return false;
 	}
 
-	protected static int id = 0;
-	private int thisId = 0;
-
 	public int getType() {
 		return TYPE;
+	}
+
+	public double getDoubleData() {
+		convertType(TYPE);
+		return doubleData;
+	}
+
+	public int getIntData() {
+		convertType(TYPE);
+		return intData;
+	}
+
+	public boolean getBooleanData() {
+		convertType(TYPE);
+		return booleanData;
+	}
+
+	public String getStringData() {
+		convertType(TYPE);
+		return stringData;
 	}
 
 }
 
 class NDouble extends NData {
-	private double data = 0;
 
 	/////////////// initialObject
 	@Override
-	protected void initializeData(){
+	protected void initializeData() {
 		TYPE = NDOUBLE;
 	}
+
 	public NDouble() {
-		data = 0;
+		this(0);
 	}
 
 	public NDouble(double value) {
-		data = value;
+		doubleData = value;
+		convertType(TYPE);
 	}
 
 	@Override
@@ -63,28 +148,29 @@ class NDouble extends NData {
 
 	///////////////
 	public void set(double value) {
-		data = value;
+		doubleData = value;
 	}
 
 	public double get() {
-		return data;
+		return doubleData;
 	}
 }
 
 class NInt extends NData {
-	private int data = 0;
 
 	/////////////// initialObject
 	@Override
-	protected void initializeData(){
+	protected void initializeData() {
 		TYPE = NINT;
 	}
+
 	public NInt() {
-		data = 0;
+		this(0);
 	}
 
 	public NInt(int value) {
-		data = value;
+		intData = value;
+		convertType(TYPE);
 	}
 
 	@Override
@@ -95,28 +181,28 @@ class NInt extends NData {
 
 	///////////////
 	public void set(int value) {
-		data = value;
+		intData = value;
 	}
 
 	public int get() {
-		return data;
+		return intData;
 	}
 }
 
 class NString extends NData {
-	private String data = "";
-
 	/////////////// initialObject
 	@Override
-	protected void initializeData(){
+	protected void initializeData() {
 		TYPE = NSTRING;
 	}
+
 	public NString() {
-		data = "";
+		this("");
 	}
 
 	public NString(String value) {
-		data = value;
+		stringData = value;
+		convertType(TYPE);
 	}
 
 	@Override
@@ -127,11 +213,43 @@ class NString extends NData {
 
 	///////////////
 	public void set(String value) {
-		data = value;
+		stringData = value;
 	}
 
 	public String get() {
-		return data;
+		return stringData;
+	}
+}
+
+class NBoolean extends NData {
+	/////////////// initialObject
+	@Override
+	protected void initializeData() {
+		TYPE = NSTRING;
+	}
+
+	public NBoolean() {
+		this(false);
+	}
+
+	public NBoolean(boolean value) {
+		booleanData = value;
+		convertType(TYPE);
+	}
+
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NBoolean";
+		idAddable = false;
+	}
+
+	///////////////
+	public void set(boolean value) {
+		booleanData = value;
+	}
+
+	public boolean get() {
+		return booleanData;
 	}
 }
 
@@ -141,9 +259,10 @@ class NVector extends NData {
 
 	/////////////// initialObject
 	@Override
-	protected void initializeData(){
+	protected void initializeData() {
 		TYPE = NVECTOR;
 	}
+
 	public NVector() {
 		this(2);
 	}

@@ -2,11 +2,15 @@ package main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 class NodesSystem extends NObject {
 	private List<Node> nodeList = new ArrayList<Node>();
 	private List<NodeLine> lineList = new ArrayList<NodeLine>();
 	private List<NStream> streamList = new ArrayList<NStream>();
+
+	private int step = 0;
+	private int maxStep = -1;
 
 	/////////////// initialObject
 	@Override
@@ -18,6 +22,10 @@ class NodesSystem extends NObject {
 	///////////////
 	public void addNode(Node node) {
 		nodeList.add(node);
+	}
+
+	public void setMaxStep(int maxStep) {
+		this.maxStep = maxStep;
 	}
 
 	// Node control:
@@ -54,6 +62,7 @@ class NodesSystem extends NObject {
 	}
 
 	public NodeLine connect(NodePoint a, NodePoint b) {
+		
 		if ((a.isInput() && b.isInput()) || (a.isOutput() && b.isOutput())) {
 			try {
 				throw new NodeException(0, "NodePoint : " + a.getTitle() + " and NodePoint : " + b.getTitle() + " .");
@@ -63,8 +72,10 @@ class NodesSystem extends NObject {
 			return null;
 		} else {
 			if (NodePoint.connectable(a, b)) {
+				NodeLine out = new NodeLine(a, b);
 				println(a.getTitle() + " ----- " + b.getTitle() + " (connected)");
-				return new NodeLine(a, b);
+				lineList.add(out);
+				return out;
 			} else {
 				try {
 					throw new NodeException(6,
@@ -77,8 +88,79 @@ class NodesSystem extends NObject {
 		}
 	}
 
-	/////////////////
+	//////////////////
 	///// RUN//////
 	////////////////
 
+	private void cleanStopStream() {
+		for(Iterator<NStream> i = streamList.iterator();i.hasNext()){
+			NStream ns = i.next();
+			if(ns.isStop()){
+				i.remove();
+			}
+		}
+	}
+
+	private boolean stepBelowMaxStep() {
+		if (maxStep < 0)
+			return true;
+		if (step < maxStep)
+			return true;
+		return false;
+	}
+
+	private void generateStream() {
+		for (Node np : nodeList) {
+			np.generateStream();
+			if (np.getOutPointNum() > 0) {
+				for (int i = 0; i < np.getOutPointNum(); i++) {
+					NodePoint cur = np.getOutpoint(i);
+					if (cur.getNumOfStream() <= 0)
+						continue;
+					for (int j = 0; j < cur.getNumOfStream(); j++) {
+						streamList.add(cur.getStream(j));
+						cur.cleanStream();
+					}
+				}
+			}
+		}
+	}
+
+	private boolean transportStream() {
+		boolean transported = false;
+		for (NStream ns : streamList) {
+			if ((!ns.isPuase()) && (!ns.isStop())) {
+				ns.goToInpoint();
+				ns.pause();
+				transported = true;
+			}
+		}
+		return transported;
+	}
+
+	private void setStreamToInpoint() {
+		for (NStream ns : streamList) {
+			NodePoint cur = ns.getPoint();
+			if (cur.isInput()) {
+				cur.cleanStream();
+				cur.addStream(ns);
+				ns.pause();
+			}
+		}
+	}
+
+	private void oneComputeStep() {
+		while (transportStream()) {
+			setStreamToInpoint();
+			generateStream();
+		}
+	}
+
+	public void run() {
+		generateStream();
+		while (streamList.size() > 0 && stepBelowMaxStep()) {
+			oneComputeStep();
+			step++;
+		}
+	}
 }

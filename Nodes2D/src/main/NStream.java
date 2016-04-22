@@ -16,8 +16,8 @@ public class NStream extends NObject {
 	}
 
 	///////////////
-	
-	public NStream(NData data,NodePoint nowPoint,NodeLine nowLine){
+
+	public NStream(NData data, NodePoint nowPoint, NodeLine nowLine) {
 		super();
 		this.data = data;
 		this.nowPoint = nowPoint;
@@ -32,28 +32,38 @@ public class NStream extends NObject {
 		return data;
 	}
 
-	public void stop(){
+	public void stop() {
 		stop = true;
 	}
-	
-	public void stop(boolean flag){
+
+	public void stop(boolean flag) {
 		stop = flag;
 	}
-	
-	public void pause(){
+
+	public void pause() {
 		pause = true;
 	}
-	
-	public void pause(boolean flag){
+
+	public void pause(boolean flag) {
 		pause = flag;
 	}
-	
+
 	public boolean isStop() {
 		return stop;
 	}
 
 	public boolean isPuase() {
 		return pause;
+	}
+	
+	public NodePoint getPoint(){
+		return nowPoint;
+	}
+	
+	public void goToInpoint(){
+		if(!nowPoint.isInput()){
+			nowPoint = nowLine.getOutPoint();
+		}
 	}
 
 }

@@ -141,7 +141,7 @@ class NodePoint extends NObject {
 		streamList.remove(index);
 	}
 
-	public void setStream(NStream nst) {
+	public void addStream(NStream nst) {
 		streamList.add(nst);
 	}
 
@@ -155,4 +155,25 @@ class NodePoint extends NObject {
 		}
 		return false;
 	}
+
+	public int getNumOfStream() {
+		return streamList.size();
+	}
+
+	public NStream getStream() {
+		if(input&&streamList.size()>0){
+			return streamList.get(0);
+		}
+		return null;
+	}
+	
+	public int getNumOfLines(){
+		return outLinesList.size();
+	}
+
+	public NodeLine getLine(int i) {
+		return outLinesList.get(i);
+	}
+
+	
 }
