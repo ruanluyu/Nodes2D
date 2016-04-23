@@ -16,6 +16,7 @@ class Node extends NObject {
 	protected List<NodePoint> outPointList = new ArrayList<NodePoint>();
 	protected boolean stillCompute = false;
 	protected int computeTimes = 1;
+	protected NodesSystem master = null;
 
 	/////////////// initialObject
 	@Override
@@ -34,6 +35,14 @@ class Node extends NObject {
 		initializeNode();
 	}
 
+	public void setMaster(NodesSystem ns) {
+		master = ns;
+	}
+
+	public NodesSystem getMaster() {
+		return master;
+	}
+
 	///////////////
 	public void generateStream() {
 
@@ -42,44 +51,62 @@ class Node extends NObject {
 	///////////////
 
 	public NodePoint getOutpoint(int id) {
-		
+
 		return outPointList.get(id);
 	}
 
 	public NodePoint getInpoint(int id) {
-		
+
 		return inPointList.get(id);
 	}
 
 	protected void addInPoint(int num, Node master, int mode) {
+		int cur = getNameId();
 		NodePoint.setNameId(inPointList.size());
 		for (int i = 0; i < num; i++) {
 			inPointList.add(new NodePoint(master, true));
 		}
+		setNameId(cur);
 	}
 
 	protected void addOutPoint(int num, Node master, int mode) {
+		int cur = getNameId();
 		NodePoint.setNameId(outPointList.size());
 		for (int i = 0; i < num; i++) {
 			outPointList.add(new NodePoint(master, false, mode));
 		}
+		setNameId(cur);
 	}
 
 	protected void setInputPoint(int num, Node master, int mode) {
+		int cur = getNameId();
 		NodePoint.resetNameId();
 		if (inPointList.size() > 0)
 			inPointList.clear();
 		for (int i = 0; i < num; i++) {
 			inPointList.add(new NodePoint(master, true, mode));
 		}
+		setNameId(cur);
 	}
 
 	protected void setOutputPoint(int num, Node master, int mode) {
+		int cur = getNameId();
 		NodePoint.resetNameId();
 		if (outPointList.size() > 0)
 			outPointList.clear();
 		for (int i = 0; i < num; i++) {
 			outPointList.add(new NodePoint(master, false));
+		}
+		setNameId(cur);
+	}
+
+	protected void startGeneration() {
+
+	}
+
+	protected void endGeneration() {
+		if (!stillCompute) {
+			computeTimes--;
 		}
 	}
 
@@ -93,11 +120,15 @@ class Node extends NObject {
 	 * e.println(); } return null; } else { return new NodeLine(a, b); } }
 	 */
 	public void addPoint(NodePoint point) {
+		int cur = getNameId();
 		if (point.isInput()) {
+			setNameId(inPointList.size());
 			inPointList.add(point);
 		} else {
+			setNameId(outPointList.size());
 			outPointList.add(point);
 		}
+		setNameId(cur);
 	}
 
 	public int getInPointNum() {
@@ -135,17 +166,11 @@ class Node extends NObject {
 	}
 
 	public boolean computable() {
-		boolean flag = true;
 		if (!stillCompute) {
 			if (computeTimes <= 0)
-				flag = false;
+				return false;
 		}
-		flag = inputIsAlready();
-		return flag;
-	}
-
-	public boolean generatable() {
-		return outputIsAlready();
+		return inputIsAlready();
 	}
 
 	public void cleanOutpointStream(int id) {
@@ -159,6 +184,8 @@ class Node extends NObject {
 	}
 
 	public void addStreamToOutpoint(int id, NData data) {
+		if (id >= outPointList.size())
+			return;
 		NodePoint cur = outPointList.get(id);
 		for (int i = 0; i < cur.getNumOfLines(); i++) {
 			cur.cleanStream();
@@ -168,6 +195,8 @@ class Node extends NObject {
 
 	public void cleanInPoint() {
 		for (NodePoint np : inPointList) {
+			if (np.getStream() == null)
+				continue;
 			np.getStream().stop();
 			np.cleanStream();
 		}
@@ -192,6 +221,8 @@ class Node extends NObject {
 class NodeGenerator extends Node {
 	protected boolean stillGenerating = false;
 	protected int times = 1;
+	protected int waitTime = 1;
+	protected int lastStep = -1;
 
 	/////////////// initialObject
 	@Override
@@ -200,9 +231,16 @@ class NodeGenerator extends Node {
 		idAddable = true;
 	}
 
+	@Override
+	protected void initializeNode() {
+		stillCompute = false;
+		computeTimes = 1;
+	}
+
 	protected void initializeGenerator() {
 		stillGenerating = false;
 		times = 1;
+		waitTime = 1;
 	}
 
 	public NodeGenerator() {
@@ -211,6 +249,47 @@ class NodeGenerator extends Node {
 	}
 
 	///////////////
+	public void generated() {
+		if (!stillGenerating) {
+			times--;
+		}
+	}
+
+	public boolean generatable() {
+		if (stillGenerating) {
+			return true;
+		}
+		if (times > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	protected void sendReadyPointToOutPoint() {
+
+	}
+
+	@Override
+	protected void endGeneration() {
+		if (!stillCompute) {
+			computeTimes--;
+		}
+		lastStep = getMaster().getStep();
+	}
+
+	@Override
+	public boolean computable() {
+		if (!stillCompute) {
+			if (computeTimes <= 0)
+				return false;
+		}
+
+		if (getMaster().getStep() - lastStep < waitTime) {
+			return false;
+		}
+		return inputIsAlready();
+	}
+
 	public boolean isGenerating() {
 		return stillGenerating;
 	}
@@ -244,6 +323,13 @@ class Node_SolidNumber extends NodeGenerator {
 		idAddable = true;
 	}
 
+	@Override
+	protected void initializeGenerator() {
+		stillGenerating = false;
+		times = 1;
+		waitTime = 1;
+	}
+
 	public Node_SolidNumber() {
 		this(0);
 	}
@@ -256,7 +342,11 @@ class Node_SolidNumber extends NodeGenerator {
 	///////////////
 	@Override
 	public void generateStream() {
-		outPointList.get(0).addStream(new NStream(data, outPointList.get(0), null));
+		startGeneration();
+		if (!computable())
+			return;
+		addStreamToOutpoint(0, data);
+		endGeneration();
 	}
 
 	public void setData(double value) {
@@ -323,25 +413,27 @@ class Node_Pluser extends NodeCalculator {
 		if (numOfIn >= 2) {
 			addInPoint(numOfIn, this, NData.NDOUBLE);
 			addOutPoint(1, this, NData.NDOUBLE);
+		} else {
+			println("Error : failed in building " + getTitle());
 		}
 	}
 
 	//////////// RUN
 	@Override
 	public void generateStream() {
-		double output = 0;
+		startGeneration();
 		if (!computable()) {
-			cleanInPoint();
 			return;
 		}
-		if (inputIsAlready()) {
-			for (NodePoint np : inPointList) {
-				output += np.getStream().getData().getDoubleData();
-			}
-			cleanInPoint();
-			addStreamToOutpoint(0, new NDouble(output));
-			computeTimes--;
+
+		double output = 0;
+		for (NodePoint np : inPointList) {
+			output += np.getStream().getData().getDoubleData();
 		}
+		cleanInPoint();
+		addStreamToOutpoint(0, new NDouble(output));
+		computeTimes--;
+		endGeneration();
 	}
 }
 
@@ -369,20 +461,20 @@ class Node_Printer extends Node {
 
 	@Override
 	public void generateStream() {
-		if (!computable()) {
-			cleanInPoint();
-			return;
-		}
+		startGeneration();
 		String out = "";
+		boolean haveMessage = false;
 		for (NodePoint np : inPointList) {
 			if (np.getNumOfStream() > 0) {
+				haveMessage = true;
 				NData cur = np.getStream().getData();
 				out += cur.getType() + " : ";
 				out += cur.getStringData() + " \n";
 			}
 		}
-		println(out);
-		computeTimes--;
+		if (haveMessage)
+			println(out);
+		cleanInPoint();
+		endGeneration();
 	}
-
 }

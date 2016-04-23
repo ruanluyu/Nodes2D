@@ -2,7 +2,7 @@ package main;
 
 class NObject {
 	protected static int nameId = 0;// Local this id.
-	protected static int id = 0;// Global all ids' number.
+	private static int id = 0;// Global all ids' number.
 	protected String CLASSNAME = "N_NULL";
 	protected String title;
 	protected int thisId = 0;// Global this id.
@@ -50,10 +50,15 @@ class NObject {
 	}
 
 	public void println(String message) {
-		System.out.println(this.title + "( class : " + CLASSNAME + "----global_id " + thisId + ") : \n" + message);
+		System.out.println(this.title + "( class : " + CLASSNAME + "   global_id " + thisId + ") : \n" + message+"\n");
+	
 	}
 
 	public int getId() {
 		return thisId;
+	}
+
+	public int getNameId() {
+		return nameId;
 	}
 }

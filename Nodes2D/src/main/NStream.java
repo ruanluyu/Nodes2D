@@ -1,6 +1,6 @@
 package main;
 
-public class NStream extends NObject {
+public class NStream extends NObject implements Cloneable {
 	private int delay = 0;
 	private boolean stop = false;
 	private boolean pause = false;
@@ -55,15 +55,37 @@ public class NStream extends NObject {
 	public boolean isPuase() {
 		return pause;
 	}
-	
-	public NodePoint getPoint(){
+
+	public NodePoint getPoint() {
 		return nowPoint;
 	}
-	
-	public void goToInpoint(){
-		if(!nowPoint.isInput()){
-			nowPoint = nowLine.getOutPoint();
+
+	public void goToInpoint() {
+		if (nowPoint.isOutput()) {
+			if (!(nowPoint.getMaster() instanceof NodeGenerator))
+				nowPoint.removeStream(this);
+			nowPoint = nowLine.getInPoint();
+			nowPoint.addStream(this);
+			if (nowPoint.getMaster().inputIsAlready() && (!nowPoint.getMaster().computable()))
+				stop();
+			pause();
+		} else {
+			pause();
 		}
+	}
+
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+
+	public NStream copyStream() {
+		NStream cloned = null;
+		try {
+			cloned = (NStream) this.clone();
+		} catch (Exception e) {
+			System.out.println("Error : CloneNotSupportException");
+		}
+		return cloned;
 	}
 
 }

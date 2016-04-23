@@ -96,11 +96,10 @@ class NodePoint extends NObject {
 		return master;
 	}
 
-	void setLine(NodeLine target) {
+	void addLine(NodeLine target) {
 		if (input) {
 			if (inLine != null) {
-				System.out
-						.println("Warning:You override an input point when it connected.Occured on NodePoint " + title);
+				println("Warning:You override an input point when it connected.Occured on NodePoint " + title);
 				inLine = target;
 			}
 		} else
@@ -174,6 +173,10 @@ class NodePoint extends NObject {
 	public NodeLine getLine(int i) {
 		return outLinesList.get(i);
 	}
-
+	
+	
+	public void removeStream(NStream ns){
+		streamList.remove(ns);
+	}
 	
 }

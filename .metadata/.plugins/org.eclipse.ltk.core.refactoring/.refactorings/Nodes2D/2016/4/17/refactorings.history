@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;&apos; to &apos;main.Node.computable()&apos;&#x0D;&#x0A;- Original project: &apos;Nodes2D&apos;&#x0D;&#x0A;- Destination element: &apos;main.Node.computable()&apos;&#x0D;&#x0A;- Original element: &apos;main.Node.computable()&apos;" description="Copy method" destination="/src&lt;main{Node.java[Node~computable" element1="/src&lt;main{Node.java[Node~computable" flags="589830" id="org.eclipse.jdt.ui.copy" members="1" policy="org.eclipse.jdt.ui.copyMembers" stamp="1461379378889" version="1.0"/>
+</session>

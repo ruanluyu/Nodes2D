@@ -1,6 +1,6 @@
 package main;
 
-class NData extends NObject {
+class NData extends NObject implements Cloneable{
 	protected int TYPE = -1;
 	public static final int NDOUBLE = 0;
 	public static final int NINT = 1;
@@ -120,6 +120,10 @@ class NData extends NObject {
 		convertType(TYPE);
 		return stringData;
 	}
+	
+	public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
 }
 
