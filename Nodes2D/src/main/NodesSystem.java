@@ -9,8 +9,9 @@ class NodesSystem extends NObject {
 	private List<NodeLine> lineList = new ArrayList<NodeLine>();
 	private List<NStream> streamList = new ArrayList<NStream>();
 
+	private int sleepTime = 100;
 	private int step = 0;
-	private int maxStep = 5;
+	private int maxStep = 20;
 
 	/////////////// initialObject
 	@Override
@@ -144,7 +145,7 @@ class NodesSystem extends NObject {
 					NodePoint cur = np.getOutpoint(i);
 					if (cur.getNumOfStream() <= 0)
 						continue;
-					if (np instanceof NodeGenerator && ((NodeGenerator) np).generatable()) {
+					if ((np instanceof NodeGenerator) && ((NodeGenerator) np).generatable()) {
 						for (int j = 0; j < cur.getNumOfStream(); j++) {
 							streamList.add(cur.getStream(j).copyStream());
 						}
@@ -187,10 +188,13 @@ class NodesSystem extends NObject {
 
 	private void oneComputeStep() {
 		while (transportStream()) {
-
 			setStreamToInpoint();
+			cleanStopStream();
 			generateStream();
-
+			
+			println(streamList.size()+"");
+			println(streamList.get(0).getPoint().getMaster().getTitle());
+			println(streamList.get(1).getPoint().getMaster().getTitle());
 		}
 
 	}
@@ -200,10 +204,19 @@ class NodesSystem extends NObject {
 		generateStream();
 
 		while (streamList.size() > 0 && stepBelowMaxStep()) {
+			
 			oneComputeStep();
 			cleanStopStream();
 			step++;
 			println("************************\n step : " + step + " completed.\n\n************************");
+			if (sleepTime > 0) {
+				try {
+					Thread.sleep(sleepTime);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		println("All done");
 	}

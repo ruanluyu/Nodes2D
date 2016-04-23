@@ -195,8 +195,10 @@ class Node extends NObject {
 
 	public void cleanInPoint() {
 		for (NodePoint np : inPointList) {
-			if (np.getStream() == null)
+			if (np.getStream() == null) {
+				np.cleanStream();
 				continue;
+			}
 			np.getStream().stop();
 			np.cleanStream();
 		}
@@ -326,7 +328,7 @@ class Node_SolidNumber extends NodeGenerator {
 	@Override
 	protected void initializeGenerator() {
 		stillGenerating = false;
-		times = 1;
+		times = 2;
 		waitTime = 1;
 	}
 
@@ -345,6 +347,7 @@ class Node_SolidNumber extends NodeGenerator {
 		startGeneration();
 		if (!computable())
 			return;
+
 		addStreamToOutpoint(0, data);
 		endGeneration();
 	}
@@ -396,8 +399,8 @@ class Node_Pluser extends NodeCalculator {
 
 	@Override
 	protected void initializeNode() {
-		stillCompute = false;
-		computeTimes = 1;
+		stillCompute = true;
+		computeTimes = 0;
 	}
 
 	public Node_Pluser() {
@@ -423,11 +426,15 @@ class Node_Pluser extends NodeCalculator {
 	public void generateStream() {
 		startGeneration();
 		if (!computable()) {
-			return;
+			if (inputIsAlready()) {
+				cleanInPoint();
+				return;
+			}
 		}
-
 		double output = 0;
 		for (NodePoint np : inPointList) {
+			if (np.getStream() == null)
+				continue;
 			output += np.getStream().getData().getDoubleData();
 		}
 		cleanInPoint();
@@ -448,8 +455,8 @@ class Node_Printer extends Node {
 
 	@Override
 	protected void initializeNode() {
-		stillCompute = false;
-		computeTimes = 1;
+		stillCompute = true;
+		computeTimes = 0;
 	}
 
 	public Node_Printer() {
@@ -461,20 +468,46 @@ class Node_Printer extends Node {
 
 	@Override
 	public void generateStream() {
+		boolean flag = true;
+		for (NodePoint np : inPointList) {
+			if (np.getStream() != null) {
+				flag = false;
+			}
+		}
+		if (flag) {
+			return;
+		}
 		startGeneration();
-		String out = "";
+		String out = "Output message : \n";
 		boolean haveMessage = false;
 		for (NodePoint np : inPointList) {
 			if (np.getNumOfStream() > 0) {
 				haveMessage = true;
 				NData cur = np.getStream().getData();
-				out += cur.getType() + " : ";
+				switch (cur.getType()) {
+				case NData.NDOUBLE:
+					out += "Double ";
+					break;
+				case NData.NINT:
+					out += "Int ";
+					break;
+				case NData.NSTRING:
+					out += "String ";
+					break;
+				case NData.NBOOLEAN:
+					out += "Boolean ";
+					break;
+				}
+				out += " : ";
 				out += cur.getStringData() + " \n";
 			}
 		}
-		if (haveMessage)
+		if (haveMessage) {
 			println(out);
+			cleanInPoint();
+		}
 		cleanInPoint();
 		endGeneration();
 	}
+
 }
