@@ -109,6 +109,10 @@ class Node extends NObject {
 			computeTimes--;
 		}
 	}
+	
+	public boolean isComputing(){
+		return stillCompute;
+	}
 
 	/*
 	 * public static void disconnect(NodeLine line) {
@@ -140,16 +144,17 @@ class Node extends NObject {
 	}
 
 	protected boolean inputIsAlready() {
-		boolean flag = true;
 		if (inPointList.size() > 0) {
 			for (NodePoint np : inPointList) {
 				if (!np.haveStream()) {
-					flag = false;
-					break;
+					return false;
+				}
+				if (np.getStream().isStop()) {
+					return false;
 				}
 			}
 		}
-		return flag;
+		return true;
 	}
 
 	protected boolean outputIsAlready() {
@@ -167,8 +172,9 @@ class Node extends NObject {
 
 	public boolean computable() {
 		if (!stillCompute) {
-			if (computeTimes <= 0)
+			if (computeTimes <= 0) {
 				return false;
+			}
 		}
 		return inputIsAlready();
 	}
@@ -208,6 +214,26 @@ class Node extends NObject {
 		return inPointList.get(id).getStream().getData();
 	}
 
+	public void stopInputStream() {
+		for (NodePoint np : inPointList) {
+			if (!np.haveStream())
+				continue;
+			np.getStream().stop();
+		}
+	}
+
+	public void pauseInputStream() {
+		for (NodePoint np : inPointList) {
+			if (!np.haveStream())
+				continue;
+			np.getStream().pause();
+		}
+	}
+	
+	public int getComputeTimes(){
+		return computeTimes;
+	}
+
 	/*
 	 * private NodePoint selectPoint(boolean input,int index){ if(input){
 	 * if(index<inPointList.size()&&index>=0){ return inPointList.get(index);
@@ -224,7 +250,7 @@ class NodeGenerator extends Node {
 	protected boolean stillGenerating = false;
 	protected int times = 1;
 	protected int waitTime = 1;
-	protected int lastStep = -1;
+	private int lastStep = -1;
 
 	/////////////// initialObject
 	@Override
@@ -255,15 +281,21 @@ class NodeGenerator extends Node {
 		if (!stillGenerating) {
 			times--;
 		}
+		lastStep = getMaster().getStep();
 	}
 
 	public boolean generatable() {
+		if (getMaster().getStep() - lastStep < waitTime) {
+			return false;
+		}
+		
 		if (stillGenerating) {
 			return true;
 		}
 		if (times > 0) {
 			return true;
 		}
+
 		return false;
 	}
 
@@ -271,26 +303,7 @@ class NodeGenerator extends Node {
 
 	}
 
-	@Override
-	protected void endGeneration() {
-		if (!stillCompute) {
-			computeTimes--;
-		}
-		lastStep = getMaster().getStep();
-	}
 
-	@Override
-	public boolean computable() {
-		if (!stillCompute) {
-			if (computeTimes <= 0)
-				return false;
-		}
-
-		if (getMaster().getStep() - lastStep < waitTime) {
-			return false;
-		}
-		return inputIsAlready();
-	}
 
 	public boolean isGenerating() {
 		return stillGenerating;
@@ -328,7 +341,7 @@ class Node_SolidNumber extends NodeGenerator {
 	@Override
 	protected void initializeGenerator() {
 		stillGenerating = false;
-		times = 2;
+		times = 5;
 		waitTime = 1;
 	}
 
@@ -399,8 +412,8 @@ class Node_Pluser extends NodeCalculator {
 
 	@Override
 	protected void initializeNode() {
-		stillCompute = true;
-		computeTimes = 0;
+		stillCompute = false;
+		computeTimes = 2;
 	}
 
 	public Node_Pluser() {
@@ -430,6 +443,8 @@ class Node_Pluser extends NodeCalculator {
 				cleanInPoint();
 				return;
 			}
+			pauseInputStream();
+			return;
 		}
 		double output = 0;
 		for (NodePoint np : inPointList) {
@@ -439,7 +454,6 @@ class Node_Pluser extends NodeCalculator {
 		}
 		cleanInPoint();
 		addStreamToOutpoint(0, new NDouble(output));
-		computeTimes--;
 		endGeneration();
 	}
 }
@@ -470,7 +484,7 @@ class Node_Printer extends Node {
 	public void generateStream() {
 		boolean flag = true;
 		for (NodePoint np : inPointList) {
-			if (np.getStream() != null) {
+			if ((np.getStream() != null) && (!(np.getStream().isStop()))) {
 				flag = false;
 			}
 		}

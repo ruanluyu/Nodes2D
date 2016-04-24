@@ -138,26 +138,34 @@ class NodesSystem extends NObject {
 	}
 
 	private void generateStream() {
-		for (Node np : nodeList) {
-			np.generateStream();
-			if (np.getOutPointNum() > 0) {
-				for (int i = 0; i < np.getOutPointNum(); i++) {
-					NodePoint cur = np.getOutpoint(i);
-					if (cur.getNumOfStream() <= 0)
+		for (Node nd : nodeList) {
+			nd.generateStream();
+			if (nd.getOutPointNum() > 0) {
+				boolean generatorGenerated = false;
+				for (int i = 0; i < nd.getOutPointNum(); i++) {
+					NodePoint np = nd.getOutpoint(i);
+					if (np.getNumOfStream() <= 0)
 						continue;
-					if ((np instanceof NodeGenerator) && ((NodeGenerator) np).generatable()) {
-						for (int j = 0; j < cur.getNumOfStream(); j++) {
-							streamList.add(cur.getStream(j).copyStream());
+					if ((nd instanceof NodeGenerator)) {
+						if (((NodeGenerator) nd).generatable()) {
+							for (int j = 0; j < np.getNumOfStream(); j++) {
+								if (np.haveStream()) {
+									streamList.add(np.getStream(j).copyStream());
+									generatorGenerated = true;
+								}
+							}
 						}
-						((NodeGenerator) np).generated();
-					} else if (!(np instanceof NodeGenerator)) {
-						for (int j = 0; j < cur.getNumOfStream(); j++) {
-							streamList.add(cur.getStream(j));
-							cur.cleanStream();
+
+					} else {
+						for (int j = 0; j < np.getNumOfStream(); j++) {
+							streamList.add(np.getStream(j));
+							np.cleanStream();
 						}
 
 					}
 				}
+				if ((nd instanceof NodeGenerator)&&generatorGenerated)
+					((NodeGenerator) nd).generated();
 			}
 		}
 		cleanArrayNull(streamList);
@@ -175,6 +183,20 @@ class NodesSystem extends NObject {
 		return transported;
 	}
 
+	private boolean generatorCheck() {
+		for (Node nd : nodeList) {
+			if (nd instanceof NodeGenerator) {
+				if (((NodeGenerator) nd).getTimes() > 0) {
+					return true;
+				}
+				if (((NodeGenerator) nd).isGenerating()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	private void setStreamToInpoint() {
 		for (NStream ns : streamList) {
 			NodePoint cur = ns.getPoint();
@@ -187,33 +209,39 @@ class NodesSystem extends NObject {
 	}
 
 	private void oneComputeStep() {
+		int stepNum = 0;
+		generateStream();
 		while (transportStream()) {
+			stepNum++;
 			setStreamToInpoint();
 			cleanStopStream();
 			generateStream();
-			
-			println(streamList.size()+"");
-			println(streamList.get(0).getPoint().getMaster().getTitle());
-			println(streamList.get(1).getPoint().getMaster().getTitle());
+			//println("shortStep : " + stepNum + "--num of stream(s) : " + streamList.size() + "----end------------");
+			/*
+			 * println(streamList.size()+"");
+			 * println(streamList.get(0).getPoint().getMaster().getTitle());
+			 * println(streamList.get(1).getPoint().getMaster().getTitle());
+			 */
 		}
 
 	}
 
 	public void run() {
 		println("************************\n RUN.\n\n************************");
+
 		generateStream();
 
-		while (streamList.size() > 0 && stepBelowMaxStep()) {
+		while ((generatorCheck() || streamList.size() > 0) && stepBelowMaxStep()) {
 			
 			oneComputeStep();
 			cleanStopStream();
 			step++;
+			println(generatorCheck()+"  "+streamList.size());
 			println("************************\n step : " + step + " completed.\n\n************************");
 			if (sleepTime > 0) {
 				try {
 					Thread.sleep(sleepTime);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
