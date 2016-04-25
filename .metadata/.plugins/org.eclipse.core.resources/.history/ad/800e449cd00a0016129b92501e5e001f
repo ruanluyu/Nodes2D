@@ -256,7 +256,6 @@ class Node_Printer extends Node {
 		addInPoint(1, this, NData.NINT);
 		addInPoint(1, this, NData.NSTRING);
 		addInPoint(1, this, NData.NBOOLEAN);
-		addInPoint(1, this, NData.NVECTOR);
 	}
 
 	@Override

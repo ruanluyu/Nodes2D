@@ -1,0 +1,11 @@
+package main;
+
+class NodeCalculator extends Node {
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NodeCalculator";
+		idAddable = true;
+	}
+	///////////////
+}

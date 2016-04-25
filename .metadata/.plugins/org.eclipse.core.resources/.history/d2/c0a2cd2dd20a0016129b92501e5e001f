@@ -90,7 +90,7 @@ class NData extends NObject implements Cloneable {
 
 	public static boolean typeConnectable(int outpoint, int inpoint) {
 		if(inpoint == NDATA){
-			return true;
+			
 		}
 		
 		if ((outpoint == inpoint) || (outpoint == NINT && inpoint == NDOUBLE)

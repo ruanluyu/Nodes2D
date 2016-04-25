@@ -63,9 +63,6 @@ class NodePoint extends NObject {
 		case NData.NSTRING:
 			type = NData.NSTRING;
 			break;
-		case NData.NBOOLEAN:
-			type = NData.NBOOLEAN;
-			break;
 		case NData.NVECTOR:
 			type = NData.NVECTOR;
 			break;

@@ -2,7 +2,7 @@ package main;
 
 class NData extends NObject implements Cloneable {
 	protected int TYPE = -1;
-	public static final int NDATA = -1;
+	public static final int NData = -1;
 	public static final int NDOUBLE = 0;
 	public static final int NINT = 1;
 	public static final int NSTRING = 2;
@@ -89,10 +89,6 @@ class NData extends NObject implements Cloneable {
 	///////////////
 
 	public static boolean typeConnectable(int outpoint, int inpoint) {
-		if(inpoint == NDATA){
-			return true;
-		}
-		
 		if ((outpoint == inpoint) || (outpoint == NINT && inpoint == NDOUBLE)
 
 		)

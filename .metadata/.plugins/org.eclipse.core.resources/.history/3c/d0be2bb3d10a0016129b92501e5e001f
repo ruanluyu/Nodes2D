@@ -1,0 +1,24 @@
+package main;
+
+class NodeDelayer extends Node {
+	protected double delayTime = 0;
+
+	NData data = null;
+
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NodeDelayer";
+		idAddable = true;
+	}
+
+	protected void initializeDelayer() {
+		delayTime = 1;
+	}
+
+	///////////////
+	public void setDelayTime(int delayTime) {
+		this.delayTime = delayTime;
+	}
+}
+
