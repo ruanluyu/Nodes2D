@@ -89,10 +89,10 @@ class NData extends NObject implements Cloneable {
 	///////////////
 
 	public static boolean typeConnectable(int outpoint, int inpoint) {
-		if(inpoint == NDATA){
+		if (inpoint == NDATA) {
 			return true;
 		}
-		
+
 		if ((outpoint == inpoint) || (outpoint == NINT && inpoint == NDOUBLE)
 
 		)
@@ -125,8 +125,8 @@ class NData extends NObject implements Cloneable {
 		return stringData;
 	}
 
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
+	public NData clone() throws CloneNotSupportedException {
+		return (NData) super.clone();
 	}
 
 }

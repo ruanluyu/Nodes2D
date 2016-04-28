@@ -21,6 +21,12 @@ class NodesSystem extends NObject {
 	}
 
 	///////////////
+	private void masterCheck(Node node) {
+		if (node.getMaster() == null) {
+			addNode(node);
+		}
+	}
+
 	public void addNode(Node node) {
 		nodeList.add(node);
 		node.setMaster(this);
@@ -51,52 +57,52 @@ class NodesSystem extends NObject {
 		return nodeList.size();
 	}
 
-	protected Node selectNode(int id) {
-		for (Node cur : nodeList) {
-			if (cur.getId() == id) {
-				return cur;
-			}
-		}
-		println("Error : nothing selected.");
-		return null;
-	}
+	/*
+	 * protected Node selectNode(int id) { for (Node cur : nodeList) { if
+	 * (cur.getId() == id) { return cur; } } println("Error : nothing selected."
+	 * ); return null; }
+	 */
 
 	public void disconnect(NodeLine line) {
 		line.getInPoint().disconnect();
 		line.getOutPoint().disconnect(line);
+		lineList.remove(line);
 		println(line.getOutPoint().getTitle() + " - / - " + line.getInPoint().getTitle() + " (disconnected)");
 	}
 
-	public NodeLine connect(NodePoint a, NodePoint b) {
-
-		if ((a.isInput() && b.isInput()) || (a.isOutput() && b.isOutput())) {
+	public NodeLine connect(NodePoint outpoint, NodePoint inpoint) {
+		masterCheck(outpoint.getMaster());
+		masterCheck(inpoint.getMaster());
+		if (outpoint.isInput()) {
+			NodePoint cur = outpoint;
+			outpoint = inpoint;
+			inpoint = cur;
+		}
+		if ((outpoint.isInput() && inpoint.isInput()) || (outpoint.isOutput() && inpoint.isOutput())) {
 			try {
-				throw new NodeException(0, "NodePoint : " + a.getTitle() + " and NodePoint : " + b.getTitle() + " .");
+				throw new NodeException(0, outpoint.getMaster().getTitle() + " : out " + outpoint.getTitle() + " and "
+						+ inpoint.getMaster().getTitle() + " : in " + inpoint.getTitle() + " .");
 			} catch (NodeException e) {
 				e.println();
 			}
 			return null;
 		} else {
-			if (NodePoint.connectable(a, b)) {
-				NodeLine out = new NodeLine(a, b);
-				String cur1, cur2;
-				if (a.isInput()) {
-					cur1 = "in";
-					cur2 = "out";
-				} else {
-					cur1 = "out";
-					cur2 = "in";
+
+			if (NodePoint.connectable(outpoint, inpoint)) {
+				if (inpoint.getNumOfLines() > 0) {
+					disconnect(inpoint.getLine());
 				}
-				println(a.getMaster().getTitle() + "(" + cur1 + " " + a.getTitle() + ") ----- "
-						+ b.getMaster().getTitle() + "(" + cur2 + " " + b.getTitle() + ") connected");
-				a.addLine(out);
-				b.addLine(out);
+				NodeLine out = new NodeLine(outpoint, inpoint);
+				println(outpoint.getMaster().getTitle() + "(in " + outpoint.getTitle() + ") ----- "
+						+ inpoint.getMaster().getTitle() + "(out " + inpoint.getTitle() + ") connected");
+				outpoint.addLine(out);
+				inpoint.addLine(out);
 				lineList.add(out);
 				return out;
 			} else {
 				try {
-					throw new NodeException(6,
-							"NodePoint : " + a.getTitle() + " and NodePoint : " + b.getTitle() + " .");
+					throw new NodeException(6, outpoint.getMaster().getTitle() + " : out " + outpoint.getTitle()
+							+ " and " + inpoint.getMaster().getTitle() + " : in " + inpoint.getTitle() + " .");
 				} catch (NodeException e) {
 					e.println();
 				}
@@ -149,7 +155,7 @@ class NodesSystem extends NObject {
 					if ((nd instanceof NodeGenerator)) {
 						if (((NodeGenerator) nd).generatable()) {
 							for (int j = 0; j < np.getNumOfStream(); j++) {
-								if (np.haveStream()) {
+								if (np.hasStream()) {
 									streamList.add(np.getStream(j).copyStream());
 									generatorGenerated = true;
 								}
@@ -159,12 +165,11 @@ class NodesSystem extends NObject {
 					} else {
 						for (int j = 0; j < np.getNumOfStream(); j++) {
 							streamList.add(np.getStream(j));
-							np.cleanStream();
 						}
-
+						np.cleanStream();
 					}
 				}
-				if ((nd instanceof NodeGenerator)&&generatorGenerated)
+				if ((nd instanceof NodeGenerator) && generatorGenerated)
 					((NodeGenerator) nd).generated();
 			}
 		}
@@ -174,7 +179,7 @@ class NodesSystem extends NObject {
 	private boolean transportStream() {
 		boolean transported = false;
 		for (NStream ns : streamList) {
-			if (ns.isPuase() || ns.isStop())
+			if (ns.isPause() || ns.isStop())
 				continue;
 			ns.goToInpoint();
 			ns.pause();
@@ -197,31 +202,36 @@ class NodesSystem extends NObject {
 		return false;
 	}
 
+	private boolean delayerCheck() {
+		for (Node nd : nodeList) {
+			if (nd instanceof NodeDelayer) {
+				if (((NodeDelayer) nd).hasStream()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	private void setStreamToInpoint() {
 		for (NStream ns : streamList) {
-			NodePoint cur = ns.getPoint();
-			if (cur.isInput()) {
-				cur.cleanStream();
-				cur.addStream(ns);
-				ns.pause();
+			if ((!(ns.isStop())) && (!(ns.isPause()))) {
+				NodePoint cur = ns.getPoint();
+				if (cur.isInput()) {
+					cur.cleanStream();
+					cur.addStream(ns);
+					ns.pause();
+				}
 			}
 		}
 	}
 
 	private void oneComputeStep() {
-		int stepNum = 0;
 		generateStream();
 		while (transportStream()) {
-			stepNum++;
 			setStreamToInpoint();
 			cleanStopStream();
 			generateStream();
-			//println("shortStep : " + stepNum + "--num of stream(s) : " + streamList.size() + "----end------------");
-			/*
-			 * println(streamList.size()+"");
-			 * println(streamList.get(0).getPoint().getMaster().getTitle());
-			 * println(streamList.get(1).getPoint().getMaster().getTitle());
-			 */
 		}
 
 	}
@@ -230,13 +240,14 @@ class NodesSystem extends NObject {
 		println("************************\n RUN.\n\n************************");
 
 		generateStream();
+		while ((delayerCheck() || generatorCheck() || (streamList.size() > 0)) && stepBelowMaxStep()) {
 
-		while ((generatorCheck() || streamList.size() > 0) && stepBelowMaxStep()) {
-			
 			oneComputeStep();
-			cleanStopStream();
+			// cleanStopStream();
+			// println(generatorCheck() + " " + streamList.size());
+			streamList.clear();
 			step++;
-			println(generatorCheck()+"  "+streamList.size());
+
 			println("************************\n step : " + step + " completed.\n\n************************");
 			if (sleepTime > 0) {
 				try {

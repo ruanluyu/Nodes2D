@@ -46,42 +46,43 @@ public class NodeException extends Exception {
 		case 0:
 			message = "NodeError(id:" + 0 + ") : ";
 			message += "you can't connect NodePoints with the same in/output type.";
-			message += "This occured while working on" + actionName + ".";
+			message += "\nThis occured while working on " + actionName + ".";
 			break;
 		case 1:
 			message = "NodeError(id:" + 1 + ") : ";
 			message += "disconnection at NodeLine failed.";
-			message += "This occured while working on" + actionName + ".";
+			message += "\nThis occured while working on " + actionName + ".";
 			break;
 		case 2:
 			message = "NodeError(id:" + 2 + ") : ";
 			message += "array boundary exceeded.";
-			message += "This occured while working on" + actionName + ".";
+			message += "\nThis occured while working on " + actionName + ".";
 			break;
 		case 3:
 			message = "NodeError(id:" + 3 + ") : ";
 			message += "data type of NodePoint is not an instance of NData.";
-			message += "This occured while working on" + actionName + ".";
+			message += "\nThis occured while working on " + actionName + ".";
 			break;
 		case 4:
 			message = "NodeError(id:" + 4 + ") : ";
 			message += "data overflowed.";
-			message += "This occured while working on" + actionName + ".";
+			message += "\nThis occured while working on " + actionName + ".";
 			break;
 		case 5:
 			message = "NodeError(id:" + 5 + ") : ";
 			message += "types of tow points are different.";
-			message += "This occured while working on" + actionName + ".";
+			message += "\nThis occured while working on " + actionName + ".";
 			break;
 		case 6:
 			message = "NodeError(id:" + 6 + ") : ";
 			message += "unknown point mode.";
-			message += "This occured while working on" + actionName + ".";
+			message += "\nThis occured while working on " + actionName + ".";
 			break;
 		default:
 			message = "Error(s) occured unexpectedly(NodeErrorId=-1)";
 			break;
 		}
+		message += "\n";
 	}
 
 	/**

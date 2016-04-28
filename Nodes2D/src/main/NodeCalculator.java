@@ -46,12 +46,7 @@ class Node_Pluser extends NodeCalculator {
 	//////////// RUN
 	@Override
 	public void generateStream() {
-		if (!computable()) {
-			if (inputIsAlready()) {
-				cleanInPoint();
-				return;
-			}
-			pauseInputStream();
+		if (!inputIsAlready()) {
 			return;
 		}
 		double output = 0;
@@ -66,4 +61,54 @@ class Node_Pluser extends NodeCalculator {
 			computeTimes--;
 		}
 	}
+}
+
+/**
+ * in0: NData<BR/>
+ * <BR/>
+ * 
+ * out0: NDouble<BR/>
+ * out1: NInt<BR/>
+ * out2: NBoolean<BR/>
+ * out3: NString<BR/>
+ * 
+ * @author ZzStarSound
+ *
+ */
+class Node_NDataToElse extends NodeCalculator {
+	@Override
+	protected void initializeNode() {
+		stillCompute = true;
+		computeTimes = 0;
+	}
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "Node_NDataToElse";
+		idAddable = true;
+	}
+
+	public Node_NDataToElse() {
+		addInPoint(1, this, NData.NDATA);
+
+		addOutPoint(1, this, NData.NDOUBLE);
+		addOutPoint(1, this, NData.NINT);
+		addOutPoint(1, this, NData.NBOOLEAN);
+		addOutPoint(1, this, NData.NSTRING);
+	}
+
+	@Override
+	public void generateStream() {
+		
+		if (!inputIsAlready())
+			return;
+		
+		NStream curStream = inPointList.get(0).getStream();
+		println("test");
+		addStreamToOutpoint(0, new NDouble(curStream.getData().getDoubleData()));
+		addStreamToOutpoint(1, new NInt(curStream.getData().getIntData()));
+		addStreamToOutpoint(2, new NBoolean(curStream.getData().getBooleanData()));
+		addStreamToOutpoint(3, new NString(curStream.getData().getStringData()));
+		cleanInPoint();
+	}
+
 }

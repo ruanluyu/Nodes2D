@@ -6,3 +6,9 @@
 1461579585061	Move type
 1461579588771	Move type
 1461580023710	Move type
+1461826587452	Rename local variable 'a'
+1461826600956	Rename local variable 'b'
+1461833745541	Rename method 'haveStream'
+1461833779429	Rename method 'haveStream'
+1461837641357	Rename local variable 'data'
+1461839476165	Rename method 'isPuase'

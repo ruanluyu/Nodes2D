@@ -1,0 +1,93 @@
+package main;
+
+import java.util.ArrayList;
+import java.util.List;
+
+class NodeDelayer extends Node {
+	protected int delayTime = 1;
+	protected int lastStep = 0;
+	protected List<NStream> streamList = new ArrayList<NStream>();
+	protected List<Integer> signedTimeList = new ArrayList<Integer>();
+
+	NData data = null;
+
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NodeDelayer";
+		idAddable = true;
+	}
+
+	protected void initializeNode() {
+		stillCompute = true;
+		computeTimes = 0;
+	}
+
+	public NodeDelayer() {
+		addInPoint(1, this, NData.NDATA);
+		addOutPoint(1, this, NData.NDATA);
+		setDelayTime(1);
+	}
+
+	@Override
+	public void generateStream() {
+		if (master.getStep() > lastStep && hasStream()) {
+			lastStep = master.getStep();
+			updateClock();
+		}
+		checkStreamList();
+		if (inPointList.get(0).hasStream() && (!inPointList.get(0).getStream().isStop())) {
+			addStreamAndClock(inPointList.get(0).getStream().clone());
+			cleanInPoint();
+		}
+
+	}
+
+	///////////////
+	public void setDelayTime(int delayTime) {
+		if (delayTime >= 0)
+			this.delayTime = delayTime;
+	}
+
+	protected void addStreamAndClock(NStream stream) {
+		streamList.add(stream);
+		signedTimeList.add(delayTime);
+	}
+
+	protected void addStreamAndClock(NStream stream, int step) {
+		if (step >= 0) {
+			streamList.add(stream);
+			signedTimeList.add(step);
+		}
+	}
+
+	protected void checkStreamList() {
+		for (int i = streamList.size() - 1; i >= 0; i--) {
+			if (signedTimeList.get(i) <= 0) {
+				addStreamToOutpoint(0, streamList.get(i));
+				streamList.remove(i);
+				signedTimeList.remove(i);
+				return;
+			}
+		}
+		
+	}
+
+	protected void updateClock() {
+		for (int i = 0; i < signedTimeList.size(); i++) {
+			int j = signedTimeList.get(i);
+			if (j > 0) {
+				j--;
+				signedTimeList.set(i, j);
+			}
+
+		}
+	}
+
+	public boolean hasStream() {
+		if (streamList.size() > 0) {
+			return true;
+		}
+		return false;
+	}
+}
