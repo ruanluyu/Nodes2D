@@ -48,10 +48,23 @@ class NObject {
 	public String getClassName() {
 		return CLASSNAME;
 	}
-
-	public void println(String message) {
-		System.out.println(this.title + "( class : " + CLASSNAME + "   global_id " + thisId + ") : \n" + message+"\n");
 	
+	public void println(boolean num){
+		println(num);
+	}
+
+	public void println(double num){
+		println(num);
+	}
+	
+	public void println(int num){
+		println(num);
+	}
+	
+	public void println(String message) {
+		System.out
+				.println(this.title + "( class : " + CLASSNAME + "   global_id " + thisId + ") : \n" + message + "\n");
+
 	}
 
 	public int getId() {

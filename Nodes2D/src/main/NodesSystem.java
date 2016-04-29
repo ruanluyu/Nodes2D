@@ -241,7 +241,7 @@ class NodesSystem extends NObject {
 
 		generateStream();
 		while ((delayerCheck() || generatorCheck() || (streamList.size() > 0)) && stepBelowMaxStep()) {
-
+			
 			oneComputeStep();
 			// cleanStopStream();
 			// println(generatorCheck() + " " + streamList.size());

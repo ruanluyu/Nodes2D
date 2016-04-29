@@ -75,7 +75,6 @@ public class NStream extends NObject implements Cloneable {
 				nowPoint.removeStream(this);
 			nowPoint = nowLine.getInPoint();
 			nowPoint.addStream(this);
-			println(nowPoint.getMaster().getTitle()+"");
 			if (nowPoint.getMaster().inputIsAlready() && (!nowPoint.getMaster().computable())) {
 				stop();
 			}

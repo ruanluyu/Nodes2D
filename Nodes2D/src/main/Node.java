@@ -182,9 +182,10 @@ class Node extends NObject {
 	public void addStreamToOutpoint(int id, NData data) {
 		if (id >= outPointList.size())
 			return;
-		/*if (!NData.typeConnectable(data.getType(), outPointList.get(id).getType())) {
-			return;
-		}*/
+		/*
+		 * if (!NData.typeConnectable(data.getType(),
+		 * outPointList.get(id).getType())) { return; }
+		 */
 		NodePoint cur = outPointList.get(id);
 		for (int i = 0; i < cur.getNumOfLines(); i++) {
 			cur.cleanStream();
@@ -202,6 +203,7 @@ class Node extends NObject {
 			newStream.setLine(cur.getLine(i));
 			cur.addStream(newStream);
 		}
+
 	}
 
 	public void cleanInPoint() {
@@ -291,7 +293,7 @@ class Node_Printer extends Node {
 	public void generateStream() {
 		boolean flag = true;
 		for (NodePoint np : inPointList) {
-			if ((np.getStream() != null) && (!(np.getStream().isStop()))) {
+			if ((np.hasStream()) && (!(np.getStream().isStop()))) {
 				flag = false;
 			}
 		}

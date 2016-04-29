@@ -98,9 +98,10 @@ class Node_NDataToElse extends NodeCalculator {
 
 	@Override
 	public void generateStream() {
-		
 		if (!inputIsAlready())
 			return;
+		
+		
 		
 		NStream curStream = inPointList.get(0).getStream();
 		println("test");
