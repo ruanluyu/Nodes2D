@@ -21,12 +21,14 @@ class NodeDelayer extends Node {
 	protected void initializeNode() {
 		stillCompute = true;
 		computeTimes = 0;
+		inPointAddable = false;
+		outPointAddable = false;
 	}
 
 	public NodeDelayer() {
 		addInPoint(1, this, NData.NDATA);
 		addOutPoint(1, this, NData.NDATA);
-		setDelayTime(1);
+		setDelayTime(2);
 	}
 
 	@Override
@@ -63,7 +65,9 @@ class NodeDelayer extends Node {
 	protected void checkStreamList() {
 		for (int i = streamList.size() - 1; i >= 0; i--) {
 			if (signedTimeList.get(i) <= 0) {
-				addStreamToOutpoint(0, streamList.get(i));
+				NStream ns = streamList.get(i);
+				addStreamToOutpoint(0, ns);
+				
 				streamList.remove(i);
 				signedTimeList.remove(i);
 				break;

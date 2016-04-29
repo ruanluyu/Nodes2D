@@ -49,16 +49,20 @@ class NObject {
 		return CLASSNAME;
 	}
 	
+	public void println(Object num){
+		println(num+"");
+	}
+	
 	public void println(boolean num){
-		println(num);
+		println(num+"");
 	}
 
 	public void println(double num){
-		println(num);
+		println(num+"");
 	}
 	
 	public void println(int num){
-		println(num);
+		println(num+"");
 	}
 	
 	public void println(String message) {

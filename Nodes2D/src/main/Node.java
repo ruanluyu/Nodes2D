@@ -17,6 +17,8 @@ class Node extends NObject {
 	protected boolean stillCompute = false;
 	protected int computeTimes = 1;
 	protected NodesSystem master = null;
+	protected boolean inPointAddable = false;
+	protected boolean outPointAddable = false;
 
 	/////////////// initialObject
 	@Override
@@ -28,6 +30,8 @@ class Node extends NObject {
 	protected void initializeNode() {
 		stillCompute = false;
 		computeTimes = 0;
+		inPointAddable = false;
+		outPointAddable = false;
 	}
 
 	public Node() {
@@ -104,15 +108,6 @@ class Node extends NObject {
 		return stillCompute;
 	}
 
-	/*
-	 * public static void disconnect(NodeLine line) {
-	 * line.getInPoint().disconnect(); line.getOutPoint().disconnect(line); }
-	 * public static NodeLine connect(NodePoint a, NodePoint b) { if
-	 * ((a.isInput() && b.isInput()) || (a.isOutput() && b.isOutput())) { try {
-	 * throw new NodeException(0, "NodePoint : " + a.getTitle() +
-	 * " and NodePoint : " + b.getTitle() + " ."); } catch (NodeException e) {
-	 * e.println(); } return null; } else { return new NodeLine(a, b); } }
-	 */
 	public void addPoint(NodePoint point) {
 		int cur = getNameId();
 		if (point.isInput()) {
@@ -136,10 +131,7 @@ class Node extends NObject {
 	protected boolean inputIsAlready() {
 		if (inPointList.size() > 0) {
 			for (NodePoint np : inPointList) {
-				if (!np.hasStream()) {
-					return false;
-				}
-				if (np.getStream().isStop()) {
+				if (!np.hasStream() || np.getStream().isStop()) {
 					return false;
 				}
 			}
@@ -182,13 +174,9 @@ class Node extends NObject {
 	public void addStreamToOutpoint(int id, NData data) {
 		if (id >= outPointList.size())
 			return;
-		/*
-		 * if (!NData.typeConnectable(data.getType(),
-		 * outPointList.get(id).getType())) { return; }
-		 */
 		NodePoint cur = outPointList.get(id);
+		cur.cleanStream();
 		for (int i = 0; i < cur.getNumOfLines(); i++) {
-			cur.cleanStream();
 			cur.addStream(new NStream(NData.copyData(data, data.getType()), cur, cur.getLine(i)));
 		}
 	}
@@ -197,24 +185,41 @@ class Node extends NObject {
 		if (id >= outPointList.size())
 			return;
 		NodePoint cur = outPointList.get(id);
+		cur.cleanStream();
 		for (int i = 0; i < cur.getNumOfLines(); i++) {
-			cur.cleanStream();
 			NStream newStream = stream.clone();
+			newStream.stop(false);
+			newStream.pause(false);
+			newStream.setPoint(cur);
 			newStream.setLine(cur.getLine(i));
 			cur.addStream(newStream);
+
 		}
 
 	}
 
 	public void cleanInPoint() {
 		for (NodePoint np : inPointList) {
-			if (np.getStream() == null) {
-				np.cleanStream();
+			if ((!np.hasStream()))
 				continue;
-			}
-			np.getStream().stop();
+			if ((np.getStream().getPoint() == np))
+				np.getStream().stop();
 			np.cleanStream();
 		}
+	}
+
+	public NStream getInpointStream(int id) {
+		if (id >= inPointList.size()) {
+			return null;
+		}
+		if (!(inPointList.get(id).hasStream())) {
+			return null;
+		}
+		NStream curStream = inPointList.get(id).getStream();
+		if (curStream.isStop()) {
+			return null;
+		}
+		return curStream;
 	}
 
 	public NData getData(int id) {
@@ -278,6 +283,8 @@ class Node_Printer extends Node {
 	protected void initializeNode() {
 		stillCompute = true;
 		computeTimes = 0;
+		inPointAddable = false;
+		outPointAddable = false;
 	}
 
 	public Node_Printer() {

@@ -67,7 +67,8 @@ class NodesSystem extends NObject {
 		line.getInPoint().disconnect();
 		line.getOutPoint().disconnect(line);
 		lineList.remove(line);
-		println(line.getOutPoint().getTitle() + " - / - " + line.getInPoint().getTitle() + " (disconnected)");
+		println(line.getOutPoint().getMaster().getTitle() + "(in " + line.getOutPoint().getTitle() + ") - / - "
+				+ line.getInPoint().getMaster().getTitle() + "(out " + line.getInPoint().getTitle() + ") disconnected");
 	}
 
 	public NodeLine connect(NodePoint outpoint, NodePoint inpoint) {
@@ -87,9 +88,10 @@ class NodesSystem extends NObject {
 			}
 			return null;
 		} else {
-
 			if (NodePoint.connectable(outpoint, inpoint)) {
 				if (inpoint.getNumOfLines() > 0) {
+					println("Warning:You override an input point when it connected.Occured on NodePoint "
+							+ inpoint.getTitle() + "(" + inpoint.getMaster().getTitle() + ")");
 					disconnect(inpoint.getLine());
 				}
 				NodeLine out = new NodeLine(outpoint, inpoint);
@@ -156,12 +158,11 @@ class NodesSystem extends NObject {
 						if (((NodeGenerator) nd).generatable()) {
 							for (int j = 0; j < np.getNumOfStream(); j++) {
 								if (np.hasStream()) {
-									streamList.add(np.getStream(j).copyStream());
+									streamList.add(np.getStream(j).clone());
 									generatorGenerated = true;
 								}
 							}
 						}
-
 					} else {
 						for (int j = 0; j < np.getNumOfStream(); j++) {
 							streamList.add(np.getStream(j));
@@ -241,10 +242,10 @@ class NodesSystem extends NObject {
 
 		generateStream();
 		while ((delayerCheck() || generatorCheck() || (streamList.size() > 0)) && stepBelowMaxStep()) {
-			
+
 			oneComputeStep();
 			// cleanStopStream();
-			// println(generatorCheck() + " " + streamList.size());
+			 //println( streamList.size());
 			streamList.clear();
 			step++;
 

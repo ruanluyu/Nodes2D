@@ -17,6 +17,8 @@ class NodeGenerator extends Node {
 	protected void initializeNode() {
 		stillCompute = false;
 		computeTimes = 1;
+		inPointAddable = false;
+		outPointAddable = false;
 	}
 
 	protected void initializeGenerator() {

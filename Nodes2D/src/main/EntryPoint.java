@@ -37,6 +37,7 @@ public class EntryPoint extends JFrame {
 		Node_Printer np = new Node_Printer();// 建立打印输出节点
 		NodeDelayer nd = new NodeDelayer();// 创建延时器
 		Node_NDataToElse ntl = new Node_NDataToElse();// 创建NData适配器
+		Node_StreamMerge ns = new Node_StreamMerge(2);// 创建流合成器
 		nst.addNode(n1);// 将节点加入节点系统
 		nst.addNode(n2);// 将节点加入节点系统
 		nst.addNode(n3);// 将节点加入节点系统
@@ -44,12 +45,16 @@ public class EntryPoint extends JFrame {
 		nst.addNode(np);// 将节点加入节点系统
 		nst.addNode(nd);// 将节点加入节点系统
 		nst.addNode(ntl);// 将节点加入节点系统
+		nst.addNode(ns);// 将节点加入节点系统
 		nst.connect(n1.getOutpoint(0), p1.getInpoint(0));// 链接常数1和加法节点
 		nst.connect(n2.getOutpoint(0), p1.getInpoint(1));// 链接常数2和加法节点
 		nst.connect(n3.getOutpoint(0), p1.getInpoint(2));// 链接常数3和加法节点
-		nst.connect(p1.getOutpoint(0), nd.getInpoint(0));// 链接加法节点和延时器
+		nst.connect(p1.getOutpoint(0), ns.getInpoint(0));// 链接加法节点和流合成器
+		nst.connect(ns.getOutpoint(0), nd.getInpoint(0));// 链接流合成器和延时器
 		nst.connect(nd.getOutpoint(0), ntl.getInpoint(0));// 链接延时器和适配器
+		nst.connect(nd.getOutpoint(0), ns.getInpoint(1));// 链接延时器和流合成器
 		nst.connect(ntl.getOutpoint(0), np.getInpoint(0));// 链接适配器和输出
+		
 		nst.run();// 节点系统启动
 	}
 

@@ -33,13 +33,18 @@ class NData extends NObject implements Cloneable {
 			stringData = "" + intData;
 			break;
 		case NSTRING:
-			doubleData = Double.parseDouble(stringData);
-			intData = Math.round((float) doubleData);
-			if (intData != 0)
-				booleanData = true;
-			else
+			if (stringData != "") {
+				doubleData = Double.parseDouble(stringData);
+				intData = Math.round((float) doubleData);
+				if (intData != 0)
+					booleanData = true;
+				else
+					booleanData = false;
+			} else {
+				doubleData = 0;
+				intData = 0;
 				booleanData = false;
-			stringData = "" + intData;
+			}
 			break;
 		case NBOOLEAN:
 			if (booleanData) {
