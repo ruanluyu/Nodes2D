@@ -99,7 +99,7 @@ public class NStream extends NObject {
 	}
 	
 	public NStream clone() {
-		return clone(this);
+		return new NStream(NData.clone(data, data.getType()), nowPoint, nowLine);
 	}
 
 	public void setPoint(NodePoint np) {

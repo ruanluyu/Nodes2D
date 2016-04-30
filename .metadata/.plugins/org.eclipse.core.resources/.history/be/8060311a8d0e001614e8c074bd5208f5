@@ -3,7 +3,7 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
-class NData extends NObject {
+class NData extends NObject implements Cloneable {
 	protected int TYPE = -1;
 	public static final int NDATA = -1;
 	public static final int NDOUBLE = 0;
@@ -65,7 +65,7 @@ class NData extends NObject {
 		}
 	}
 
-	public static NData clone(NData data, int type) {
+	public static NData copyData(NData data, int type) {
 		switch (type) {
 		case NDOUBLE:
 			return new NDouble(data.getDoubleData());
@@ -77,14 +77,6 @@ class NData extends NObject {
 			return new NBoolean(data.getBooleanData());
 		}
 		return null;
-	}
-
-	public static NData clone(NData data) {
-		return clone(data, data.getType());
-	}
-
-	public NData clone() {
-		return clone(this);
 	}
 
 	/////////////// initialObject
@@ -139,6 +131,10 @@ class NData extends NObject {
 	public String getStringData() {
 		convertType(TYPE);
 		return stringData;
+	}
+
+	public NData clone() throws CloneNotSupportedException {
+		return (NData) super.clone();
 	}
 
 }
@@ -288,7 +284,7 @@ class NVector extends NData {
 	}
 
 	public NVector(int num) {
-		for (int i = 0; i < num; i++) {
+		for(int i = 0;i<num;i++){
 			data.add(new NDouble(0));
 		}
 	}
@@ -301,7 +297,6 @@ class NVector extends NData {
 
 	///////////////
 	public void computeType() {
-		type = "";
 		type += CLASSNAME + "[" + data.size() + "]";
 		NData cur = data.get(0);
 		if (cur instanceof NVector) {
@@ -322,16 +317,6 @@ class NVector extends NData {
 
 	public void set(int id, NData data) {
 		this.data.set(id, data);
-	}
-
-	public void add(int num, NData data) {
-		for (int i = 0; i < num; i++) {
-			this.data.add(data.clone());
-		}
-	}
-
-	public void add(NData data) {
-		add(1, data);
 	}
 
 	public List<NData> get() {

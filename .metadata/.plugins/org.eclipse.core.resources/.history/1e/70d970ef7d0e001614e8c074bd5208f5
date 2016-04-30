@@ -28,7 +28,7 @@ class NodeDelayer extends Node {
 	public NodeDelayer() {
 		addInPoint(1, this, NData.NDATA);
 		addOutPoint(1, this, NData.NDATA);
-		setDelayTime(1);
+		setDelayTime(2);
 	}
 
 	@Override

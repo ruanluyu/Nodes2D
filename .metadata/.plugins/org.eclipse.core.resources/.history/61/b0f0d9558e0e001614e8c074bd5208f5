@@ -80,11 +80,17 @@ class NData extends NObject {
 	}
 
 	public static NData clone(NData data) {
-		return clone(data, data.getType());
-	}
-
-	public NData clone() {
-		return clone(this);
+		switch (data.getType()) {
+		case NDOUBLE:
+			return new NDouble(data.getDoubleData());
+		case NINT:
+			return new NInt(data.getIntData());
+		case NSTRING:
+			return new NString(data.getStringData());
+		case NBOOLEAN:
+			return new NBoolean(data.getBooleanData());
+		}
+		return null;
 	}
 
 	/////////////// initialObject
@@ -325,13 +331,7 @@ class NVector extends NData {
 	}
 
 	public void add(int num, NData data) {
-		for (int i = 0; i < num; i++) {
-			this.data.add(data.clone());
-		}
-	}
 
-	public void add(NData data) {
-		add(1, data);
 	}
 
 	public List<NData> get() {

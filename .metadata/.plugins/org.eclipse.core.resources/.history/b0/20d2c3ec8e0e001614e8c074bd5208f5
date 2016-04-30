@@ -331,7 +331,7 @@ class NVector extends NData {
 	}
 
 	public void add(NData data) {
-		add(1, data);
+		this.data.add(data.clone());
 	}
 
 	public List<NData> get() {

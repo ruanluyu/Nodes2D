@@ -1,9 +1,6 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.List;
-
-class NData extends NObject {
+class NData extends NObject implements Cloneable {
 	protected int TYPE = -1;
 	public static final int NDATA = -1;
 	public static final int NDOUBLE = 0;
@@ -65,7 +62,7 @@ class NData extends NObject {
 		}
 	}
 
-	public static NData clone(NData data, int type) {
+	public static NData copyData(NData data, int type) {
 		switch (type) {
 		case NDOUBLE:
 			return new NDouble(data.getDoubleData());
@@ -77,14 +74,6 @@ class NData extends NObject {
 			return new NBoolean(data.getBooleanData());
 		}
 		return null;
-	}
-
-	public static NData clone(NData data) {
-		return clone(data, data.getType());
-	}
-
-	public NData clone() {
-		return clone(this);
 	}
 
 	/////////////// initialObject
@@ -139,6 +128,10 @@ class NData extends NObject {
 	public String getStringData() {
 		convertType(TYPE);
 		return stringData;
+	}
+
+	public NData clone() throws CloneNotSupportedException {
+		return (NData) super.clone();
 	}
 
 }
@@ -275,7 +268,7 @@ class NBoolean extends NData {
 
 class NVector extends NData {
 	private String type = "";
-	List<NData> data = new ArrayList<NData>();
+	NData data[];
 
 	/////////////// initialObject
 	@Override
@@ -288,9 +281,7 @@ class NVector extends NData {
 	}
 
 	public NVector(int num) {
-		for (int i = 0; i < num; i++) {
-			data.add(new NDouble(0));
-		}
+		data = new NData[num];
 	}
 
 	@Override
@@ -301,9 +292,8 @@ class NVector extends NData {
 
 	///////////////
 	public void computeType() {
-		type = "";
-		type += CLASSNAME + "[" + data.size() + "]";
-		NData cur = data.get(0);
+		type += CLASSNAME + "[" + data.length + "]";
+		NData cur = data[0];
 		if (cur instanceof NVector) {
 
 			while (cur instanceof NVector) {
@@ -317,33 +307,23 @@ class NVector extends NData {
 	}
 
 	public int getNum() {
-		return data.size();
+		return data.length;
 	}
 
 	public void set(int id, NData data) {
-		this.data.set(id, data);
+		this.data[id] = data;
 	}
 
-	public void add(int num, NData data) {
-		for (int i = 0; i < num; i++) {
-			this.data.add(data.clone());
-		}
-	}
-
-	public void add(NData data) {
-		add(1, data);
-	}
-
-	public List<NData> get() {
+	public NData[] get() {
 		return data;
 	}
 
 	public NData get(int id) {
-		return data.get(id);
+		return get()[id];
 	}
 
 	public int getSize() {
-		return data.size();
+		return data.length;
 	}
 }
 
