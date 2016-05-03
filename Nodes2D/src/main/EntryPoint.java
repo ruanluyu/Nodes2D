@@ -2,8 +2,6 @@ package main;
 
 import java.awt.Image;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.imageio.ImageIO;
@@ -54,7 +52,7 @@ public class EntryPoint extends JFrame {
 		nst.connect(nd.getOutpoint(0), ntl.getInpoint(0));// 链接延时器和适配器
 		nst.connect(nd.getOutpoint(0), ns.getInpoint(1));// 链接延时器和流合成器
 		nst.connect(ntl.getOutpoint(0), np.getInpoint(0));// 链接适配器和输出
-		
+
 		nst.run();// 节点系统启动
 	}
 

@@ -1,7 +1,6 @@
 package main;
 
 public class NStream extends NObject {
-	private int delay = 0;
 	private boolean stop = false;
 	private boolean pause = false;
 	private NData data;

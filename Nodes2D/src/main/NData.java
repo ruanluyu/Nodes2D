@@ -11,11 +11,63 @@ class NData extends NObject {
 	public static final int NSTRING = 2;
 	public static final int NBOOLEAN = 3;
 	public static final int NVECTOR = 4;
+	public static final int NIMAGE = 5;
 
 	protected double doubleData = 0;
 	protected int intData = 0;
 	protected String stringData = "";
 	protected boolean booleanData = false;
+
+	public static boolean typeConnectable(int outpoint, int inpoint) {
+		if (inpoint == NDATA) {
+			return true;
+		}
+
+		if ((outpoint == inpoint) || (outpoint == NINT && inpoint == NDOUBLE)
+
+		)
+			return true;
+		else
+			return false;
+	}
+
+	public static NData clone(NData data, int type) {
+		switch (type) {
+		case NDOUBLE:
+			return new NDouble(data.getDoubleData());
+		case NINT:
+			return new NInt(data.getIntData());
+		case NSTRING:
+			return new NString(data.getStringData());
+		case NBOOLEAN:
+			return new NBoolean(data.getBooleanData());
+		}
+		return null;
+	}
+
+	public static NData clone(NData data) {
+		return clone(data, data.getType());
+	}
+
+	public NData clone() {
+		return clone(this);
+	}
+
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NData";
+		idAddable = false;
+	}
+
+	protected void initializeData() {
+		TYPE = -1;
+	}
+
+	public NData() {
+		super();
+		initializeData();
+	}
 
 	public void convertType(int forcus) {
 		switch (forcus) {
@@ -65,61 +117,10 @@ class NData extends NObject {
 		}
 	}
 
-	public static NData clone(NData data, int type) {
-		switch (type) {
-		case NDOUBLE:
-			return new NDouble(data.getDoubleData());
-		case NINT:
-			return new NInt(data.getIntData());
-		case NSTRING:
-			return new NString(data.getStringData());
-		case NBOOLEAN:
-			return new NBoolean(data.getBooleanData());
-		}
-		return null;
-	}
-
-	public static NData clone(NData data) {
-		return clone(data, data.getType());
-	}
-
-	public NData clone() {
-		return clone(this);
-	}
-
-	/////////////// initialObject
-	@Override
-	protected void initializeObject() {
-		CLASSNAME = "NData";
-		idAddable = false;
-	}
-
-	protected void initializeData() {
-		TYPE = -1;
-	}
-
-	public NData() {
-		super();
-		initializeData();
-	}
-	///////////////
-
-	public static boolean typeConnectable(int outpoint, int inpoint) {
-		if (inpoint == NDATA) {
-			return true;
-		}
-
-		if ((outpoint == inpoint) || (outpoint == NINT && inpoint == NDOUBLE)
-
-		)
-			return true;
-		else
-			return false;
-	}
-
 	public int getType() {
 		return TYPE;
 	}
+	///////////////
 
 	public double getDoubleData() {
 		convertType(TYPE);
@@ -274,8 +275,8 @@ class NBoolean extends NData {
 }
 
 class NVector extends NData {
-	private String type = "";
-	List<NData> data = new ArrayList<NData>();
+	private String structure = "";
+	private List<Double> data = new ArrayList<Double>();
 
 	/////////////// initialObject
 	@Override
@@ -289,7 +290,28 @@ class NVector extends NData {
 
 	public NVector(int num) {
 		for (int i = 0; i < num; i++) {
-			data.add(new NDouble(0));
+			data.add(0d);
+		}
+	}
+
+	public NVector(double r, double g, double b, double a) {
+		data.add(lockInColorBoundary(r));
+		data.add(lockInColorBoundary(g));
+		data.add(lockInColorBoundary(b));
+		data.add(lockInColorBoundary(a));
+	}
+
+	public NVector(double r, double g, double b) {
+		this(r, g, b, 1);
+	}
+
+	private double lockInColorBoundary(double input) {
+		if (input <= 0d) {
+			return 0d;
+		} else if (input >= 1d) {
+			return 1d;
+		} else {
+			return input;
 		}
 	}
 
@@ -300,45 +322,37 @@ class NVector extends NData {
 	}
 
 	///////////////
-	public void computeType() {
-		type = "";
-		type += CLASSNAME + "[" + data.size() + "]";
-		NData cur = data.get(0);
-		if (cur instanceof NVector) {
-
-			while (cur instanceof NVector) {
-				type += "{" + cur.getClassName() + "}~" + cur.getClassName() + "[" + ((NVector) cur).getNum() + "]";
-				cur = ((NVector) cur).get(0);
-			}
-			type += "{" + cur.getClassName() + "}";
-		} else {
-			type += "{" + cur.getClassName() + "}";
+	public String getStructure() {
+		structure = "";
+		structure += "{";
+		for (int i = 0; i < getSize(); i++) {
+			structure += " " + get(i) + " ";
+			if (i + 1 < getSize())
+				structure += ",";
 		}
+		structure += "}";
+		return structure;
 	}
 
-	public int getNum() {
-		return data.size();
-	}
-
-	public void set(int id, NData data) {
+	public void set(int id, double data) {
 		this.data.set(id, data);
 	}
 
-	public void add(int num, NData data) {
+	public void add(int num, double data) {
 		for (int i = 0; i < num; i++) {
-			this.data.add(data.clone());
+			this.data.add(data);
 		}
 	}
 
-	public void add(NData data) {
+	public void add(double data) {
 		add(1, data);
 	}
 
-	public List<NData> get() {
+	public List<Double> get() {
 		return data;
 	}
 
-	public NData get(int id) {
+	public double get(int id) {
 		return data.get(id);
 	}
 
@@ -347,39 +361,94 @@ class NVector extends NData {
 	}
 }
 
-/*
- * class NBinary extends NData implements NData { private static final int
- * DEFAULT_LENGTH = 16; private static final String CLASSNAME = "NBinary";
- * private int length = DEFAULT_LENGTH; List<Boolean> list = new
- * ArrayList<Boolean>();
- * 
- * NBinary() { this(DEFAULT_LENGTH); }
- * 
- * NBinary(int length) { super(); this.length = length; for (int i = 0; i <
- * length; i++) { list.add(false); } }
- * 
- * static void invert(NBinary data) throws NodeException { int length =
- * data.getLength(); boolean cur[] = new boolean[length]; for (int i = 0; i <
- * length; i++) { cur[i] = data.get(i); } for (int i = 0; i < length; i++) {
- * data.set(i, cur[length - i - 1]); } }
- * 
- * public void set(int id, boolean bool) throws NodeException { try { if (id >=
- * length) throw new NodeException(2, CLASSNAME); } catch (NodeException e) {
- * e.println(); throw new NodeException(2, CLASSNAME); } list.set(id, bool); }
- * 
- * public boolean get(int id) throws NodeException { try { if (id >= length)
- * throw new NodeException(2, CLASSNAME); } catch (NodeException e) {
- * e.println(); throw new NodeException(2, CLASSNAME); } return list.get(id); }
- * 
- * protected static NData nPlus(NBinary data1, NBinary data2) throws
- * NodeException { int max = data1.getLength() > data2.getLength() ?
- * data1.getLength() : data2.getLength(); boolean out[] = new boolean[max]; for
- * (int i = 0; i < data1.getLength(); i++) { out[i] = data1.get(i); } for (int i
- * = 0; i < data2.getLength(); i++) { int pointer = i; if (out[i] = false) {
- * out[i] = data2.get(i); continue; } else { if (data2.get(i) == false) {
- * continue; } else { while (out[pointer]) { if (out[pointer]) { out[pointer] =
- * false; } else { out[pointer] = true; continue; } pointer++; if (pointer >=
- * max) throw new NodeException(4, CLASSNAME); } } } } NBinary outdata = new
- * NBinary(max); for (int i = 0; i < max; i++) { outdata.set(i, out[i]); }
- * return outdata; } }
- */
+class NImage extends NData {
+	private List<NVector> data = new ArrayList<NVector>();
+	private int width, height;
+	public static final int RED = 0;
+	public static final int GREEN = 1;
+	public static final int BLUE = 2;
+	public static final int ALPHA = 3;
+
+	public NImage(int width, int height) {
+		this.width = width;
+		this.height = height;
+		for (int i = 0; i < width * height; i++) {
+			data.add(new NVector(0, 0, 0, 1));
+		}
+	}
+
+	/**
+	 * 
+	 * @param x
+	 *            >=1 && <=width
+	 * @param y
+	 *            >=1 && <= height
+	 * @return result
+	 */
+	private boolean outOfBoundary(int x, int y) {
+		if (x < 1 || x > width) {
+			// TODO X_PixelsBoundaryException
+			return true;
+		}
+		if (y < 1 || y > height) {
+			// TODO Y_PixelsBoundaryException
+			return true;
+		}
+		return false;
+	}
+
+	private int computePosition(int x, int y) {
+		return y * width + x;
+	}
+
+	/**
+	 * 
+	 * @param x
+	 *            >=1 && <=width
+	 * @param y
+	 *            >=1 && <= height
+	 * @return NVector[4] ( R , G , B , A )
+	 */
+	public NVector getPixel(int x, int y) {
+		if (outOfBoundary(x, y)) {
+			return null;
+		}
+		x--;
+		y--;
+		return data.get(computePosition(x, y));
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param x
+	 *            >=1 && <=width
+	 * @param y
+	 *            >=1 && <= height
+	 * @param rgba
+	 */
+	public void setPixel(int x, int y, NVector rgba) {
+		if (outOfBoundary(x, y)) {
+			return;
+		}
+		data.set(computePosition(x, y), rgba);
+	}
+
+	public void setPixel(int x, int y, double r, double g, double b, double a) {
+		setPixel(x, y, new NVector(r, g, b, a));
+	}
+
+	public void setPixel(int x, int y, double r, double g, double b) {
+		setPixel(x, y, new NVector(r, g, b, 1));
+	}
+
+	public void resetImage(int width, int height) {
+		this.width = width;
+		this.height = height;
+		data.clear();
+		for (int i = 0; i < width * height; i++) {
+			data.add(new NVector(0, 0, 0, 1));
+		}
+	}
+
+}

@@ -9,8 +9,6 @@ class NodeDelayer extends Node {
 	protected List<NStream> streamList = new ArrayList<NStream>();
 	protected List<Integer> signedTimeList = new ArrayList<Integer>();
 
-	NData data = null;
-
 	/////////////// initialObject
 	@Override
 	protected void initializeObject() {
@@ -67,7 +65,7 @@ class NodeDelayer extends Node {
 			if (signedTimeList.get(i) <= 0) {
 				NStream ns = streamList.get(i);
 				addStreamToOutpoint(0, ns);
-				
+
 				streamList.remove(i);
 				signedTimeList.remove(i);
 				break;
