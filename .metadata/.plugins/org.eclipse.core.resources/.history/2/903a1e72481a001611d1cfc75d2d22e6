@@ -349,10 +349,8 @@ class Node_Printer extends Node {
 		}
 	}
 	
-	@Override
 	public Node_Printer clone(){
-		Node_Printer cloned = new Node_Printer();
-		return cloned;
+		return null;
 	}
 
 }

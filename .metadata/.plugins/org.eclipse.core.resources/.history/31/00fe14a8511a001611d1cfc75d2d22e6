@@ -12,8 +12,7 @@ class NodeDelayer extends Node {
 	
 	@Override
 	public NodeDelayer clone(){
-		NodeDelayer cloned = new NodeDelayer();
-		cloned.setDelayTime(this.delayTime);
+		NodeDelayer cloned = new NodeDelayer(this.delayTime);
 		return cloned;
 	}
 	

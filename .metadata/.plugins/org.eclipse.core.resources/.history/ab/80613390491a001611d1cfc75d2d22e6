@@ -696,14 +696,6 @@ class Node_NDataToElse extends NodeCalculator {
 }
 
 class Node_StreamMerge extends NodeCalculator {
-	
-	@Override
-	public Node_StreamMerge clone(){
-		Node_StreamMerge cloned = new Node_StreamMerge(this.inPointList.size());
-		return cloned;
-	}
-	
-	
 	protected int lastStep = 0;
 	boolean generated = false;
 

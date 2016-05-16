@@ -245,7 +245,7 @@ class Node extends NObject {
 		return computeTimes;
 	}
 	
-	public Node clone(){
+	public Object clone(){
 		return null;
 	}
 
@@ -349,10 +349,8 @@ class Node_Printer extends Node {
 		}
 	}
 	
-	@Override
-	public Node_Printer clone(){
-		Node_Printer cloned = new Node_Printer();
-		return cloned;
+	public Object clone(){
+		return null;
 	}
 
 }

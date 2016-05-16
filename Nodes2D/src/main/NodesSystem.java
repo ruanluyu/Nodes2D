@@ -249,7 +249,7 @@ class NodesSystem extends NObject {
 			streamList.clear();
 			step++;
 
-			println("************************\n Step " + step + " : C6ompleted.\n\n************************");
+			println("************************\n Step " + step + " : Completed.\n\n************************");
 			if (sleepTime > 0) {
 				try {
 					Thread.sleep(sleepTime);
