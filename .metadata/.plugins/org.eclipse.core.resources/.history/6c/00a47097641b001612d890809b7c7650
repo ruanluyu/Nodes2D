@@ -1,0 +1,19 @@
+package main;
+
+public class NBox extends Node{
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NBox";
+		idAddable = true;
+	}
+	
+	NBox(){}
+	
+	@Override
+	protected void initializeNode() {
+		stillCompute = false;
+		computeTimes = 0;
+		inPointAddable = false;
+		outPointAddable = false;
+	}
+}

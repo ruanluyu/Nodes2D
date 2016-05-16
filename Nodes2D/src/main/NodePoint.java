@@ -11,6 +11,7 @@ import java.util.List;
  */
 class NodePoint extends NObject {
 	private boolean input;
+	private boolean inoutMode = false;
 	private Node master;
 	private List<NodeLine> outLinesList = new ArrayList<NodeLine>();
 	private List<NStream> streamList = new ArrayList<NStream>();
@@ -71,6 +72,8 @@ class NodePoint extends NObject {
 		case NData.NVECTOR:
 			type = NData.NVECTOR;
 			break;
+		case NData.NIMAGE:
+			type = NData.NIMAGE;
 		default:
 			try {
 				throw new NodeException(6, this.title);
@@ -118,6 +121,15 @@ class NodePoint extends NObject {
 		outLinesList.remove(line);
 	}
 
+	public void setInOutMode(boolean mode) {
+		inoutMode = mode;
+	}
+
+	public boolean getInOutMode() {
+
+		return inoutMode;
+	}
+
 	public int streamNum() {
 		return streamList.size();
 	}
@@ -137,7 +149,8 @@ class NodePoint extends NObject {
 			streamList.add(nst);
 		} else {
 			if (streamList.size() > 0) {
-				println("Warnning : the num of stream on inPoint > 1.\nThis occured while working on "+title+" "+master.getTitle());
+				println("Warnning : the num of stream on inPoint > 1.\nThis occured while working on " + title + " "
+						+ master.getTitle());
 				nst.stop();
 			} else
 				streamList.add(nst);

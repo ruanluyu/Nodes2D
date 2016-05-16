@@ -9,7 +9,7 @@ class NodesSystem extends NObject {
 	private List<NodeLine> lineList = new ArrayList<NodeLine>();
 	private List<NStream> streamList = new ArrayList<NStream>();
 
-	private int sleepTime = 100;
+	private int sleepTime = 1000;
 	private int step = 0;
 	private int maxStep = 20;
 
@@ -78,6 +78,10 @@ class NodesSystem extends NObject {
 			NodePoint cur = outpoint;
 			outpoint = inpoint;
 			inpoint = cur;
+		}
+		if(!NBox.inTheSameBox(outpoint.getMaster(), inpoint.getMaster())){
+			println("Warning : connection between "+outpoint.getClassName()+" -and-"+inpoint.getClassName()+ " failed.");
+			return null;
 		}
 		if ((outpoint.isInput() && inpoint.isInput()) || (outpoint.isOutput() && inpoint.isOutput())) {
 			try {

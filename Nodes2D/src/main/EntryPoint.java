@@ -27,6 +27,7 @@ public class EntryPoint extends JFrame {
 		System.out.println("EntryPoint begin");
 		// JFrame nodeWindow = new EntryPoint("Nodes2D","../icon/Icon_L.png");
 
+		
 		NodesSystem nst = new NodesSystem();// 建立节点系统
 		Node_SolidNumber n1 = new Node_SolidNumber(200);// 建立常数节点200
 		Node_SolidNumber n2 = new Node_SolidNumber(580);// 建立常数节点580

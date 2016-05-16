@@ -16,6 +16,7 @@ class Node extends NObject {
 	protected boolean stillCompute = false;
 	protected int computeTimes = 1;
 	protected NodesSystem master = null;
+	protected NBox boxMaster = null;
 	protected boolean inPointAddable = false;
 	protected boolean outPointAddable = false;
 
@@ -42,8 +43,16 @@ class Node extends NObject {
 		master = ns;
 	}
 
+	public void setMaster(NBox nb) {
+		boxMaster = nb;
+	}
+
 	public NodesSystem getMaster() {
 		return master;
+	}
+
+	public NBox getBoxMaster() {
+		return boxMaster;
 	}
 
 	///////////////
@@ -72,6 +81,10 @@ class Node extends NObject {
 		setNameId(cur);
 	}
 
+	public void addInPoint(int num, int mode) {
+		addInPoint(num, this, mode);
+	}
+
 	protected void addOutPoint(int num, Node master, int mode) {
 		int cur = getNameId();
 		NodePoint.setNameId(outPointList.size());
@@ -79,6 +92,10 @@ class Node extends NObject {
 			outPointList.add(new NodePoint(master, false, mode));
 		}
 		setNameId(cur);
+	}
+
+	public void addOutPoint(int num, int mode) {
+		addOutPoint(num, this, mode);
 	}
 
 	protected void setInputPoint(int num, Node master, int mode) {
@@ -244,8 +261,8 @@ class Node extends NObject {
 	public int getComputeTimes() {
 		return computeTimes;
 	}
-	
-	public Node clone(){
+
+	public Node clone() {
 		return null;
 	}
 
@@ -298,8 +315,6 @@ class Node_Printer extends Node {
 		addInPoint(1, this, NData.NVECTOR);
 		addInPoint(1, this, NData.NDATA);
 	}
-	
-	
 
 	@Override
 	public void generateStream() {
@@ -348,9 +363,9 @@ class Node_Printer extends Node {
 			computeTimes--;
 		}
 	}
-	
+
 	@Override
-	public Node_Printer clone(){
+	public Node_Printer clone() {
 		Node_Printer cloned = new Node_Printer();
 		return cloned;
 	}
