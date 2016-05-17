@@ -92,32 +92,59 @@ class NodePoint extends NObject {
 		return type;
 	}
 
-	boolean isInput() {
+	public boolean isInput() {
 		return input;
 	}
 
-	boolean isOutput() {
+	public boolean isOutput() {
 		return !input;
 	}
 
-	Node getMaster() {
+	public Node getMaster() {
 		return master;
 	}
 
-	void addLine(NodeLine target) {
+	public void addLine(NodeLine target) {
+		if (inoutMode) {
+			if (input) {
+				if (target.getOutPoint() == this) {
+					if (outLinesList.size() > 0) {
+						outLinesList.clear();
+						println("Warning:You overrided an input point when it connected.Occured on NodePoint ");
+					}
+					outLinesList.add(target);
+				} else if (target.getInPoint() == this) {
+					if (inLine != null) {
+						println("Warning:You overrided an input point when it connected.Occured on NodePoint ");
+					}
+					inLine = target;
+				}
+			} else {
+				if (target.getOutPoint() == this) {
+					outLinesList.add(target);
+				} else if (target.getInPoint() == this) {
+					if (inLine != null) {
+						println("Warning:You overrided an input point when it connected.Occured on NodePoint ");
+					}
+					inLine = target;
+				}
+			}
+			return;
+		}
 		if (input) {
 			if (inLine != null)
-				println("Warning:You override an input point when it connected.Occured on NodePoint " + title);
+				println("Warning:You overrided an input point when it connected.Occured on NodePoint " + title);
 			inLine = target;
+			return;
 		} else
 			outLinesList.add(target);
 	}
 
-	void disconnect() {
+	public void disconnect() {
 		inLine = null;
 	}
 
-	void disconnect(NodeLine line) {
+	public void disconnect(NodeLine line) {
 		outLinesList.remove(line);
 	}
 
@@ -125,8 +152,7 @@ class NodePoint extends NObject {
 		inoutMode = mode;
 	}
 
-	public boolean getInOutMode() {
-
+	public boolean isInOutMode() {
 		return inoutMode;
 	}
 
@@ -179,6 +205,18 @@ class NodePoint extends NObject {
 	}
 
 	public int getNumOfLines() {
+
+		if (input) {
+			if (inLine == null) {
+				return 0;
+			} else {
+				return 1;
+			}
+		}
+		return outLinesList.size();
+	}
+
+	public int getNumOfLines(boolean input) {
 		if (input) {
 			if (inLine == null) {
 				return 0;

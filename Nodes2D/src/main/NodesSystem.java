@@ -9,7 +9,7 @@ class NodesSystem extends NObject {
 	private List<NodeLine> lineList = new ArrayList<NodeLine>();
 	private List<NStream> streamList = new ArrayList<NStream>();
 
-	private int sleepTime = 1000;
+	private int sleepTime = 100;
 	private int step = 0;
 	private int maxStep = 20;
 
@@ -72,17 +72,21 @@ class NodesSystem extends NObject {
 	}
 
 	public NodeLine connect(NodePoint outpoint, NodePoint inpoint) {
-		masterCheck(outpoint.getMaster());
-		masterCheck(inpoint.getMaster());
+		masterCheck(outpoint.getMaster()); // 检测是否注册到nodeList中,
+		masterCheck(inpoint.getMaster()); // 如果没注册，则注册。
+
 		if (outpoint.isInput()) {
 			NodePoint cur = outpoint;
 			outpoint = inpoint;
 			inpoint = cur;
-		}
-		if(!NBox.inTheSameBox(outpoint.getMaster(), inpoint.getMaster())){
-			println("Warning : connection between "+outpoint.getClassName()+" -and-"+inpoint.getClassName()+ " failed.");
+		} // 修正inpoint和outpoint的对应关系
+
+		if (!NBox.inTheSameBox(outpoint.getMaster(), inpoint.getMaster())) {
+			println("Warning : connection between " + outpoint.getClassName() + " -and-" + inpoint.getClassName()
+					+ " failed.");
 			return null;
-		}
+		} // 检测是否在同一个作用域
+
 		if ((outpoint.isInput() && inpoint.isInput()) || (outpoint.isOutput() && inpoint.isOutput())) {
 			try {
 				throw new NodeException(0, outpoint.getMaster().getTitle() + " : out " + outpoint.getTitle() + " and "
@@ -91,30 +95,63 @@ class NodesSystem extends NObject {
 				e.println();
 			}
 			return null;
-		} else {
-			if (NodePoint.connectable(outpoint, inpoint)) {
-				if (inpoint.getNumOfLines() > 0) {
-					println("Warning:You override an input point when it connected.Occured on NodePoint "
-							+ inpoint.getTitle() + "(" + inpoint.getMaster().getTitle() + ")");
-					disconnect(inpoint.getLine());
-				}
-				NodeLine out = new NodeLine(outpoint, inpoint);
-				println(outpoint.getMaster().getTitle() + "(in " + outpoint.getTitle() + ") ----- "
-						+ inpoint.getMaster().getTitle() + "(out " + inpoint.getTitle() + ") connected");
-				outpoint.addLine(out);
-				inpoint.addLine(out);
-				lineList.add(out);
-				return out;
-			} else {
-				try {
-					throw new NodeException(6, outpoint.getMaster().getTitle() + " : out " + outpoint.getTitle()
-							+ " and " + inpoint.getMaster().getTitle() + " : in " + inpoint.getTitle() + " .");
-				} catch (NodeException e) {
-					e.println();
-				}
-				return null;
+		} // 检测输入输出点匹配问题
+
+		if (!NodePoint.connectable(outpoint, inpoint)) {
+			try {
+				throw new NodeException(6, outpoint.getMaster().getTitle() + " : out " + outpoint.getTitle() + " and "
+						+ inpoint.getMaster().getTitle() + " : in " + inpoint.getTitle() + " .");
+			} catch (NodeException e) {
+				e.println();
 			}
-		}
+			return null;
+		} // 检测点的数据类型是否匹配
+
+		if ((inpoint.getNumOfLines() > 0)) {
+			println("Warning:You override an input point when it connected.Occured on NodePoint " + inpoint.getTitle()
+					+ "(" + inpoint.getMaster().getTitle() + ")");
+			disconnect(inpoint.getLine());
+		} // 检测inpoint是否已存在连线，若存在，则断开存在的线并发出警告。
+
+		NodeLine out = new NodeLine(outpoint, inpoint);
+		println(outpoint.getMaster().getTitle() + "(in " + outpoint.getTitle() + ") ----- "
+				+ inpoint.getMaster().getTitle() + "(out " + inpoint.getTitle() + ") connected");
+		outpoint.addLine(out);
+		inpoint.addLine(out);
+		lineList.add(out);
+		return out;
+	}
+
+	private NodeLine connectInBox(NodePoint boxpoint, NodePoint innerpoint) {
+		if ((innerpoint.getNumOfLines() > 0)) {
+			println("Warning:You overrided an input point when it connected.Occured on NodePoint "
+					+ innerpoint.getTitle() + "(" + innerpoint.getMaster().getTitle() + ")");
+			disconnect(innerpoint.getLine());
+		} // 检测inpoint是否已存在连线，若存在，则断开存在的线并发出警告。
+
+		NodeLine out = new NodeLine(boxpoint, innerpoint);
+		println(boxpoint.getMaster().getTitle() + "(in " + boxpoint.getTitle() + ") ----- "
+				+ innerpoint.getMaster().getTitle() + "(out " + innerpoint.getTitle() + ") connected");
+		boxpoint.addLine(out);
+		innerpoint.addLine(out);
+		lineList.add(out);
+		return out;
+	}
+
+	private NodeLine connectOutBox(NodePoint innerpoint, NodePoint boxpoint) {
+		if ((boxpoint.getNumOfLines(true) > 0)) {
+			println("Warning:You overrided an input point when it connected.Occured on NodePoint "
+					+ boxpoint.getTitle() + "(" + boxpoint.getMaster().getTitle() + ")");
+			disconnect(boxpoint.getLine());
+		} // 检测inpoint是否已存在连线，若存在，则断开存在的线并发出警告。
+
+		NodeLine out = new NodeLine(innerpoint, boxpoint);
+		println(innerpoint.getMaster().getTitle() + "(in " + innerpoint.getTitle() + ") ----- "
+				+ boxpoint.getMaster().getTitle() + "(out " + boxpoint.getTitle() + ") connected");
+		innerpoint.addLine(out);
+		boxpoint.addLine(out);
+		lineList.add(out);
+		return out;
 	}
 
 	public static void cleanArrayNull(List<?> list) {
@@ -249,7 +286,7 @@ class NodesSystem extends NObject {
 
 			oneComputeStep();
 			// cleanStopStream();
-			 //println( streamList.size());
+			// println( streamList.size());
 			streamList.clear();
 			step++;
 

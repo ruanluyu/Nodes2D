@@ -68,17 +68,10 @@ public class NStream extends NObject {
 	}
 
 	public void goToInpoint() {
-		/*
-		 * println(nowPoint.getMaster().getTitle() + "+");
-		 * println(nowPoint.getType() + "+"); println(nowPoint.isOutput() +
-		 * "+"); println(nowLine.getOutPoint().getMaster(). getTitle() + "*");
-		 * println(nowLine.getInPoint().getMaster(). getTitle() + "*");
-		 */
 		if (nowPoint.isOutput()) {
 			if (!(nowPoint.getMaster() instanceof NodeGenerator))
 				nowPoint.removeStream(this);
 			nowPoint = nowLine.getInPoint();
-			// println(nowPoint.getMaster().getTitle()+"-");
 			nowPoint.addStream(this);
 			if (nowPoint.getMaster().inputIsAlready() && (!nowPoint.getMaster().computable())) {
 				stop();
@@ -87,16 +80,18 @@ public class NStream extends NObject {
 			if ((!nowPoint.getMaster().isComputing()) && nowPoint.getMaster().getComputeTimes() <= 0) {
 				stop();
 			}
+
 			pause();
 		} else {
 			pause();
 		}
+
 	}
 
-	public static NStream clone(NStream target){
+	public static NStream clone(NStream target) {
 		return new NStream(NData.clone(target.getData()), target.getPoint(), target.getLine());
 	}
-	
+
 	public NStream clone() {
 		return clone(this);
 	}

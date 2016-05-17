@@ -224,6 +224,20 @@ class Node extends NObject {
 		}
 	}
 
+	protected void sendInToOut(int inId, int outId) {
+		if (inId >= inPointList.size()) {
+			return;// TODO Error
+		}
+		if (outId >= outPointList.size()) {
+			return;// TODO Error
+		}
+
+
+		addStreamToOutpoint(outId, inPointList.get(inId).getStream());
+		inPointList.get(inId).cleanStream();
+
+	}
+
 	public NStream getInpointStream(int id) {
 		if (id >= inPointList.size()) {
 			return null;
