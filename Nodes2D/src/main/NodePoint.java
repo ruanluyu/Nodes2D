@@ -27,11 +27,11 @@ class NodePoint extends NObject {
 
 	///////////////
 
-	NodePoint(Node master, boolean input) {
+	public NodePoint(Node master, boolean input) {
 		this("NodePoint" + " " + nameId, master, input);
 	}
 
-	NodePoint(Node master, boolean input, int mode) {
+	public NodePoint(Node master, boolean input, int mode) {
 		this("NodePoint" + " " + nameId, master, input, mode);
 	}
 
@@ -44,11 +44,11 @@ class NodePoint extends NObject {
 	 *            it can be installed in input area while it is true.
 	 * @see main.NodePoint
 	 */
-	NodePoint(String title, Node master, boolean input) {
+	public NodePoint(String title, Node master, boolean input) {
 		this(title, master, input, NData.NDOUBLE);
 	}
 
-	NodePoint(String title, Node master, boolean input, int mode) {
+	public NodePoint(String title, Node master, boolean input, int mode) {
 		super();
 		this.input = input;
 		setTitle(title);

@@ -1,0 +1,59 @@
+package main;
+
+class NodeLine extends NObject {
+	private NodePoint inP, outP;
+
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NodeLine";
+		idAddable = true;
+	}
+
+	///////////////
+	public NodeLine(NodePoint outpoint, NodePoint p2) {
+		super();
+		if (!NBox.theyAreboxAndInnerNode(outpoint.getMaster(), p2.getMaster())) {
+			if (outpoint.isInput() && p2.isOutput()) {
+				inP = outpoint;
+				outP = p2;
+			} else if (outpoint.isOutput() && p2.isInput()) {
+				inP = p2;
+				outP = outpoint;
+			} else {
+				try {
+					throw new NodeException(0,
+							"Connection between NodePoint" + outpoint.getTitle() + " and NodePoint " + outpoint.getTitle() + " .");
+				} catch (NodeException e) {
+					e.println();
+				}
+			}
+		} else if (!((outpoint.isInOutMode()) && (p2.isInOutMode()))) {
+			if (p2.isInOutMode()) {
+				NodePoint cur = p2;
+				p2 = outpoint;
+				outpoint = cur;
+			}
+			if (outpoint.isInput() && p2.isInput()) {
+				outP = outpoint;
+				inP = p2;
+			} else if (outpoint.isOutput() && p2.isOutput()) {
+				inP = outpoint;
+				outP = p2;
+			} else {
+				println("Error : Failed in building line");// TODO Error
+			}
+		} else {
+			println("Error : Failed in building line");// TODO Error
+		}
+
+	}
+
+	NodePoint getInPoint() {
+		return inP;
+	}
+
+	NodePoint getOutPoint() {
+		return outP;
+	}
+}

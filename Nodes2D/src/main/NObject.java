@@ -78,4 +78,9 @@ class NObject {
 	public int getNameId() {
 		return nameId;
 	}
+	
+	public NObject clone(){
+		println("Warning : there is no clone method in this class.");
+		return null;
+	}
 }

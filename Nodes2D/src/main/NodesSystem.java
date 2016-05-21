@@ -74,12 +74,23 @@ class NodesSystem extends NObject {
 	public NodeLine connect(NodePoint outpoint, NodePoint inpoint) {
 		masterCheck(outpoint.getMaster()); // 检测是否注册到nodeList中,
 		masterCheck(inpoint.getMaster()); // 如果没注册，则注册。
+		if (!NBox.theyAreboxAndInnerNode(outpoint.getMaster(), inpoint.getMaster())) {
+			if (outpoint.isInput()) {
+				NodePoint cur = outpoint;
+				outpoint = inpoint;
+				inpoint = cur;
+			} // 修正inpoint和outpoint的对应关系
+			return connectNormal(outpoint, inpoint);
+		}
 
-		if (outpoint.isInput()) {
-			NodePoint cur = outpoint;
-			outpoint = inpoint;
-			inpoint = cur;
-		} // 修正inpoint和outpoint的对应关系
+		if ((inpoint.isInOutMode() && inpoint.isInput()) || (outpoint.isInOutMode() && outpoint.isInput())) {
+			return connectInBox(outpoint, inpoint);
+		}
+
+		return connectOutBox(outpoint, inpoint);
+	}
+
+	private NodeLine connectNormal(NodePoint outpoint, NodePoint inpoint) {
 
 		if (!NBox.inTheSameBox(outpoint.getMaster(), inpoint.getMaster())) {
 			println("Warning : connection between " + outpoint.getClassName() + " -and-" + inpoint.getClassName()
@@ -122,12 +133,20 @@ class NodesSystem extends NObject {
 		return out;
 	}
 
+	// 将线从NBox外部inpoint链接到NBox内部inpoint 的情况
 	private NodeLine connectInBox(NodePoint boxpoint, NodePoint innerpoint) {
+		if ((boxpoint.getNumOfLines(false) > 0)) {
+			println("Warning:You overrided an input point when it connected.Occured on NodePoint " + boxpoint.getTitle()
+					+ "(" + boxpoint.getMaster().getTitle() + ")");
+			disconnect(boxpoint.getLine());
+		} // 检测boxpoint是否已存在连线，若存在，则断开存在的线并发出警告。
+			// ps.由于目前的框架结构不太合理，导致boxpoint作为对外输入点和对内输出点时只允许一根线链接。
+
 		if ((innerpoint.getNumOfLines() > 0)) {
 			println("Warning:You overrided an input point when it connected.Occured on NodePoint "
 					+ innerpoint.getTitle() + "(" + innerpoint.getMaster().getTitle() + ")");
 			disconnect(innerpoint.getLine());
-		} // 检测inpoint是否已存在连线，若存在，则断开存在的线并发出警告。
+		} // 检测innerpoint是否已存在连线，若存在，则断开存在的线并发出警告。
 
 		NodeLine out = new NodeLine(boxpoint, innerpoint);
 		println(boxpoint.getMaster().getTitle() + "(in " + boxpoint.getTitle() + ") ----- "
@@ -138,10 +157,11 @@ class NodesSystem extends NObject {
 		return out;
 	}
 
+	// 将线从NBox内部outpoint链接到NBox外部outpoint 的情况
 	private NodeLine connectOutBox(NodePoint innerpoint, NodePoint boxpoint) {
 		if ((boxpoint.getNumOfLines(true) > 0)) {
-			println("Warning:You overrided an input point when it connected.Occured on NodePoint "
-					+ boxpoint.getTitle() + "(" + boxpoint.getMaster().getTitle() + ")");
+			println("Warning:You overrided an input point when it connected.Occured on NodePoint " + boxpoint.getTitle()
+					+ "(" + boxpoint.getMaster().getTitle() + ")");
 			disconnect(boxpoint.getLine());
 		} // 检测inpoint是否已存在连线，若存在，则断开存在的线并发出警告。
 

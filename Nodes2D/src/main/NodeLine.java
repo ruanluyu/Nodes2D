@@ -7,53 +7,46 @@ class NodeLine extends NObject {
 	@Override
 	protected void initializeObject() {
 		CLASSNAME = "NodeLine";
-		idAddable = true;
+		idAddable = false;
 	}
 
 	///////////////
-	NodeLine(NodePoint p1, NodePoint p2) {
+	public NodeLine(NodePoint outpoint, NodePoint inpoint) {
+
 		super();
-		if (!NBox.theyAreboxAndInnerNode(p1.getMaster(), p2.getMaster())) {
-			if (p1.isInput() && p2.isOutput()) {
-				inP = p1;
-				outP = p2;
-			} else if (p1.isOutput() && p2.isInput()) {
-				inP = p2;
-				outP = p1;
-			} else {
-				try {
-					throw new NodeException(0,
-							"Connection between NodePoint" + p1.getTitle() + " and NodePoint " + p1.getTitle() + " .");
-				} catch (NodeException e) {
-					e.println();
-				}
-			}
-		} else if (!((p1.isInOutMode()) && (p2.isInOutMode()))) {
-			if (p2.isInOutMode()) {
-				NodePoint cur = p2;
-				p2 = p1;
-				p1 = cur;
-			}
-			if (p1.isInput() && p2.isInput()) {
-				outP = p1;
-				inP = p2;
-			} else if (p1.isOutput() && p2.isOutput()) {
-				inP = p1;
-				outP = p2;
-			} else {
-				println("Error : Failed in building line");// TODO Error
-			}
-		} else {
-			println("Error : Failed in building line");// TODO Error
-		}
+		inP = inpoint;
+		outP = outpoint;
+
+		/*
+		 * if (!NBox.theyAreboxAndInnerNode(outpoint.getMaster(),
+		 * inpoint.getMaster())) { if (outpoint.isInput() && inpoint.isOutput())
+		 * { inP = outpoint; outP = inpoint; } else if (outpoint.isOutput() &&
+		 * inpoint.isInput()) { inP = inpoint; outP = outpoint; } else { try {
+		 * throw new NodeException(0, "Connection between NodePoint" +
+		 * outpoint.getTitle() + " and NodePoint " + outpoint.getTitle() + " ."
+		 * ); } catch (NodeException e) { e.println(); } } } else if
+		 * (!((outpoint.isInOutMode()) && (inpoint.isInOutMode()))) { if
+		 * (inpoint.isInOutMode()) { NodePoint cur = inpoint; inpoint =
+		 * outpoint; outpoint = cur; } if (outpoint.isInput() &&
+		 * inpoint.isInput()) { outP = outpoint; inP = inpoint; } else if
+		 * (outpoint.isOutput() && inpoint.isOutput()) { inP = outpoint; outP =
+		 * inpoint; } else { println("Error : Failed in building line");// TODO
+		 * Error } } else { println("Error : Failed in building line");// TODO
+		 * Error }
+		 */
 
 	}
 
-	NodePoint getInPoint() {
+	public NodePoint getInPoint() {
 		return inP;
 	}
 
-	NodePoint getOutPoint() {
+	public NodePoint getOutPoint() {
 		return outP;
+	}
+
+	@Override
+	public NodeLine clone() {
+		return new NodeLine(this.outP, this.inP);
 	}
 }

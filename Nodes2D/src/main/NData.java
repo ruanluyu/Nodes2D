@@ -23,9 +23,7 @@ class NData extends NObject {
 			return true;
 		}
 
-		if ((outpoint == inpoint) || (outpoint == NINT && inpoint == NDOUBLE)
-
-		)
+		if ((outpoint == inpoint) || ((outpoint == NINT) && (inpoint == NDOUBLE)))
 			return true;
 		else
 			return false;
@@ -373,7 +371,7 @@ class NImage extends NData {
 		this.width = width;
 		this.height = height;
 		for (int i = 0; i < width * height; i++) {
-			data.add(new NVector(0, 0, 0, 1));
+			data.add(new NVector(0d, 0d, 0d, 1d));
 		}
 	}
 
@@ -447,7 +445,7 @@ class NImage extends NData {
 		this.height = height;
 		data.clear();
 		for (int i = 0; i < width * height; i++) {
-			data.add(new NVector(0, 0, 0, 1));
+			data.add(new NVector(0d, 0d, 0d, 1d));
 		}
 	}
 

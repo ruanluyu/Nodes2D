@@ -1,5 +1,7 @@
 package main;
 
+import java.awt.Graphics;
+
 import java.awt.Image;
 import java.io.IOException;
 
@@ -17,7 +19,7 @@ public class EntryPoint extends JFrame {
 			e.printStackTrace();
 		}
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setBounds(300, 300, 500, 500);
+		this.setBounds(100, 100, 1280, 720);
 		this.setTitle(title);
 		this.setVisible(true);
 
@@ -25,38 +27,32 @@ public class EntryPoint extends JFrame {
 
 	public static void main(String[] args) {
 		System.out.println("EntryPoint begin");
-		// JFrame nodeWindow = new EntryPoint("Nodes2D","../icon/Icon_L.png");
-		
-		
-		NodesSystem nst = new NodesSystem();// 建立节点系统
-		Node_SolidNumber n1 = new Node_SolidNumber(200);// 建立常数节点200
-		Node_SolidNumber n2 = new Node_SolidNumber(580);// 建立常数节点580
-		Node_SolidNumber n3 = new Node_SolidNumber(155);// 建立常数节点155
-		Node_Pluser p1 = new Node_Pluser(3);// 建立三个输入点的加法计算器
-		Node_Printer np = new Node_Printer();// 建立打印输出节点
-		NodeDelayer nd = new NodeDelayer();// 创建延时器
-		Node_NDataToElse ntl = new Node_NDataToElse();// 创建NData适配器
-		Node_StreamMerge ns = new Node_StreamMerge(2);// 创建流合成器
-		nst.addNode(n1);// 将节点加入节点系统
-		nst.addNode(n2);// 将节点加入节点系统
-		nst.addNode(n3);// 将节点加入节点系统
-		nst.addNode(p1);// 将节点加入节点系统
-		nst.addNode(np);// 将节点加入节点系统
-		nst.addNode(nd);// 将节点加入节点系统
-		nst.addNode(ntl);// 将节点加入节点系统
-		nst.addNode(ns);// 将节点加入节点系统
-		nst.connect(n1.getOutpoint(0), p1.getInpoint(0));// 链接常数1和加法节点
-		nst.connect(n2.getOutpoint(0), p1.getInpoint(1));// 链接常数2和加法节点
-		nst.connect(n3.getOutpoint(0), p1.getInpoint(2));// 链接常数3和加法节点
-		nst.connect(p1.getOutpoint(0), ns.getInpoint(0));// 链接加法节点和流合成器
-		nst.connect(ns.getOutpoint(0), nd.getInpoint(0));// 链接流合成器和延时器
-		nst.connect(nd.getOutpoint(0), ntl.getInpoint(0));// 链接延时器和适配器
-		nst.connect(nd.getOutpoint(0), ns.getInpoint(1));// 链接延时器和流合成器
-		nst.connect(ntl.getOutpoint(0), np.getInpoint(0));// 链接适配器和输出
+		JFrame nodeWindow = new EntryPoint("Nodes2D", "../icon/Icon_T.png");
 
-		nst.run();// 节点系统启动
+		/*
+		 * NodesSystem nst = new NodesSystem();// 建立节点系统 Node_SolidNumber n1 =
+		 * new Node_SolidNumber(200);// 建立常数节点200 Node_SolidNumber n2 = new
+		 * Node_SolidNumber(580);// 建立常数节点580 Node_SolidNumber n3 = new
+		 * Node_SolidNumber(155);// 建立常数节点155 Node_Pluser p1 = new
+		 * Node_Pluser(3);// 建立三个输入点的加法计算器 Node_Printer np = new
+		 * Node_Printer();// 建立打印输出节点 NodeDelayer nd = new NodeDelayer();//
+		 * 创建延时器 Node_NDataToElse ntl = new Node_NDataToElse();// 创建NData适配器
+		 * Node_StreamMerge ns = new Node_StreamMerge(2);// 创建流合成器
+		 * nst.addNode(n1);// 将节点加入节点系统 nst.addNode(n2);// 将节点加入节点系统
+		 * nst.addNode(n3);// 将节点加入节点系统 nst.addNode(p1);// 将节点加入节点系统
+		 * nst.addNode(np);// 将节点加入节点系统 nst.addNode(nd);// 将节点加入节点系统
+		 * nst.addNode(ntl);// 将节点加入节点系统 nst.addNode(ns);// 将节点加入节点系统
+		 * nst.connect(n1.getOutpoint(0), p1.getInpoint(0));// 链接常数1和加法节点
+		 * nst.connect(n2.getOutpoint(0), p1.getInpoint(1));// 链接常数2和加法节点
+		 * nst.connect(n3.getOutpoint(0), p1.getInpoint(2));// 链接常数3和加法节点
+		 * nst.connect(p1.getOutpoint(0), ns.getInpoint(0));// 链接加法节点和流合成器
+		 * nst.connect(ns.getOutpoint(0), nd.getInpoint(0));// 链接流合成器和延时器
+		 * nst.connect(nd.getOutpoint(0), ntl.getInpoint(0));// 链接延时器和适配器
+		 * nst.connect(nd.getOutpoint(0), ns.getInpoint(1));// 链接延时器和流合成器
+		 * nst.connect(ntl.getOutpoint(0), np.getInpoint(0));// 链接适配器和输出
+		 * 
+		 * nst.run();// 节点系统启动
+		 */
 	}
 
 }
-
-
