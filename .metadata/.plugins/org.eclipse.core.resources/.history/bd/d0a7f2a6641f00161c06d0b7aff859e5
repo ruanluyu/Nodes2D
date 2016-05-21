@@ -1,11 +1,7 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class NBox extends Node {
-	private List<Node> nodeList = new ArrayList<Node>();
-
 	@Override
 	protected void initializeObject() {
 		CLASSNAME = "NBox";
@@ -16,19 +12,12 @@ public class NBox extends Node {
 		addInPoint(1, NData.NDOUBLE);
 		addOutPoint(1, NData.NDOUBLE);
 	}
-
-	public void addNode(Node node) {
-		nodeList.add(node);
-		node.setMaster(this);
-		if(node.getMaster() == null){
-			node.setMaster(master);
-			master.addNode(node);
-		}
-	}
 	
-	public void removeNode(Node node){
-		nodeList.remove(node);
-	};
+	public void addNode(Node node) {
+		master.addNode(node);
+		node.setMaster(master);
+		node.setBoxMaster(this);
+	}
 
 	@Override
 	protected void addInPoint(int num, Node master, int mode) {
@@ -89,8 +78,8 @@ public class NBox extends Node {
 		}
 		return false;
 	}
-
-	public static boolean theyAreboxAndInnerNode(Node a, Node b) {
+	
+	public static boolean theyAreboxAndInnerNode(Node a, Node b){
 		if (a instanceof NBox) {
 			if ((Object) a == (Object) b.getBoxMaster()) {
 				return true;
@@ -102,20 +91,6 @@ public class NBox extends Node {
 			}
 		}
 		return false;
-	}
-	
-	@Override
-	public void delete(){
-		for(Node nd:nodeList){
-			nd.delete();
-		}
-		deleteAllLines();
-		if (master != null) {
-			master.removeNode(this);
-		}
-		if (boxMaster != null) {
-			boxMaster.removeNode(this);
-		}
 	}
 
 }

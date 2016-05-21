@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NBox extends Node {
-	private List<Node> nodeList = new ArrayList<Node>();
+	List<Node> nodeList = new ArrayList<Node>();
 
 	@Override
 	protected void initializeObject() {
@@ -18,17 +18,11 @@ public class NBox extends Node {
 	}
 
 	public void addNode(Node node) {
+		master.addNode(node);
 		nodeList.add(node);
+		node.setMaster(master);
 		node.setMaster(this);
-		if(node.getMaster() == null){
-			node.setMaster(master);
-			master.addNode(node);
-		}
 	}
-	
-	public void removeNode(Node node){
-		nodeList.remove(node);
-	};
 
 	@Override
 	protected void addInPoint(int num, Node master, int mode) {
@@ -102,20 +96,6 @@ public class NBox extends Node {
 			}
 		}
 		return false;
-	}
-	
-	@Override
-	public void delete(){
-		for(Node nd:nodeList){
-			nd.delete();
-		}
-		deleteAllLines();
-		if (master != null) {
-			master.removeNode(this);
-		}
-		if (boxMaster != null) {
-			boxMaster.removeNode(this);
-		}
 	}
 
 }

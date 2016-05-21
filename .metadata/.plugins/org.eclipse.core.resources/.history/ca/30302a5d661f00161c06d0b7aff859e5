@@ -280,13 +280,13 @@ class Node extends NObject {
 	}
 
 	public void delete() {
-		deleteAllLines();
 		if (master != null) {
 			master.removeNode(this);
 		}
 		if (boxMaster != null) {
 			boxMaster.removeNode(this);
 		}
+
 	}
 
 	public void deleteAllLines() {
@@ -298,7 +298,7 @@ class Node extends NObject {
 		for (NodePoint np : outPointList) {
 			if (np.getNumOfLines() > 0) {
 				for (int i = 0; i < np.getNumOfLines(); i++) {
-					np.getMaster().getMaster().disconnect(np.getLine(i));
+					np.getMaster().getMaster().disconnect(np.getLine());
 				}
 			}
 		}

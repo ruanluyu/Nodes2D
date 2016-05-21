@@ -20,13 +20,9 @@ public class NBox extends Node {
 	public void addNode(Node node) {
 		nodeList.add(node);
 		node.setMaster(this);
-		if(node.getMaster() == null){
-			node.setMaster(master);
-			master.addNode(node);
-		}
 	}
 	
-	public void removeNode(Node node){
+	public void deleteNode(Node node){
 		nodeList.remove(node);
 	};
 
@@ -102,20 +98,6 @@ public class NBox extends Node {
 			}
 		}
 		return false;
-	}
-	
-	@Override
-	public void delete(){
-		for(Node nd:nodeList){
-			nd.delete();
-		}
-		deleteAllLines();
-		if (master != null) {
-			master.removeNode(this);
-		}
-		if (boxMaster != null) {
-			boxMaster.removeNode(this);
-		}
 	}
 
 }

@@ -109,13 +109,6 @@ public class NBox extends Node {
 		for(Node nd:nodeList){
 			nd.delete();
 		}
-		deleteAllLines();
-		if (master != null) {
-			master.removeNode(this);
-		}
-		if (boxMaster != null) {
-			boxMaster.removeNode(this);
-		}
 	}
 
 }

@@ -103,19 +103,5 @@ public class NBox extends Node {
 		}
 		return false;
 	}
-	
-	@Override
-	public void delete(){
-		for(Node nd:nodeList){
-			nd.delete();
-		}
-		deleteAllLines();
-		if (master != null) {
-			master.removeNode(this);
-		}
-		if (boxMaster != null) {
-			boxMaster.removeNode(this);
-		}
-	}
 
 }

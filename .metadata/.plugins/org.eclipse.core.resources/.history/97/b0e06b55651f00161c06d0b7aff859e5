@@ -41,8 +41,8 @@ class NodesSystem extends NObject {
 		return step;
 	}
 
-	public void removeNode(Node node) {
-		nodeList.remove(node);
+	public void removeNode(int index) {
+		nodeList.remove(index);
 	}
 
 	public void removeAllNode() {

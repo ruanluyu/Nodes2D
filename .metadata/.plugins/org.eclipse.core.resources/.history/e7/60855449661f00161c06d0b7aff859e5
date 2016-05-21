@@ -232,6 +232,7 @@ class Node extends NObject {
 			return;// TODO Error
 		}
 
+
 		addStreamToOutpoint(outId, inPointList.get(inId).getStream());
 		inPointList.get(inId).cleanStream();
 
@@ -278,28 +279,26 @@ class Node extends NObject {
 	public Node clone() {
 		return null;
 	}
-
-	public void delete() {
-		deleteAllLines();
-		if (master != null) {
+	
+	public void delete(){
+		if(master!=null){
 			master.removeNode(this);
 		}
-		if (boxMaster != null) {
+		if(boxMaster != null){
 			boxMaster.removeNode(this);
 		}
+		
 	}
-
-	public void deleteAllLines() {
-		for (NodePoint np : inPointList) {
-			if (np.getNumOfLines() > 0) {
+	
+	public void deleteAllLines(){
+		for(NodePoint np : inPointList){
+			if(np.getNumOfLines()>0){
 				np.getMaster().getMaster().disconnect(np.getLine());
 			}
 		}
-		for (NodePoint np : outPointList) {
-			if (np.getNumOfLines() > 0) {
-				for (int i = 0; i < np.getNumOfLines(); i++) {
-					np.getMaster().getMaster().disconnect(np.getLine(i));
-				}
+		for(NodePoint np : outPointList){
+			if(np.getNumOfLines()>0){
+				np.getMaster().getMaster().disconnect(np.getLine());
 			}
 		}
 	}

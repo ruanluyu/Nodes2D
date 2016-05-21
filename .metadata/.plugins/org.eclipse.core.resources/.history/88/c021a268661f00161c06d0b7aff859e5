@@ -280,13 +280,13 @@ class Node extends NObject {
 	}
 
 	public void delete() {
-		deleteAllLines();
 		if (master != null) {
 			master.removeNode(this);
 		}
 		if (boxMaster != null) {
 			boxMaster.removeNode(this);
 		}
+
 	}
 
 	public void deleteAllLines() {
