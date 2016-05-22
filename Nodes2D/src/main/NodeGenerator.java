@@ -93,6 +93,7 @@ class Node_SolidNumber extends NodeGenerator {
 	@Override
 	public Node_SolidNumber clone() {
 		Node_SolidNumber cloned = new Node_SolidNumber(this.data.getDoubleData());
+		clone(this, cloned);
 		return cloned;
 	}
 
@@ -134,5 +135,6 @@ class Node_SolidNumber extends NodeGenerator {
 	public void setData(double value) {
 		data = new NDouble(value);
 	}
+	
 
 }

@@ -7,22 +7,23 @@ class NodeCalculator extends Node {
 		CLASSNAME = "NodeCalculator";
 		idAddable = true;
 	}
-	
+
 	@Override
-	public NodeCalculator clone(){
+	public NodeCalculator clone() {
 		return null;
 	}
 	///////////////
 }
 
 class Node_Pluser extends NodeCalculator {
-	
+
 	@Override
-	public Node_Pluser clone(){
-		Node_Pluser cloned = new Node_Pluser(this.inPointList.size());
+	public Node_Pluser clone() {
+		Node_Pluser cloned = new Node_Pluser();
+		clone(this, cloned);
 		return cloned;
 	}
-	
+
 	/////////////// initialObject
 
 	@Override
@@ -78,13 +79,14 @@ class Node_Pluser extends NodeCalculator {
 }
 
 class Node_Cutter extends NodeCalculator {
-	
+
 	@Override
-	public Node_Cutter clone(){
-		Node_Cutter cloned = new Node_Cutter(this.inPointList.size());
+	public Node_Cutter clone() {
+		Node_Cutter cloned = new Node_Cutter();
+		clone(this, cloned);
 		return cloned;
 	}
-	
+
 	/////////////// initialObject
 
 	@Override
@@ -140,13 +142,14 @@ class Node_Cutter extends NodeCalculator {
 }
 
 class Node_Multiplyer extends NodeCalculator {
-	
+
 	@Override
-	public Node_Multiplyer clone(){
-		Node_Multiplyer cloned = new Node_Multiplyer(this.inPointList.size());
+	public Node_Multiplyer clone() {
+		Node_Multiplyer cloned = new Node_Multiplyer();
+		clone(this, cloned);
 		return cloned;
 	}
-	
+
 	/////////////// initialObject
 
 	@Override
@@ -207,13 +210,14 @@ class Node_Multiplyer extends NodeCalculator {
 }
 
 class Node_Divider extends NodeCalculator {
-	
+
 	@Override
-	public Node_Divider clone(){
-		Node_Divider cloned = new Node_Divider(this.inPointList.size());
+	public Node_Divider clone() {
+		Node_Divider cloned = new Node_Divider();
+		clone(this, cloned);
 		return cloned;
 	}
-	
+
 	/////////////// initialObject
 
 	@Override
@@ -274,13 +278,14 @@ class Node_Divider extends NodeCalculator {
 }
 
 class Node_Complementation extends NodeCalculator {
-	
+
 	@Override
-	public Node_Complementation clone(){
+	public Node_Complementation clone() {
 		Node_Complementation cloned = new Node_Complementation();
+		clone(this, cloned);
 		return cloned;
 	}
-	
+
 	/////////////// initialObject
 
 	@Override
@@ -319,13 +324,14 @@ class Node_Complementation extends NodeCalculator {
 }
 
 class Node_Pow extends NodeCalculator {
-	
+
 	@Override
-	public Node_Pow clone(){
+	public Node_Pow clone() {
 		Node_Pow cloned = new Node_Pow();
+		clone(this, cloned);
 		return cloned;
 	}
-	
+
 	/////////////// initialObject
 
 	@Override
@@ -364,13 +370,14 @@ class Node_Pow extends NodeCalculator {
 }
 
 class Node_Sin extends NodeCalculator {
-	
+
 	@Override
-	public Node_Sin clone(){
+	public Node_Sin clone() {
 		Node_Sin cloned = new Node_Sin();
+		clone(this, cloned);
 		return cloned;
 	}
-	
+
 	/////////////// initialObject
 
 	@Override
@@ -408,13 +415,14 @@ class Node_Sin extends NodeCalculator {
 }
 
 class Node_Cos extends NodeCalculator {
-	
+
 	@Override
-	public Node_Cos clone(){
+	public Node_Cos clone() {
 		Node_Cos cloned = new Node_Cos();
+		clone(this, cloned);
 		return cloned;
 	}
-	
+
 	/////////////// initialObject
 
 	@Override
@@ -452,13 +460,14 @@ class Node_Cos extends NodeCalculator {
 }
 
 class Node_Tan extends NodeCalculator {
-	
+
 	@Override
-	public Node_Tan clone(){
+	public Node_Tan clone() {
 		Node_Tan cloned = new Node_Tan();
+		clone(this, cloned);
 		return cloned;
 	}
-	
+
 	/////////////// initialObject
 
 	@Override
@@ -496,13 +505,14 @@ class Node_Tan extends NodeCalculator {
 }
 
 class Node_Log extends NodeCalculator {
-	
+
 	@Override
-	public Node_Log clone(){
+	public Node_Log clone() {
 		Node_Log cloned = new Node_Log();
+		clone(this, cloned);
 		return cloned;
 	}
-	
+
 	/////////////// initialObject
 
 	@Override
@@ -547,13 +557,14 @@ class Node_Log extends NodeCalculator {
 }
 
 class Node_DegreesToRadians extends NodeCalculator {
-	
+
 	@Override
-	public Node_DegreesToRadians clone(){
+	public Node_DegreesToRadians clone() {
 		Node_DegreesToRadians cloned = new Node_DegreesToRadians();
+		clone(this, cloned);
 		return cloned;
 	}
-	
+
 	/////////////// initialObject
 
 	@Override
@@ -591,15 +602,15 @@ class Node_DegreesToRadians extends NodeCalculator {
 	}
 }
 
-
 class Node_RadiansToDegrees extends NodeCalculator {
-	
+
 	@Override
-	public Node_RadiansToDegrees clone(){
+	public Node_RadiansToDegrees clone() {
 		Node_RadiansToDegrees cloned = new Node_RadiansToDegrees();
+		clone(this, cloned);
 		return cloned;
 	}
-	
+
 	/////////////// initialObject
 
 	@Override
@@ -650,13 +661,14 @@ class Node_RadiansToDegrees extends NodeCalculator {
  *
  */
 class Node_NDataToElse extends NodeCalculator {
-	
+
 	@Override
-	public Node_NDataToElse clone(){
+	public Node_NDataToElse clone() {
 		Node_NDataToElse cloned = new Node_NDataToElse();
+		clone(this, cloned);
 		return cloned;
 	}
-	
+
 	@Override
 	protected void initializeNode() {
 		stillCompute = true;
@@ -696,14 +708,14 @@ class Node_NDataToElse extends NodeCalculator {
 }
 
 class Node_StreamMerge extends NodeCalculator {
-	
+
 	@Override
-	public Node_StreamMerge clone(){
-		Node_StreamMerge cloned = new Node_StreamMerge(this.inPointList.size());
+	public Node_StreamMerge clone() {
+		Node_StreamMerge cloned = new Node_StreamMerge();
+		clone(this, cloned);
 		return cloned;
 	}
-	
-	
+
 	protected int lastStep = 0;
 	boolean generated = false;
 

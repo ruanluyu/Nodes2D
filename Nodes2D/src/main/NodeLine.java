@@ -2,6 +2,7 @@ package main;
 
 class NodeLine extends NObject {
 	private NodePoint inP, outP;
+	private boolean activated = false;
 
 	/////////////// initialObject
 	@Override
@@ -48,5 +49,22 @@ class NodeLine extends NObject {
 	@Override
 	public NodeLine clone() {
 		return new NodeLine(this.outP, this.inP);
+	}
+
+	public void delete() {
+		if (NBox.inTheSameBox(inP.getMaster(), outP.getMaster()) && (inP.getMaster().getBoxMaster() != null)) {
+			inP.getMaster().getBoxMaster().removeLine(this);
+		} else if (NBox.theyAreboxAndInnerNode(inP.getMaster(), outP.getMaster())) {
+			if (inP.getMaster().getBoxMaster() != null) {
+				inP.getMaster().getBoxMaster().removeLine(this);
+			}else{
+				outP.getMaster().getBoxMaster().removeLine(this);
+			}
+		}
+		inP.removeLine(this);
+		outP.removeLine(this);
+		inP = null;
+		outP = null;
+
 	}
 }

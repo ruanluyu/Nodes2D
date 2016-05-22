@@ -1,9 +1,0 @@
-package main;
-
-public class NBox extends NObject{
-	@Override
-	protected void initializeObject() {
-		CLASSNAME = "NBox";
-		idAddable = true;
-	}
-}

@@ -62,14 +62,72 @@ class Node extends NObject {
 
 	///////////////
 
-	public NodePoint getOutpoint(int id) {
-
-		return outPointList.get(id);
+	public void stopInputStream() {
+		for (NodePoint np : inPointList) {
+			if (!np.hasStream())
+				continue;
+			np.getStream().stop();
+		}
 	}
 
-	public NodePoint getInpoint(int id) {
+	public void pauseInputStream() {
+		for (NodePoint np : inPointList) {
+			if (!np.hasStream())
+				continue;
+			np.getStream().pause();
+		}
+	}
 
-		return inPointList.get(id);
+	protected void setInputPoint(int num, Node master, int mode) {
+		if (num < 0) {
+			return;// TODO Error
+		}
+		int derta = num - inPointList.size();
+		if (derta == 0) {
+			return;
+		}
+
+		NodePoint.resetNameId();
+		if (derta < 0) {
+			for (int i = 0; i > derta; i--) {
+				NodePoint npc = inPointList.get(inPointList.size() - 1);
+				npc.delete();
+				inPointList.remove(inPointList.size() - 1);
+			}
+			return;
+		}
+		int cur = getNameId();
+		setNameId(num - 1);
+		for (int i = 0; i < derta; i++) {
+			inPointList.add(new NodePoint(master, true, mode));
+		}
+		setNameId(cur);
+	}
+
+	protected void setOutputPoint(int num, Node master, int mode) {
+		if (num < 0) {
+			return;// TODO Error
+		}
+		int derta = num - outPointList.size();
+		if (derta == 0) {
+			return;
+		}
+
+		NodePoint.resetNameId();
+		if (derta < 0) {
+			for (int i = 0; i > derta; i--) {
+				NodePoint npc = outPointList.get(outPointList.size() - 1);
+				npc.delete();
+				outPointList.remove(outPointList.size() - 1);
+			}
+			return;
+		}
+		int cur = getNameId();
+		setNameId(num - 1);
+		for (int i = 0; i < derta; i++) {
+			outPointList.add(new NodePoint(master, false, mode));
+		}
+		setNameId(cur);
 	}
 
 	protected void addInPoint(int num, Node master, int mode) {
@@ -81,10 +139,6 @@ class Node extends NObject {
 		setNameId(cur);
 	}
 
-	public void addInPoint(int num, int mode) {
-		addInPoint(num, this, mode);
-	}
-
 	protected void addOutPoint(int num, Node master, int mode) {
 		int cur = getNameId();
 		NodePoint.setNameId(outPointList.size());
@@ -94,34 +148,22 @@ class Node extends NObject {
 		setNameId(cur);
 	}
 
+	public NodePoint getOutpoint(int id) {
+
+		return outPointList.get(id);
+	}
+
+	public NodePoint getInpoint(int id) {
+
+		return inPointList.get(id);
+	}
+
+	public void addInPoint(int num, int mode) {
+		addInPoint(num, this, mode);
+	}
+
 	public void addOutPoint(int num, int mode) {
 		addOutPoint(num, this, mode);
-	}
-
-	protected void setInputPoint(int num, Node master, int mode) {
-		int cur = getNameId();
-		NodePoint.resetNameId();
-		if (inPointList.size() > 0)
-			inPointList.clear();
-		for (int i = 0; i < num; i++) {
-			inPointList.add(new NodePoint(master, true, mode));
-		}
-		setNameId(cur);
-	}
-
-	protected void setOutputPoint(int num, Node master, int mode) {
-		int cur = getNameId();
-		NodePoint.resetNameId();
-		if (outPointList.size() > 0)
-			outPointList.clear();
-		for (int i = 0; i < num; i++) {
-			outPointList.add(new NodePoint(master, false));
-		}
-		setNameId(cur);
-	}
-
-	public boolean isComputing() {
-		return stillCompute;
 	}
 
 	public void addPoint(NodePoint point) {
@@ -142,6 +184,25 @@ class Node extends NObject {
 
 	public int getOutPointNum() {
 		return outPointList.size();
+	}
+
+	public void removeAllPoint() {
+		removeAllInPoint();
+		removeAllOutPoint();
+	}
+
+	public void removeAllInPoint() {
+		for (NodePoint np : inPointList) {
+			np.delete();
+		}
+		inPointList.clear();
+	}
+
+	public void removeAllOutPoint() {
+		for (NodePoint np : outPointList) {
+			np.delete();
+		}
+		outPointList.clear();
 	}
 
 	protected boolean inputIsAlready() {
@@ -169,22 +230,27 @@ class Node extends NObject {
 	}
 
 	public boolean computable() {
-		if (!stillCompute) {
-			if (computeTimes <= 0) {
-				return false;
-			}
+		if (stillCompute) {
+			return true;
 		}
-		return inputIsAlready();
+		if (computeTimes > 0) {
+			return true;
+		}
+		return false;
 	}
 
-	public void cleanOutpointStream(int id) {
-		outPointList.get(id).cleanStream();
+	public boolean isComputing() {
+		return stillCompute;
 	}
 
 	public void cleanOutpointStream() {
 		for (int i = 0; i < outPointList.size(); i++) {
 			cleanOutpointStream(i);
 		}
+	}
+
+	public void cleanOutpointStream(int id) {
+		outPointList.get(id).cleanStream();
 	}
 
 	public void addStreamToOutpoint(int id, NData data) {
@@ -231,7 +297,9 @@ class Node extends NObject {
 		if (outId >= outPointList.size()) {
 			return;// TODO Error
 		}
-
+		if (!inPointList.get(inId).hasStream()) {
+			return;// TODO Error
+		}
 		addStreamToOutpoint(outId, inPointList.get(inId).getStream());
 		inPointList.get(inId).cleanStream();
 
@@ -251,41 +319,87 @@ class Node extends NObject {
 		return curStream;
 	}
 
+	public int getComputeTimes() {
+		return computeTimes;
+	}
+
 	public NData getData(int id) {
 		return inPointList.get(id).getStream().getData();
 	}
 
-	public void stopInputStream() {
-		for (NodePoint np : inPointList) {
-			if (!np.hasStream())
-				continue;
-			np.getStream().stop();
+	protected static void clone(Node originN, Node clonedN) {
+		clonedN.removeAllPoint();
+		clonedN.setMaster(originN.getMaster());
+		clonedN.setMaster(originN.getBoxMaster());
+		for (int i = 0; i < originN.getInPointNum(); i++) {
+			clonedN.addInPoint(1, originN.getInpoint(i).getType());
 		}
+		for (int i = 0; i < originN.getOutPointNum(); i++) {
+			clonedN.addOutPoint(1, originN.getOutpoint(i).getType());
+		}
+		clonedN.setMaster(originN.getMaster());
+		clonedN.setMaster(originN.getBoxMaster());
 	}
 
-	public void pauseInputStream() {
-		for (NodePoint np : inPointList) {
-			if (!np.hasStream())
-				continue;
-			np.getStream().pause();
+	public int getPointId(NodePoint np) {
+		if (np.isInput()) {
+			return inPointList.indexOf(np);
 		}
-	}
 
-	public int getComputeTimes() {
-		return computeTimes;
+		return outPointList.indexOf(np);
+
 	}
 
 	public Node clone() {
 		return null;
 	}
 
+	public void removePoint(NodePoint np) {
+		if (np.getMaster() != this) {
+			return;
+		}
+		np.delete();
+		if (np.isInput()) {
+			inPointList.remove(np);
+		} else {
+			outPointList.remove(np);
+		}
+	}
+
+	public void removePoint(boolean input, int id) {
+		if (input) {
+			if (id >= inPointList.size()) {
+				return;
+			}
+			inPointList.get(id).delete();
+			inPointList.remove(id);
+			return;
+		}
+
+		if (id >= outPointList.size()) {
+			return;
+		}
+		outPointList.get(id).delete();
+		outPointList.remove(id);
+	}
+
+	public void removeInPoint(int id) {
+		removePoint(true, id);
+	}
+
+	public void removeOutPoint(int id) {
+		removePoint(false, id);
+	}
+
 	public void delete() {
 		deleteAllLines();
 		if (master != null) {
 			master.removeNode(this);
+			master = null;
 		}
 		if (boxMaster != null) {
 			boxMaster.removeNode(this);
+			boxMaster = null;
 		}
 	}
 
@@ -405,6 +519,7 @@ class Node_Printer extends Node {
 	@Override
 	public Node_Printer clone() {
 		Node_Printer cloned = new Node_Printer();
+		clone(this , cloned);
 		return cloned;
 	}
 

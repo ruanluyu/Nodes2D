@@ -19,7 +19,7 @@ class NData extends NObject {
 	protected boolean booleanData = false;
 
 	public static boolean typeConnectable(int outpoint, int inpoint) {
-		if (inpoint == NDATA) {
+		if (inpoint == NDATA || outpoint == NDATA) {
 			return true;
 		}
 

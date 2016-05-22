@@ -13,9 +13,9 @@ class NodePoint extends NObject {
 	private boolean input;
 	private boolean inoutMode = false;
 	private Node master;
+	private NodeLine inLine;
 	private List<NodeLine> outLinesList = new ArrayList<NodeLine>();
 	private List<NStream> streamList = new ArrayList<NStream>();
-	private NodeLine inLine;
 	private int type = -1;
 
 	/////////////// initialObject
@@ -88,8 +88,20 @@ class NodePoint extends NObject {
 		return NData.typeConnectable(np1.getType(), np2.getType());
 	}
 
+	public void setInOutMode(boolean mode) {
+		inoutMode = mode;
+	}
+
+	public boolean isInOutMode() {
+		return inoutMode;
+	}
+
 	public int getType() {
 		return type;
+	}
+
+	public Node getMaster() {
+		return master;
 	}
 
 	public boolean isInput() {
@@ -100,8 +112,87 @@ class NodePoint extends NObject {
 		return !input;
 	}
 
-	public Node getMaster() {
-		return master;
+	public boolean hasStream() {
+		if (streamList.size() > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public int streamNum() {
+		return streamList.size();
+	}
+
+	public NStream getStream() {
+		return getStream(0);
+	}
+
+	public NStream getStream(int id) {
+		if (id < streamList.size())
+			return streamList.get(id);
+		return null;
+	}
+
+	public int getNumOfStream() {
+		return streamList.size();
+	}
+
+	public void addStream(NStream nst) {
+		if (!input) {
+			streamList.add(nst);
+		} else {
+			if (streamList.size() > 0) {
+				println("Warnning : the num of stream on inPoint > 1.\nThis occured while working on " + title + " "
+						+ master.getTitle());
+				nst.stop();
+			} else
+				streamList.add(nst);
+		}
+	}
+
+	public void removeStream(int index) {
+		streamList.remove(index);
+	}
+
+	public void cleanStream() {
+		if (streamList.size() > 0) {
+			streamList.clear();
+		}
+	}
+
+	public void removeStream(NStream ns) {
+		streamList.remove(ns);
+	}
+
+	public NodeLine getLine() {
+		return inLine;
+	}
+
+	public NodeLine getLine(int i) {
+		return outLinesList.get(i);
+	}
+
+	public int getNumOfLines() {
+
+		if (input) {
+			if (inLine == null) {
+				return 0;
+			} else {
+				return 1;
+			}
+		}
+		return outLinesList.size();
+	}
+
+	public int getNumOfLines(boolean input) {
+		if (input) {
+			if (inLine == null) {
+				return 0;
+			} else {
+				return 1;
+			}
+		}
+		return outLinesList.size();
 	}
 
 	public void addLine(NodeLine target) {
@@ -140,103 +231,35 @@ class NodePoint extends NObject {
 			outLinesList.add(target);
 	}
 
-	public void disconnect() {
-		inLine = null;
-	}
+	public void removeLine(NodeLine nl) {
+		if (inLine == nl) {
+			inLine = null;
+			return;
+		}
+		outLinesList.remove(nl);
 
-	public void disconnect(NodeLine line) {
-		outLinesList.remove(line);
 	}
-
-	public void setInOutMode(boolean mode) {
-		inoutMode = mode;
-	}
-
-	public boolean isInOutMode() {
-		return inoutMode;
-	}
-
-	public int streamNum() {
-		return streamList.size();
-	}
-
-	public void cleanStream() {
-		if (streamList.size() > 0) {
+	
+	public void delete(){
+		if(inLine != null){
+			inLine.delete();
+			inLine = null;
+		}
+		if(outLinesList.size()>0){
+			for(NodeLine nl : outLinesList){
+				nl.delete();
+			}
+			outLinesList.clear();
+		}
+		outLinesList = null;
+		if(streamList.size()>0){
+			for(NStream ns : streamList){
+				ns.delete();
+			}
 			streamList.clear();
 		}
-	}
-
-	public void removeStream(int index) {
-		streamList.remove(index);
-	}
-
-	public void addStream(NStream nst) {
-		if (!input) {
-			streamList.add(nst);
-		} else {
-			if (streamList.size() > 0) {
-				println("Warnning : the num of stream on inPoint > 1.\nThis occured while working on " + title + " "
-						+ master.getTitle());
-				nst.stop();
-			} else
-				streamList.add(nst);
-		}
-	}
-
-	public NStream getStream(int id) {
-		if (id < streamList.size())
-			return streamList.get(id);
-		return null;
-	}
-
-	public NStream getStream() {
-		return getStream(0);
-	}
-
-	public boolean hasStream() {
-		if (streamList.size() > 0) {
-			return true;
-		}
-		return false;
-	}
-
-	public int getNumOfStream() {
-		return streamList.size();
-	}
-
-	public int getNumOfLines() {
-
-		if (input) {
-			if (inLine == null) {
-				return 0;
-			} else {
-				return 1;
-			}
-		}
-		return outLinesList.size();
-	}
-
-	public int getNumOfLines(boolean input) {
-		if (input) {
-			if (inLine == null) {
-				return 0;
-			} else {
-				return 1;
-			}
-		}
-		return outLinesList.size();
-	}
-
-	public NodeLine getLine(int i) {
-		return outLinesList.get(i);
-	}
-
-	public NodeLine getLine() {
-		return inLine;
-	}
-
-	public void removeStream(NStream ns) {
-		streamList.remove(ns);
+		streamList = null;
+		master = null;
 	}
 
 }

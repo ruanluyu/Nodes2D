@@ -28,6 +28,9 @@ class NodesSystem extends NObject {
 	}
 
 	public void addNode(Node node) {
+		if (node.getMaster() == this) {
+			return;
+		}
 		nodeList.add(node);
 		node.setMaster(this);
 	}
@@ -59,31 +62,43 @@ class NodesSystem extends NObject {
 	 * ); return null; }
 	 */
 
-	public void disconnect(NodeLine line) {
-		line.getInPoint().disconnect();
-		line.getOutPoint().disconnect(line);
-		lineList.remove(line);
-		println(line.getOutPoint().getMaster().getTitle() + "(in " + line.getOutPoint().getTitle() + ") - / - "
-				+ line.getInPoint().getMaster().getTitle() + "(out " + line.getInPoint().getTitle() + ") disconnected");
-	}
-
 	public NodeLine connect(NodePoint outpoint, NodePoint inpoint) {
 		masterCheck(outpoint.getMaster()); // 检测是否注册到nodeList中,
 		masterCheck(inpoint.getMaster()); // 如果没注册，则注册。
+		NodeLine out = null;
 		if (!NBox.theyAreboxAndInnerNode(outpoint.getMaster(), inpoint.getMaster())) {
+
 			if (outpoint.isInput()) {
 				NodePoint cur = outpoint;
 				outpoint = inpoint;
 				inpoint = cur;
 			} // 修正inpoint和outpoint的对应关系
-			return connectNormal(outpoint, inpoint);
-		}
 
-		if ((inpoint.isInOutMode() && inpoint.isInput()) || (outpoint.isInOutMode() && outpoint.isInput())) {
-			return connectInBox(outpoint, inpoint);
-		}
+			out = connectNormal(outpoint, inpoint);
 
-		return connectOutBox(outpoint, inpoint);
+		} else {
+			if (outpoint.isInOutMode()) {
+				NodePoint curNp = outpoint;
+				outpoint = inpoint;
+				inpoint = curNp;
+			}
+
+			if (inpoint.isInput()) {
+				out = connectInBox(inpoint, outpoint);
+			} else if (inpoint.isOutput()) {
+				out = connectOutBox(outpoint, inpoint);
+			}
+		}
+		lineList.add(out);
+		return out;
+
+	}
+
+	public void disconnect(NodeLine line) {
+		line.delete();
+		lineList.remove(line);
+		println(line.getOutPoint().getMaster().getTitle() + "(in " + line.getOutPoint().getTitle() + ") - / - "
+				+ line.getInPoint().getMaster().getTitle() + "(out " + line.getInPoint().getTitle() + ") disconnected");
 	}
 
 	private NodeLine connectNormal(NodePoint outpoint, NodePoint inpoint) {
@@ -125,7 +140,9 @@ class NodesSystem extends NObject {
 				+ inpoint.getMaster().getTitle() + "(out " + inpoint.getTitle() + ") connected");
 		outpoint.addLine(out);
 		inpoint.addLine(out);
-		lineList.add(out);
+		if (outpoint.getMaster().getBoxMaster() != null) {
+			outpoint.getMaster().getBoxMaster().addLine(out);
+		}
 		return out;
 	}
 
@@ -149,7 +166,7 @@ class NodesSystem extends NObject {
 				+ innerpoint.getMaster().getTitle() + "(out " + innerpoint.getTitle() + ") connected");
 		boxpoint.addLine(out);
 		innerpoint.addLine(out);
-		lineList.add(out);
+		innerpoint.getMaster().getBoxMaster().addLine(out);
 		return out;
 	}
 
@@ -166,7 +183,7 @@ class NodesSystem extends NObject {
 				+ boxpoint.getMaster().getTitle() + "(out " + boxpoint.getTitle() + ") connected");
 		innerpoint.addLine(out);
 		boxpoint.addLine(out);
-		lineList.add(out);
+		innerpoint.getMaster().getBoxMaster().addLine(out);
 		return out;
 	}
 
@@ -189,9 +206,17 @@ class NodesSystem extends NObject {
 			if (ns == null)
 				continue;
 			if (ns.isStop()) {
+				ns.delete();
 				i.remove();
 			}
 		}
+	}
+
+	private void cleanAllStream() {
+		for (NStream ns : streamList) {
+			ns.delete();
+		}
+		streamList.clear();
 	}
 
 	private boolean stepBelowMaxStep() {
@@ -205,30 +230,37 @@ class NodesSystem extends NObject {
 	private void generateStream() {
 		for (Node nd : nodeList) {
 			nd.generateStream();
-			if (nd.getOutPointNum() > 0) {
+			if (nd.getOutPointNum() <= 0) {
+				continue;
+			}
+			if (nd instanceof NodeGenerator) {
+				NodeGenerator ng = (NodeGenerator) nd;
+				if (!ng.generatable()) {
+					continue;
+				}
 				boolean generatorGenerated = false;
 				for (int i = 0; i < nd.getOutPointNum(); i++) {
 					NodePoint np = nd.getOutpoint(i);
-					if (np.getNumOfStream() <= 0)
+					if (!np.hasStream())
 						continue;
-					if ((nd instanceof NodeGenerator)) {
-						if (((NodeGenerator) nd).generatable()) {
-							for (int j = 0; j < np.getNumOfStream(); j++) {
-								if (np.hasStream()) {
-									streamList.add(np.getStream(j).clone());
-									generatorGenerated = true;
-								}
-							}
-						}
-					} else {
-						for (int j = 0; j < np.getNumOfStream(); j++) {
-							streamList.add(np.getStream(j));
-						}
-						np.cleanStream();
+					generatorGenerated = true;
+					for (int j = 0; j < np.getNumOfStream(); j++) {
+						streamList.add(np.getStream(j).clone());
 					}
 				}
 				if ((nd instanceof NodeGenerator) && generatorGenerated)
 					((NodeGenerator) nd).generated();
+				continue;
+			}
+
+			for (int i = 0; i < nd.getOutPointNum(); i++) {
+				NodePoint np = nd.getOutpoint(i);
+				if (np.getNumOfStream() <= 0)
+					continue;
+				for (int j = 0; j < np.getNumOfStream(); j++) {
+					streamList.add(np.getStream(j));
+				}
+				np.cleanStream();
 			}
 		}
 		cleanArrayNull(streamList);
@@ -291,7 +323,6 @@ class NodesSystem extends NObject {
 			cleanStopStream();
 			generateStream();
 		}
-
 	}
 
 	public void run() {
@@ -303,7 +334,7 @@ class NodesSystem extends NObject {
 			oneComputeStep();
 			// cleanStopStream();
 			// println( streamList.size());
-			streamList.clear();
+			cleanAllStream();
 			step++;
 
 			println("************************\n Step " + step + " : Completed.\n\n************************");
