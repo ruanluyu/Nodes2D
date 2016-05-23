@@ -19,7 +19,6 @@ class NObject {
 			thisId = -1;
 			title = CLASSNAME;
 		}
-
 	}
 
 	protected void initializeObject() {
@@ -33,8 +32,8 @@ class NObject {
 		nameId = id;
 	}
 
-	public static void resetNameId() {
-		nameId = 0;
+	public int getNameId() {
+		return nameId;
 	}
 
 	public void setTitle(String title) {
@@ -75,11 +74,7 @@ class NObject {
 		return thisId;
 	}
 
-	public int getNameId() {
-		return nameId;
-	}
-	
-	public NObject clone(){
+	public NObject clone() {
 		println("Warning : there is no clone method in this class.");
 		return null;
 	}

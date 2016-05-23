@@ -78,16 +78,16 @@ public class NBox extends Node {
 			return;
 		}
 
-		NodePoint.resetNameId();
 		if (derta < 0) {
 			for (int i = 0; i > derta; i--) {
-				NodePoint npc = inPointList.get(inPointList.size() - 1);
+				NodePoint npc = inPointList.get(inPointList.size());
 				npc.delete();
 				inPointList.remove(inPointList.size() - 1);
 			}
 			return;
 		}
 		int cur = getNameId();
+		NodePoint.setNameId(inPointList.size() - 1);
 		setNameId(num - 1);
 		for (int i = 0; i < derta; i++) {
 			NodePoint cp = new NodePoint(master, true, mode);
@@ -107,16 +107,16 @@ public class NBox extends Node {
 			return;
 		}
 
-		NodePoint.resetNameId();
 		if (derta < 0) {
 			for (int i = 0; i > derta; i--) {
-				NodePoint npc = outPointList.get(outPointList.size() - 1);
+				NodePoint npc = outPointList.get(outPointList.size());
 				npc.delete();
 				outPointList.remove(outPointList.size() - 1);
 			}
 			return;
 		}
 		int cur = getNameId();
+		NodePoint.setNameId(outPointList.size() - 1);
 		setNameId(num - 1);
 		for (int i = 0; i < derta; i++) {
 			NodePoint cp = new NodePoint(master, false, mode);
@@ -164,6 +164,26 @@ public class NBox extends Node {
 		return false;
 	}
 
+	@Override
+	public void generateStream() {
+		println("Q");
+		int i = -1;
+		for (NodePoint np : outPointList) {
+			i++;
+			if (!np.hasStream()) {
+				continue;
+			}
+			println("W");
+			NStream curS = np.getStream();
+			if (curS.isStop()) {
+				continue;
+			}
+			println("E");
+			addStreamToOutpoint(i, curS);
+		}
+
+	}
+
 	public Node getNode(int id) {
 		if (id >= nodeList.size() || id < 0) {
 			return null;
@@ -185,17 +205,17 @@ public class NBox extends Node {
 			NodePoint outP = nl.getOutPoint();
 			NodePoint inP = nl.getInPoint();
 			if (theyAreboxAndInnerNode(outM, inM)) {
-				if (outM instanceof NBox) {
-					cloned.addLine(new NodeLine(cloned.getInpoint(outM.getPointId(outP)),
-							cloned.getNode(getNodeId(inM)).getInpoint(inM.getPointId(inP))));
-				} else if (inM instanceof NBox) {
-					cloned.addLine(new NodeLine(cloned.getNode(getNodeId(outM)).getOutpoint(outM.getPointId(outP)),
-							cloned.getOutpoint(outM.getPointId(outP))));
+				if (outM == this) {
+					cloned.getMaster().connect(cloned.getInpoint(getPointId(outP)),
+							cloned.getNode(getNodeId(inM)).getInpoint(inM.getPointId(inP)));
+				} else if (inM == this) {
+					cloned.getMaster().connect(cloned.getNode(getNodeId(outM)).getOutpoint(outM.getPointId(outP)),
+							cloned.getOutpoint(getPointId(inP)));
 				}
 				continue;
 			} else {
-				cloned.addLine(new NodeLine(cloned.getNode(getNodeId(outM)).getOutpoint(outM.getPointId(outP)),
-						cloned.getNode(getNodeId(inM)).getInpoint(inM.getPointId(inP))));
+				cloned.getMaster().connect(cloned.getNode(getNodeId(outM)).getOutpoint(outM.getPointId(outP)),
+						cloned.getNode(getNodeId(inM)).getInpoint(inM.getPointId(inP)));
 			}
 		}
 		return cloned;

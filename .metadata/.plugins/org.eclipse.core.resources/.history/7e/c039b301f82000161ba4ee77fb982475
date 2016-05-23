@@ -1,0 +1,526 @@
+package main;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * TODO basic object of all Nodes
+ * 
+ * @version v1.0
+ * @author ZzStarSound
+ * @see main.NodePoint
+ */
+class Node extends NObject {
+	protected List<NodePoint> inPointList = new ArrayList<NodePoint>();
+	protected List<NodePoint> outPointList = new ArrayList<NodePoint>();
+	protected boolean stillCompute = false;
+	protected int computeTimes = 1;
+	protected NodesSystem master = null;
+	protected NBox boxMaster = null;
+	protected boolean inPointAddable = false;
+	protected boolean outPointAddable = false;
+
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "Node";
+		idAddable = true;
+	}
+
+	protected void initializeNode() {
+		stillCompute = false;
+		computeTimes = 0;
+		inPointAddable = false;
+		outPointAddable = false;
+	}
+
+	public Node() {
+		super();
+		initializeNode();
+	}
+
+	public void setMaster(NodesSystem ns) {
+		master = ns;
+	}
+
+	public void setMaster(NBox nb) {
+		boxMaster = nb;
+	}
+
+	public NodesSystem getMaster() {
+		return master;
+	}
+
+	public NBox getBoxMaster() {
+		return boxMaster;
+	}
+
+	///////////////
+	public void generateStream() {
+
+	}
+
+	///////////////
+
+	public void stopInputStream() {
+		for (NodePoint np : inPointList) {
+			if (!np.hasStream())
+				continue;
+			np.getStream().stop();
+		}
+	}
+
+	public void pauseInputStream() {
+		for (NodePoint np : inPointList) {
+			if (!np.hasStream())
+				continue;
+			np.getStream().pause();
+		}
+	}
+
+	protected void setInputPoint(int num, Node master, int mode) {
+		if (num < 0) {
+			return;// TODO Error
+		}
+		int derta = num - inPointList.size();
+		if (derta == 0) {
+			return;
+		}
+
+		if (derta < 0) {
+			for (int i = 0; i > derta; i--) {
+				NodePoint npc = inPointList.get(inPointList.size() - 1);
+				npc.delete();
+				inPointList.remove(inPointList.size() - 1);
+			}
+			return;
+		}
+		int cur = getNameId();
+		NodePoint.setNameId(inPointList.size() - 1);
+		setNameId(num - 1);
+		for (int i = 0; i < derta; i++) {
+			inPointList.add(new NodePoint(master, true, mode));
+		}
+		setNameId(cur);
+	}
+
+	protected void setOutputPoint(int num, Node master, int mode) {
+		if (num < 0) {
+			return;// TODO Error
+		}
+		int derta = num - outPointList.size();
+		if (derta == 0) {
+			return;
+		}
+
+		if (derta < 0) {
+			for (int i = 0; i > derta; i--) {
+				NodePoint npc = outPointList.get(outPointList.size() - 1);
+				npc.delete();
+				outPointList.remove(outPointList.size() - 1);
+			}
+			return;
+		}
+		int cur = getNameId();
+		NodePoint.setNameId(outPointList.size() - 1);
+		setNameId(num - 1);
+		for (int i = 0; i < derta; i++) {
+			outPointList.add(new NodePoint(master, false, mode));
+		}
+		setNameId(cur);
+	}
+
+	protected void addInPoint(int num, Node master, int mode) {
+		int cur = getNameId();
+		NodePoint.setNameId(inPointList.size());
+		for (int i = 0; i < num; i++) {
+			inPointList.add(new NodePoint(master, true, mode));
+		}
+		setNameId(cur);
+	}
+
+	protected void addOutPoint(int num, Node master, int mode) {
+		int cur = getNameId();
+		NodePoint.setNameId(outPointList.size());
+		for (int i = 0; i < num; i++) {
+			outPointList.add(new NodePoint(master, false, mode));
+		}
+		setNameId(cur);
+	}
+
+	public NodePoint getOutpoint(int id) {
+
+		return outPointList.get(id);
+	}
+
+	public NodePoint getInpoint(int id) {
+
+		return inPointList.get(id);
+	}
+
+	public void addInPoint(int num, int mode) {
+		addInPoint(num, this, mode);
+	}
+
+	public void addOutPoint(int num, int mode) {
+		addOutPoint(num, this, mode);
+	}
+
+	public void addPoint(NodePoint point) {
+		int cur = getNameId();
+		if (point.isInput()) {
+			setNameId(inPointList.size());
+			inPointList.add(point);
+		} else {
+			setNameId(outPointList.size());
+			outPointList.add(point);
+		}
+		setNameId(cur);
+	}
+
+	public int getInPointNum() {
+		return inPointList.size();
+	}
+
+	public int getOutPointNum() {
+		return outPointList.size();
+	}
+
+	public void removeAllPoint() {
+		removeAllInPoint();
+		removeAllOutPoint();
+	}
+
+	public void removeAllInPoint() {
+		for (NodePoint np : inPointList) {
+			np.delete();
+		}
+		inPointList.clear();
+	}
+
+	public void removeAllOutPoint() {
+		for (NodePoint np : outPointList) {
+			np.delete();
+		}
+		outPointList.clear();
+	}
+
+	protected boolean inputIsAlready() {
+		if (inPointList.size() > 0) {
+			for (NodePoint np : inPointList) {
+				if (!np.hasStream() || np.getStream().isStop()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	protected boolean outputIsAlready() {
+		boolean flag = true;
+		if (outPointList.size() > 0) {
+			for (NodePoint np : outPointList) {
+				if (!np.hasStream()) {
+					flag = false;
+					break;
+				}
+			}
+		}
+		return flag;
+	}
+
+	public boolean computable() {
+		if (stillCompute) {
+			return true;
+		}
+		if (computeTimes > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isComputing() {
+		return stillCompute;
+	}
+
+	public void cleanOutpointStream() {
+		for (int i = 0; i < outPointList.size(); i++) {
+			cleanOutpointStream(i);
+		}
+	}
+
+	public void cleanOutpointStream(int id) {
+		outPointList.get(id).cleanStream();
+	}
+
+	public void addStreamToOutpoint(int id, NData data) {
+		if (id >= outPointList.size())
+			return;
+		NodePoint cur = outPointList.get(id);
+		cur.cleanStream();
+		for (int i = 0; i < cur.getNumOfLines(); i++) {
+			cur.addStream(new NStream(NData.clone(data, data.getType()), cur, cur.getLine(i)));
+		}
+	}
+
+	public void addStreamToOutpoint(int id, NStream stream) {
+		if (id >= outPointList.size())
+			return;
+		NodePoint cur = outPointList.get(id);
+		cur.cleanStream();
+		stream.stop(false);
+		stream.pause(false);
+		for (int i = 0; i < cur.getNumOfLines(); i++) {
+			NStream newStream = stream.clone();
+			newStream.setPoint(cur);
+			newStream.setLine(cur.getLine(i));
+			cur.addStream(newStream);
+
+		}
+
+	}
+
+	public void cleanInPoint() {
+		for (NodePoint np : inPointList) {
+			if ((!np.hasStream()))
+				continue;
+			if ((np.getStream().getPoint() == np))
+				np.getStream().stop();
+			np.cleanStream();
+		}
+	}
+
+	protected void sendInToOut(int inId, int outId) {
+		if (inId >= inPointList.size()) {
+			return;// TODO Error
+		}
+		if (outId >= outPointList.size()) {
+			return;// TODO Error
+		}
+		if (!inPointList.get(inId).hasStream()) {
+			return;// TODO Error
+		}
+		addStreamToOutpoint(outId, inPointList.get(inId).getStream());
+		inPointList.get(inId).cleanStream();
+
+	}
+
+	public NStream getInpointStream(int id) {
+		if (id >= inPointList.size()) {
+			return null;
+		}
+		if (!(inPointList.get(id).hasStream())) {
+			return null;
+		}
+		NStream curStream = inPointList.get(id).getStream();
+		if (curStream.isStop()) {
+			return null;
+		}
+		return curStream;
+	}
+
+	public int getComputeTimes() {
+		return computeTimes;
+	}
+
+	public NData getData(int id) {
+		return inPointList.get(id).getStream().getData();
+	}
+
+	protected static void clone(Node originN, Node clonedN) {
+		clonedN.removeAllPoint();
+		clonedN.setMaster(originN.getMaster());
+		clonedN.setMaster(originN.getBoxMaster());
+		for (int i = 0; i < originN.getInPointNum(); i++) {
+			clonedN.addInPoint(1, originN.getInpoint(i).getType());
+		}
+		for (int i = 0; i < originN.getOutPointNum(); i++) {
+			clonedN.addOutPoint(1, originN.getOutpoint(i).getType());
+		}
+		clonedN.setMaster(originN.getMaster());
+		clonedN.setMaster(originN.getBoxMaster());
+	}
+
+	public int getPointId(NodePoint np) {
+		if (np.isInput()) {
+			return inPointList.indexOf(np);
+		}
+
+		return outPointList.indexOf(np);
+
+	}
+
+	public Node clone() {
+		return null;
+	}
+
+	public void removePoint(NodePoint np) {
+		if (np.getMaster() != this) {
+			return;
+		}
+		np.delete();
+		if (np.isInput()) {
+			inPointList.remove(np);
+		} else {
+			outPointList.remove(np);
+		}
+	}
+
+	public void removePoint(boolean input, int id) {
+		if (input) {
+			if (id >= inPointList.size()) {
+				return;
+			}
+			inPointList.get(id).delete();
+			inPointList.remove(id);
+			return;
+		}
+
+		if (id >= outPointList.size()) {
+			return;
+		}
+		outPointList.get(id).delete();
+		outPointList.remove(id);
+	}
+
+	public void removeInPoint(int id) {
+		removePoint(true, id);
+	}
+
+	public void removeOutPoint(int id) {
+		removePoint(false, id);
+	}
+
+	public void delete() {
+		deleteAllLines();
+		if (master != null) {
+			master.removeNode(this);
+			master = null;
+		}
+		if (boxMaster != null) {
+			boxMaster.removeNode(this);
+			boxMaster = null;
+		}
+	}
+
+	public void deleteAllLines() {
+		for (NodePoint np : inPointList) {
+			if (np.getNumOfLines() > 0) {
+				np.getMaster().getMaster().disconnect(np.getLine());
+			}
+		}
+		for (NodePoint np : outPointList) {
+			if (np.getNumOfLines() > 0) {
+				for (int i = 0; i < np.getNumOfLines(); i++) {
+					np.getMaster().getMaster().disconnect(np.getLine(i));
+				}
+			}
+		}
+	}
+
+	/*
+	 * private NodePoint selectPoint(boolean input,int index){ if(input){
+	 * if(index<inPointList.size()&&index>=0){ return inPointList.get(index);
+	 * }else{ try{ throw new NodeException("Node : "+title);
+	 * }catch(NodeException e){ e.println(); } } }else{
+	 * if(index<outPointList.size()&&index>=0){ return outPointList.get(index);
+	 * }else{ try{ throw new NodeException("Node : "+title);
+	 * }catch(NodeException e){ e.println(); } } } return null; }
+	 */
+
+}
+
+/**
+ * 
+ * in0 : NDouble<BR/>
+ * in1 : NInt<BR/>
+ * in2 : NString<BR/>
+ * in3 : NBoolean<BR/>
+ * in4 : NVector<BR/>
+ * in5 : NData<BR/>
+ * 
+ * @author ZzStarSound
+ *
+ */
+class Node_Printer extends Node {
+
+	/////////////// initialObject
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "Node_Printer";
+		idAddable = true;
+	}
+
+	@Override
+	protected void initializeNode() {
+		stillCompute = true;
+		computeTimes = 0;
+		inPointAddable = false;
+		outPointAddable = false;
+	}
+
+	public Node_Printer() {
+		addInPoint(1, this, NData.NDOUBLE);
+		addInPoint(1, this, NData.NINT);
+		addInPoint(1, this, NData.NSTRING);
+		addInPoint(1, this, NData.NBOOLEAN);
+		addInPoint(1, this, NData.NVECTOR);
+		addInPoint(1, this, NData.NDATA);
+	}
+
+	@Override
+	public void generateStream() {
+		boolean flag = true;
+		for (NodePoint np : inPointList) {
+			if ((np.hasStream()) && (!(np.getStream().isStop()))) {
+				flag = false;
+			}
+		}
+		if (flag) {
+			return;
+		}
+		String out = "Output message : \n";
+		boolean haveMessage = false;
+		for (NodePoint np : inPointList) {
+			if (np.getNumOfStream() > 0) {
+				haveMessage = true;
+				NData cur = np.getStream().getData();
+				switch (cur.getType()) {
+				case NData.NDOUBLE:
+					out += "NDouble ";
+					break;
+				case NData.NINT:
+					out += "NInt ";
+					break;
+				case NData.NSTRING:
+					out += "NString ";
+					break;
+				case NData.NBOOLEAN:
+					out += "NBoolean ";
+					break;
+				case NData.NDATA:
+					out += "NData ";
+					break;
+				}
+				out += " : ";
+				out += cur.getStringData() + " \n";
+			}
+		}
+		if (haveMessage) {
+			println(out);
+			cleanInPoint();
+		}
+		cleanInPoint();
+		if (!stillCompute) {
+			computeTimes--;
+		}
+	}
+
+	@Override
+	public Node_Printer clone() {
+		Node_Printer cloned = new Node_Printer();
+		clone(this, cloned);
+		return cloned;
+	}
+
+}

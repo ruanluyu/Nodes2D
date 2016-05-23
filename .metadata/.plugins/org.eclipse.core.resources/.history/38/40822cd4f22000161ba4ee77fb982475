@@ -1,0 +1,257 @@
+package main;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class NBox extends Node {
+	private List<Node> nodeList = new ArrayList<Node>();
+	private List<NodeLine> lineList = new ArrayList<NodeLine>();
+
+	@Override
+	protected void initializeObject() {
+		CLASSNAME = "NBox";
+		idAddable = true;
+	}
+
+	public NBox() {
+		addInPoint(1, NData.NDATA);
+		addOutPoint(1, NData.NDATA);
+	}
+
+	public NBox(int inNum, int outNum) {
+		addInPoint(inNum, NData.NDATA);
+		addOutPoint(outNum, NData.NDATA);
+	}
+
+	public void addNode(Node node) {
+		nodeList.add(node);
+		node.setMaster(this);
+		node.setMaster(master);
+		master.addNode(node);
+	}
+
+	public void removeNode(Node node) {
+		nodeList.remove(node);
+	};
+
+	@Override
+	protected void addInPoint(int num, Node master, int mode) {
+		int cur = getNameId();
+		NodePoint.setNameId(inPointList.size());
+		for (int i = 0; i < num; i++) {
+			NodePoint curA = new NodePoint(master, true, mode);
+			curA.setInOutMode(true);
+			inPointList.add(curA);
+		}
+		setNameId(cur);
+	}
+
+	@Override
+	public void addInPoint(int num, int mode) {
+		addInPoint(num, this, mode);
+	}
+
+	@Override
+	protected void addOutPoint(int num, Node master, int mode) {
+		int cur = getNameId();
+		NodePoint.setNameId(outPointList.size());
+		for (int i = 0; i < num; i++) {
+			NodePoint curA = new NodePoint(master, false, mode);
+			curA.setInOutMode(true);
+			outPointList.add(curA);
+		}
+		setNameId(cur);
+	}
+
+	@Override
+	public void addOutPoint(int num, int mode) {
+		addOutPoint(num, this, mode);
+	}
+
+	@Override
+	protected void setInputPoint(int num, Node master, int mode) {
+		if (num < 0) {
+			return;// TODO Error
+		}
+		int derta = num - inPointList.size();
+		if (derta == 0) {
+			return;
+		}
+
+		NodePoint.resetNameId();
+		if (derta < 0) {
+			for (int i = 0; i > derta; i--) {
+				NodePoint npc = inPointList.get(inPointList.size() - 1);
+				npc.delete();
+				inPointList.remove(inPointList.size() - 1);
+			}
+			return;
+		}
+		int cur = getNameId();
+		setNameId(num - 1);
+		for (int i = 0; i < derta; i++) {
+			NodePoint cp = new NodePoint(master, true, mode);
+			cp.setInOutMode(true);
+			inPointList.add(cp);
+		}
+		setNameId(cur);
+	}
+
+	@Override
+	protected void setOutputPoint(int num, Node master, int mode) {
+		if (num < 0) {
+			return;// TODO Error
+		}
+		int derta = num - outPointList.size();
+		if (derta == 0) {
+			return;
+		}
+
+		NodePoint.resetNameId();
+		if (derta < 0) {
+			for (int i = 0; i > derta; i--) {
+				NodePoint npc = outPointList.get(outPointList.size() - 1);
+				npc.delete();
+				outPointList.remove(outPointList.size() - 1);
+			}
+			return;
+		}
+		int cur = getNameId();
+		setNameId(num - 1);
+		for (int i = 0; i < derta; i++) {
+			NodePoint cp = new NodePoint(master, false, mode);
+			cp.setInOutMode(true);
+			inPointList.add(cp);
+		}
+		setNameId(cur);
+	}
+
+	@Override
+	public void setMaster(NodesSystem nds) {
+		master = nds;
+		for (Node nd : nodeList) {
+			nd.setMaster(nds);
+		}
+	}
+
+	@Override
+	protected void initializeNode() {
+		stillCompute = true;
+		computeTimes = 0;
+		inPointAddable = true;
+		outPointAddable = true;
+	}
+
+	public static boolean inTheSameBox(Node a, Node b) {
+
+		if (a.getMaster() == b.getMaster() && a.getBoxMaster() == b.getBoxMaster()) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean theyAreboxAndInnerNode(Node a, Node b) {
+		if (a instanceof NBox) {
+			if ((Object) a == (Object) b.getBoxMaster()) {
+				return true;
+			}
+		}
+		if (b instanceof NBox) {
+			if ((Object) b == (Object) a.getBoxMaster()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void generateStream() {
+		println("Q");
+		int i = -1;
+		for (NodePoint np : outPointList) {
+			i++;
+			if (!np.hasStream()) {
+				continue;
+			}
+			println("W");
+			NStream curS = np.getStream();
+			if (curS.isStop()) {
+				continue;
+			}
+			println("E");
+			if (!curS.isPause()) {
+				continue;
+			}
+			println("R");
+			curS.pause(false);
+			addStreamToOutpoint(i, curS);
+		}
+	}
+
+	public Node getNode(int id) {
+		if (id >= nodeList.size() || id < 0) {
+			return null;
+		}
+		return nodeList.get(id);
+	}
+
+	@Override
+	public NBox clone() {
+		NBox cloned = new NBox();
+		clone(this, cloned);
+		for (Node node : nodeList) {
+			cloned.addNode(node.clone());
+		}
+
+		for (NodeLine nl : lineList) {
+			Node outM = nl.getOutPoint().getMaster();
+			Node inM = nl.getInPoint().getMaster();
+			NodePoint outP = nl.getOutPoint();
+			NodePoint inP = nl.getInPoint();
+			if (theyAreboxAndInnerNode(outM, inM)) {
+				if (outM instanceof NBox) {
+					cloned.getMaster().connect(cloned.getInpoint(outM.getPointId(outP)),
+							cloned.getNode(getNodeId(inM)).getInpoint(inM.getPointId(inP)));
+				} else if (inM instanceof NBox) {
+					cloned.getMaster().connect(cloned.getNode(getNodeId(outM)).getOutpoint(outM.getPointId(outP)),
+							cloned.getOutpoint(outM.getPointId(outP)));
+				}
+				continue;
+			} else {
+				cloned.getMaster().connect(cloned.getNode(getNodeId(outM)).getOutpoint(outM.getPointId(outP)),
+						cloned.getNode(getNodeId(inM)).getInpoint(inM.getPointId(inP)));
+			}
+		}
+		return cloned;
+	}
+
+	@Override
+	public void delete() {
+		for (Node nd : nodeList) {
+			nd.delete();
+		}
+		nodeList.clear();
+		deleteAllLines();
+		if (master != null) {
+			master.removeNode(this);
+			master = null;
+		}
+		if (boxMaster != null) {
+			boxMaster.removeNode(this);
+			boxMaster = null;
+		}
+	}
+
+	public void removeLine(NodeLine nl) {
+		lineList.remove(nl);
+	}
+
+	public void addLine(NodeLine out) {
+		lineList.add(out);
+	}
+
+	public int getNodeId(Node nd) {
+		return nodeList.indexOf(nd);
+	}
+
+}

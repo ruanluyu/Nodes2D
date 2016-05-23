@@ -87,16 +87,16 @@ class Node extends NObject {
 			return;
 		}
 
-		NodePoint.resetNameId();
 		if (derta < 0) {
 			for (int i = 0; i > derta; i--) {
-				NodePoint npc = inPointList.get(inPointList.size() - 1);
+				NodePoint npc = inPointList.get(inPointList.size());
 				npc.delete();
 				inPointList.remove(inPointList.size() - 1);
 			}
 			return;
 		}
 		int cur = getNameId();
+		NodePoint.setNameId(inPointList.size() - 1);
 		setNameId(num - 1);
 		for (int i = 0; i < derta; i++) {
 			inPointList.add(new NodePoint(master, true, mode));
@@ -113,16 +113,16 @@ class Node extends NObject {
 			return;
 		}
 
-		NodePoint.resetNameId();
 		if (derta < 0) {
 			for (int i = 0; i > derta; i--) {
-				NodePoint npc = outPointList.get(outPointList.size() - 1);
+				NodePoint npc = outPointList.get(outPointList.size());
 				npc.delete();
 				outPointList.remove(outPointList.size() - 1);
 			}
 			return;
 		}
 		int cur = getNameId();
+		NodePoint.setNameId(outPointList.size() - 1);
 		setNameId(num - 1);
 		for (int i = 0; i < derta; i++) {
 			outPointList.add(new NodePoint(master, false, mode));
@@ -268,10 +268,10 @@ class Node extends NObject {
 			return;
 		NodePoint cur = outPointList.get(id);
 		cur.cleanStream();
+		stream.stop(false);
+		stream.pause(false);
 		for (int i = 0; i < cur.getNumOfLines(); i++) {
 			NStream newStream = stream.clone();
-			newStream.stop(false);
-			newStream.pause(false);
 			newStream.setPoint(cur);
 			newStream.setLine(cur.getLine(i));
 			cur.addStream(newStream);
@@ -519,7 +519,7 @@ class Node_Printer extends Node {
 	@Override
 	public Node_Printer clone() {
 		Node_Printer cloned = new Node_Printer();
-		clone(this , cloned);
+		clone(this, cloned);
 		return cloned;
 	}
 

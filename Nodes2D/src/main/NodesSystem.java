@@ -28,9 +28,6 @@ class NodesSystem extends NObject {
 	}
 
 	public void addNode(Node node) {
-		if (node.getMaster() == this) {
-			return;
-		}
 		nodeList.add(node);
 		node.setMaster(this);
 	}
@@ -54,6 +51,10 @@ class NodesSystem extends NObject {
 
 	public int getNodeNum() {
 		return nodeList.size();
+	}
+
+	public int getLineNum() {
+		return lineList.size();
 	}
 
 	/*
@@ -329,6 +330,13 @@ class NodesSystem extends NObject {
 		println("************************\n RUN.\n\n************************");
 
 		generateStream();
+		println(streamList.size());
+		for (NodeLine nl : lineList) {
+			println(nl.getOutPoint().getMaster().getTitle()+"--*--"+nl.getInPoint().getMaster().getTitle());
+		}
+		for (Node nl : nodeList) {
+			println("-*-*-*-*"+nl.getTitle());
+		}
 		while ((delayerCheck() || generatorCheck() || (streamList.size() > 0)) && stepBelowMaxStep()) {
 
 			oneComputeStep();

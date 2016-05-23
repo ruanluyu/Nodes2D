@@ -16,6 +16,8 @@ public class NStream extends NObject {
 
 	///////////////
 
+	///////////////
+
 	public NStream(NData data, NodePoint nowPoint, NodeLine nowLine) {
 		super();
 		this.data = data;
@@ -26,6 +28,8 @@ public class NStream extends NObject {
 	public void setLine(NodeLine nl) {
 		nowLine = nl;
 	}
+
+	///////////////
 
 	public void setData(NData data) {
 		this.data = data;
@@ -68,23 +72,45 @@ public class NStream extends NObject {
 	}
 
 	public void goToInpoint() {
-		if (nowPoint.isOutput()) {
-			if (!(nowPoint.getMaster() instanceof NodeGenerator))
-				nowPoint.removeStream(this);
-			nowPoint = nowLine.getInPoint();
-			nowPoint.addStream(this);
-			if (nowPoint.getMaster().inputIsAlready() && (!nowPoint.getMaster().computable())) {
-				stop();
-			}
-
-			if ((!nowPoint.getMaster().isComputing()) && nowPoint.getMaster().getComputeTimes() <= 0) {
-				stop();
-			}
-
+		println("a" + nowPoint.isInput() + nowPoint.getTitle() + " " + nowPoint.getMaster().getTitle());
+		if (!nowPoint.isOutput()) {
 			pause();
-		} else {
-			pause();
+			return;
 		}
+		if (!(nowPoint.getMaster() instanceof NodeGenerator))
+			nowPoint.removeStream(this);
+		nowPoint = nowLine.getInPoint();
+		println("b" + nowPoint.isInput() + nowPoint.getTitle() + " " + nowPoint.getMaster().getTitle());
+		if (nowPoint.isInOutMode()) {
+			if (nowPoint.isOutput()) {
+				nowPoint.addStream(this);
+				pause();
+				// nowPoint.getMaster().addStreamToOutpoint(nowPoint.getMaster().getPointId(nowPoint),
+				// this);
+				return;
+			}
+			if (nowPoint.getNumOfLines(false) == 0) {
+				pause();
+				stop();
+				return;
+			}
+			nowLine = nowPoint.getLine(0);
+			if (nowLine == null) {
+				return;
+			}
+			nowPoint = nowLine.getInPoint();
+			println("c" + nowPoint.isInput() + nowPoint.getTitle() + " " + nowPoint.getMaster().getTitle());
+		}
+		nowPoint.addStream(this);
+		/*
+		 * if (nowPoint.getMaster().inputIsAlready() &&
+		 * (!nowPoint.getMaster().computable())) { stop(); }
+		 * 
+		 * if ((!nowPoint.getMaster().isComputing()) &&
+		 * nowPoint.getMaster().getComputeTimes() <= 0) { stop(); }
+		 */
+
+		pause();
 
 	}
 
