@@ -1,6 +1,6 @@
 # Nodes2D
 
-##欢迎来到Nodes2D工程区域  (Welcome to Nodes2D project)
+##欢迎来到Nodes2D工程区域  (Welcome)
 -![alt text](http://i.imgur.com/MXsc3vZ.png "Nodes2D LOGO")
 
 ##使用方法  (How to do)
@@ -11,6 +11,6 @@
 Nodes2D project is typed by Eclipse(Java IDE), and it doesn't depend other libs for now.)
 
 ##作者 (Author)
-中梓星音
-##特别感谢
-Lynn°
+中梓星音 (ZzStarSound)
+##特别感谢 (Special Thanks)
+Lynn° (Lynn°)
