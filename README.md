@@ -1,4 +1,16 @@
 # Nodes2D
 
+##欢迎来到Nodes2D工程区域  (Welcome to Nodes2D project)
+-![alt text](http://i.imgur.com/MXsc3vZ.png "Nodes2D LOGO")
 
--![alt text](http://i.imgur.com/QtNnXsy.png "Frustrated cat can't believe this is the 12th time he's clicked on an auto-linked README.md URL")
+##使用方法  (How to do)
+克隆到本地后，从Nodes2D->src->main->EntryPoint.java启动本工程即可。
+本工程由Eclipse编写(Java)，暂时不依靠其他库。
+
+(Download to your computer first,then start project from "EntryPoint.java"(Path:Nodes2D->src->main->EntryPoint.java).
+Nodes2D project is typed by Eclipse(Java IDE), and it doesn't depend other libs for now.)
+
+##作者 (Author)
+中梓星音
+##特别感谢
+Lynn°
