@@ -24,7 +24,14 @@ public class NBox extends Node {
 	}
 
 	public void addNode(Node node) {
-		masterCheck(node);
+		nodeList.add(node);
+		node.setMaster(this);
+		node.setMaster(master);
+		master.addNode(node);
+	}
+
+	public void addNode(Node node) {
+		nodeList.add(node);
 		node.setMaster(this);
 		node.setMaster(master);
 		master.addNode(node);
@@ -235,9 +242,4 @@ public class NBox extends Node {
 		return nodeList.indexOf(nd);
 	}
 
-	private void masterCheck(Node node) {
-		if (nodeList.indexOf(node) == -1) {
-			nodeList.add(node);
-		}
-	}
 }

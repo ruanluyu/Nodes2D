@@ -237,7 +237,7 @@ public class NBox extends Node {
 
 	private void masterCheck(Node node) {
 		if (nodeList.indexOf(node) == -1) {
-			nodeList.add(node);
+			addNode(node);
 		}
 	}
 }

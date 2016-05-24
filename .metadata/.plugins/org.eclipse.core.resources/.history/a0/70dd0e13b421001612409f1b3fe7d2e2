@@ -89,8 +89,11 @@ class NodesSystem extends NObject {
 			}
 
 			if (inpoint.isInput()) {
+				println(inpoint.getMaster()+"   "+outpoint.getMaster());
 				out = connectInBox(inpoint, outpoint);
 			} else if (inpoint.isOutput()) {
+				println(outpoint.getMaster()+"   "+inpoint.getMaster());
+				println(outpoint.getMaster().getBoxMaster() +"  "+inpoint.getMaster().getBoxMaster());
 				out = connectOutBox(outpoint, inpoint);
 			}
 		}
@@ -174,6 +177,7 @@ class NodesSystem extends NObject {
 		NodeLine out = new NodeLine(innerpoint, boxpoint);
 		innerpoint.addLine(out);
 		boxpoint.addLine(out);
+		println(innerpoint.getMaster());
 		innerpoint.getMaster().getBoxMaster().addLine(out);
 		println(innerpoint.getMaster().getTitle() + "(in " + innerpoint.getTitle() + ") ----- "
 				+ boxpoint.getMaster().getTitle() + "(out " + boxpoint.getTitle() + ") connected");

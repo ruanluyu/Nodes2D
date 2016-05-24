@@ -22,14 +22,14 @@ class NodesSystem extends NObject {
 
 	///////////////
 	private void masterCheck(Node node) {
-		if (nodeList.indexOf(node) < 0) {
-			nodeList.add(node);
-			node.setMaster(this);
+		if (nodeList.indexOf(node) == -1) {
+			addNode(node);
 		}
 	}
 
 	public void addNode(Node node) {
 		masterCheck(node);
+		node.setMaster(this);
 	}
 
 	public void addStream(NStream ns) {
@@ -82,7 +82,7 @@ class NodesSystem extends NObject {
 			out = connectNormal(outpoint, inpoint);
 
 		} else {
-			if (inpoint.getMaster().getBoxMaster()==outpoint.getMaster()) {
+			if (outpoint.isInOutMode()) {
 				NodePoint curNp = outpoint;
 				outpoint = inpoint;
 				inpoint = curNp;
@@ -96,6 +96,7 @@ class NodesSystem extends NObject {
 		}
 		lineList.add(out);
 		return out;
+
 	}
 
 	private NodeLine connectNormal(NodePoint outpoint, NodePoint inpoint) {

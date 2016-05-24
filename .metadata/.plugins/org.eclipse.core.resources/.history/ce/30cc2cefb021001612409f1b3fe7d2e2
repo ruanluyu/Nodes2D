@@ -30,6 +30,7 @@ class NodesSystem extends NObject {
 
 	public void addNode(Node node) {
 		masterCheck(node);
+		node.setMaster(this);
 	}
 
 	public void addStream(NStream ns) {
@@ -82,7 +83,7 @@ class NodesSystem extends NObject {
 			out = connectNormal(outpoint, inpoint);
 
 		} else {
-			if (inpoint.getMaster().getBoxMaster()==outpoint.getMaster()) {
+			if (outpoint.isInOutMode()) {
 				NodePoint curNp = outpoint;
 				outpoint = inpoint;
 				inpoint = curNp;
@@ -96,6 +97,7 @@ class NodesSystem extends NObject {
 		}
 		lineList.add(out);
 		return out;
+
 	}
 
 	private NodeLine connectNormal(NodePoint outpoint, NodePoint inpoint) {

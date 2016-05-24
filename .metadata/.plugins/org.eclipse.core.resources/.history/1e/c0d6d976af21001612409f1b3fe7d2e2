@@ -22,14 +22,14 @@ class NodesSystem extends NObject {
 
 	///////////////
 	private void masterCheck(Node node) {
-		if (nodeList.indexOf(node) < 0) {
-			nodeList.add(node);
-			node.setMaster(this);
+		if (node.getMaster() == null) {
+			addNode(node);
 		}
 	}
 
 	public void addNode(Node node) {
-		masterCheck(node);
+		nodeList.add(node);
+		node.setMaster(this);
 	}
 
 	public void addStream(NStream ns) {
@@ -82,7 +82,7 @@ class NodesSystem extends NObject {
 			out = connectNormal(outpoint, inpoint);
 
 		} else {
-			if (inpoint.getMaster().getBoxMaster()==outpoint.getMaster()) {
+			if (outpoint.isInOutMode()) {
 				NodePoint curNp = outpoint;
 				outpoint = inpoint;
 				inpoint = curNp;
@@ -96,6 +96,7 @@ class NodesSystem extends NObject {
 		}
 		lineList.add(out);
 		return out;
+
 	}
 
 	private NodeLine connectNormal(NodePoint outpoint, NodePoint inpoint) {
@@ -133,14 +134,13 @@ class NodesSystem extends NObject {
 		} // 检测inpoint是否已存在连线，若存在，则断开存在的线并发出警告。
 
 		NodeLine out = new NodeLine(outpoint, inpoint);
+		println(outpoint.getMaster().getTitle() + "(in " + outpoint.getTitle() + ") ----- "
+				+ inpoint.getMaster().getTitle() + "(out " + inpoint.getTitle() + ") connected");
 		outpoint.addLine(out);
 		inpoint.addLine(out);
 		if (outpoint.getMaster().getBoxMaster() != null) {
 			outpoint.getMaster().getBoxMaster().addLine(out);
 		}
-		println(outpoint.getMaster().getTitle() + "(in " + outpoint.getTitle() + ") ----- "
-				+ inpoint.getMaster().getTitle() + "(out " + inpoint.getTitle() + ") connected");
-
 		return out;
 	}
 
@@ -154,12 +154,11 @@ class NodesSystem extends NObject {
 		} // 检测innerpoint是否已存在连线，若存在，则断开存在的线并发出警告。
 
 		NodeLine out = new NodeLine(boxpoint, innerpoint);
+		println(boxpoint.getMaster().getTitle() + "(in " + boxpoint.getTitle() + ") ----- "
+				+ innerpoint.getMaster().getTitle() + "(out " + innerpoint.getTitle() + ") connected");
 		boxpoint.addLine(out);
 		innerpoint.addLine(out);
 		innerpoint.getMaster().getBoxMaster().addLine(out);
-		println(boxpoint.getMaster().getTitle() + "(in " + boxpoint.getTitle() + ") ----- "
-				+ innerpoint.getMaster().getTitle() + "(out " + innerpoint.getTitle() + ") connected");
-
 		return out;
 	}
 
@@ -172,21 +171,19 @@ class NodesSystem extends NObject {
 		} // 检测inpoint是否已存在连线，若存在，则断开存在的线并发出警告。
 
 		NodeLine out = new NodeLine(innerpoint, boxpoint);
+		println(innerpoint.getMaster().getTitle() + "(in " + innerpoint.getTitle() + ") ----- "
+				+ boxpoint.getMaster().getTitle() + "(out " + boxpoint.getTitle() + ") connected");
 		innerpoint.addLine(out);
 		boxpoint.addLine(out);
 		innerpoint.getMaster().getBoxMaster().addLine(out);
-		println(innerpoint.getMaster().getTitle() + "(in " + innerpoint.getTitle() + ") ----- "
-				+ boxpoint.getMaster().getTitle() + "(out " + boxpoint.getTitle() + ") connected");
-
 		return out;
 	}
 
 	public void disconnect(NodeLine line) {
-		println(line.getOutPoint().getMaster().getTitle() + "(in " + line.getOutPoint().getTitle() + ") - / - "
-				+ line.getInPoint().getMaster().getTitle() + "(out " + line.getInPoint().getTitle() + ") disconnected");
 		line.delete();
 		lineList.remove(line);
-
+		println(line.getOutPoint().getMaster().getTitle() + "(in " + line.getOutPoint().getTitle() + ") - / - "
+				+ line.getInPoint().getMaster().getTitle() + "(out " + line.getInPoint().getTitle() + ") disconnected");
 	}
 
 	public static void cleanArrayNull(List<?> list) {
@@ -271,16 +268,16 @@ class NodesSystem extends NObject {
 	private boolean transportStream() {
 		boolean transported = false;
 		int pt = 0;
-		while (pt < streamList.size()) {
+		while(pt<streamList.size()){
 			NStream ns = streamList.get(pt++);
-			if (ns.isPause() || ns.isStop()) {
+			if (ns.isPause() || ns.isStop()){
 				continue;
 			}
 			ns.goToInpoint();
 			ns.pause();
 			transported = true;
 		}
-
+		
 		for (NStream ns : streamList) {
 			if (ns.isPause() || ns.isStop())
 				continue;

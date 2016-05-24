@@ -12,23 +12,19 @@ public class EntryPoint extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	public static void println(String str) {
-		System.out.println("EntryPoint:\n" + str + "\n");
+		System.out.println("EntryPoint:\n" + str + "\n\n");
 	}
 
 	public static void println(boolean str) {
-		System.out.println("EntryPoint:\n" + str + "\n");
+		System.out.println("EntryPoint:\n" + str + "\n\n");
 	}
 
 	public static void println(int str) {
-		System.out.println("EntryPoint:\n" + str + "\n");
+		System.out.println("EntryPoint:\n" + str + "\n\n");
 	}
 
 	public static void println(double str) {
-		System.out.println("EntryPoint:\n" + str + "\n");
-	}
-
-	public static void println(Object str) {
-		System.out.println("EntryPoint:\n" + str + "\n");
+		System.out.println("EntryPoint:\n" + str + "\n\n");
 	}
 
 	public EntryPoint(String title, String path) {
@@ -84,7 +80,7 @@ public class EntryPoint extends JFrame {
 		nst.connect(ntl2.getOutpoint(0), p2.getInpoint(1));// 链接适配器2和加法节点2
 		nst.connect(p2.getOutpoint(0), ns.getInpoint(1));// 链接加法节点2和流合成器
 		nst.connect(ntl.getOutpoint(0), np.getInpoint(0));// 链接适配器和输出
-
+		
 		nst.run();// 节点系统启动
 	}
 
@@ -119,6 +115,7 @@ public class EntryPoint extends JFrame {
 		nst.connect(p2.getOutpoint(0), nb.getOutpoint(0));// 链接乘法计算器和盒子输出点
 		NBox nbi = nb.clone();
 		nb.addNode(nbi);
+
 		nst.connect(p2.getOutpoint(0), nbi.getInpoint(0));// 链接乘法计算器和盒子输入点
 		nst.connect(nbi.getOutpoint(0), nb.getOutpoint(0));// 链接盒子输出点和盒子输出点
 		NBox nb2 = nb.clone();

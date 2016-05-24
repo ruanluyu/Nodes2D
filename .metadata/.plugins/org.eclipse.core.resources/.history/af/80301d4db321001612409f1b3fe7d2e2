@@ -82,7 +82,7 @@ class NodesSystem extends NObject {
 			out = connectNormal(outpoint, inpoint);
 
 		} else {
-			if (inpoint.getMaster().getBoxMaster()==outpoint.getMaster()) {
+			if (outpoint.isInOutMode()) {
 				NodePoint curNp = outpoint;
 				outpoint = inpoint;
 				inpoint = curNp;
@@ -174,6 +174,7 @@ class NodesSystem extends NObject {
 		NodeLine out = new NodeLine(innerpoint, boxpoint);
 		innerpoint.addLine(out);
 		boxpoint.addLine(out);
+		println(innerpoint.getMaster());
 		innerpoint.getMaster().getBoxMaster().addLine(out);
 		println(innerpoint.getMaster().getTitle() + "(in " + innerpoint.getTitle() + ") ----- "
 				+ boxpoint.getMaster().getTitle() + "(out " + boxpoint.getTitle() + ") connected");

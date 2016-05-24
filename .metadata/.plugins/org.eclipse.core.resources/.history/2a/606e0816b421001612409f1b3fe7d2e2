@@ -26,10 +26,11 @@ public class EntryPoint extends JFrame {
 	public static void println(double str) {
 		System.out.println("EntryPoint:\n" + str + "\n");
 	}
-
+	
 	public static void println(Object str) {
 		System.out.println("EntryPoint:\n" + str + "\n");
 	}
+
 
 	public EntryPoint(String title, String path) {
 		try {
