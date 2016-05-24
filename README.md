@@ -11,6 +11,6 @@
 Nodes2D project is typed by Eclipse(Java IDE), and it doesn't depend other libs for now.)
 
 ##作者 (Author)
-中梓星音 (ZzStarSound)
+中梓星音 (ZzStarSound)(ruanluyu)
 ##特别感谢 (Special Thanks)
 Lynn° (Lynn°)
