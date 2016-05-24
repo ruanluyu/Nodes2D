@@ -8,7 +8,7 @@
 本工程由Eclipse编写(Java)，暂时不依靠其他库。
 
 (Download to your computer first,then start project from "EntryPoint.java"(Path:Nodes2D->src->main->EntryPoint.java).
-Nodes2D project is typed by Eclipse(Java IDE), and it doesn't depend other libs for now.)
+Nodes2D project is typed by Eclipse(Java IDE), and it doesn't depend on other libs for now.)
 
 ##作者 (Author)
 中梓星音 (ZzStarSound)(ruanluyu)
