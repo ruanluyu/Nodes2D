@@ -165,7 +165,15 @@ public class NBox extends Node {
 	}
 
 	@Override
-	public void generateStream() {
+	public void generateStream() {/*
+									 * println("Q"); int i = -1; for (NodePoint
+									 * np : outPointList) { i++; if
+									 * (!np.hasStream()) { continue; }
+									 * println("W"); NStream curS =
+									 * np.getStream(); if (curS.isStop()) {
+									 * continue; } println("E");
+									 * addStreamToOutpoint(i, curS); }
+									 */
 
 	}
 

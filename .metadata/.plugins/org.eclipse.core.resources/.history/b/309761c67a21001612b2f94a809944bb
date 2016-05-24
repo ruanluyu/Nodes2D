@@ -197,13 +197,28 @@ class NodePoint extends NObject {
 
 	public void addLine(NodeLine target) {
 		if (inoutMode) {
-			if (target.getOutPoint() == this) {
-				outLinesList.add(target);
-			} else if (target.getInPoint() == this) {
-				if (inLine != null) {
-					println("Warning:You overrided an input point when it connected.Occured on NodePoint ");
+			if (input) {
+				if (target.getOutPoint() == this) {
+					if (outLinesList.size() > 0) {
+						outLinesList.clear();
+						println("Warning:You overrided an input point when it connected.Occured on NodePoint ");
+					}
+					outLinesList.add(target);
+				} else if (target.getInPoint() == this) {
+					if (inLine != null) {
+						println("Warning:You overrided an input point when it connected.Occured on NodePoint ");
+					}
+					inLine = target;
 				}
-				inLine = target;
+			} else {
+				if (target.getOutPoint() == this) {
+					outLinesList.add(target);
+				} else if (target.getInPoint() == this) {
+					if (inLine != null) {
+						println("Warning:You overrided an input point when it connected.Occured on NodePoint ");
+					}
+					inLine = target;
+				}
 			}
 			return;
 		}
@@ -224,21 +239,21 @@ class NodePoint extends NObject {
 		outLinesList.remove(nl);
 
 	}
-
-	public void delete() {
-		if (inLine != null) {
+	
+	public void delete(){
+		if(inLine != null){
 			inLine.delete();
 			inLine = null;
 		}
-		if (outLinesList.size() > 0) {
-			for (NodeLine nl : outLinesList) {
+		if(outLinesList.size()>0){
+			for(NodeLine nl : outLinesList){
 				nl.delete();
 			}
 			outLinesList.clear();
 		}
 		outLinesList = null;
-		if (streamList.size() > 0) {
-			for (NStream ns : streamList) {
+		if(streamList.size()>0){
+			for(NStream ns : streamList){
 				ns.delete();
 			}
 			streamList.clear();

@@ -102,6 +102,7 @@ public class EntryPoint extends JFrame {
 		nst.connect(n4.getOutpoint(0), nb2.getInpoint(0));
 		nst.connect(nb.getOutpoint(0), np.getInpoint(0));
 		nst.connect(nb2.getOutpoint(0), np2.getInpoint(0));
+		System.out.println(nst.getNodeNum());
 		nst.run();
 
 	}
@@ -109,7 +110,7 @@ public class EntryPoint extends JFrame {
 	public static void main(String[] args) {
 		System.out.println("EntryPoint begin");
 		// JFrame nodeWindow = new EntryPoint("Nodes2D", "../icon/Icon_T.png");
-		test2();
+		 test2();
 		// test1();
 	}
 

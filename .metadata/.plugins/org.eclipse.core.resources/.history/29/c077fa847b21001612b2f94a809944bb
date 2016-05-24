@@ -268,15 +268,6 @@ class NodesSystem extends NObject {
 	private boolean transportStream() {
 		boolean transported = false;
 		int pt = 0;
-		while(pt<streamList.size()){
-			NStream ns = streamList.get(pt++);
-			if (ns.isPause() || ns.isStop()){
-				continue;
-			}
-			ns.goToInpoint();
-			ns.pause();
-			transported = true;
-		}
 		
 		for (NStream ns : streamList) {
 			if (ns.isPause() || ns.isStop())
@@ -339,6 +330,13 @@ class NodesSystem extends NObject {
 		println("************************\n RUN.\n\n************************");
 
 		generateStream();
+		println(streamList.size());
+		for (NodeLine nl : lineList) {
+			println(nl.getOutPoint().getMaster().getTitle() + "--*--" + nl.getInPoint().getMaster().getTitle());
+		}
+		for (Node nl : nodeList) {
+			println("-*-*-*-*" + nl.getTitle());
+		}
 		while ((delayerCheck() || generatorCheck() || (streamList.size() > 0)) && stepBelowMaxStep()) {
 
 			oneComputeStep();

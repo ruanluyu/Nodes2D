@@ -72,28 +72,39 @@ public class NStream extends NObject {
 	}
 
 	public void goToInpoint() {
+		println("a" + nowPoint.isInput() + nowPoint.getTitle() + " " + nowPoint.getMaster().getTitle());
+		if (!nowPoint.isOutput()) {
+			pause();
+			return;
+		}
 		if (!(nowPoint.getMaster() instanceof NodeGenerator))
-			nowPoint.removeStream(this);// 因为Generator的流的注册方式是clone()所以NodePoint上不会登记clone()过的NStream
+			nowPoint.removeStream(this);
 		nowPoint = nowLine.getInPoint();
+		println("b" + nowPoint.isInput() + nowPoint.getTitle() + " " + nowPoint.getMaster().getTitle());
 		if (nowPoint.isInOutMode()) {
 			if (nowPoint.getNumOfLines(false) == 0) {
 				pause();
 				stop();
 				return;
 			}
-			pause = false;
-			stop = false;
-			NodesSystem nst = nowPoint.getMaster().getMaster();
-			for (int i = 0; i < nowPoint.getNumOfLines(false); i++) {
-				nowLine = nowPoint.getLine(i);
-				nst.addStream(clone());
+			nowLine = nowPoint.getLine(0);
+			if (nowLine == null) {
+				return;
 			}
-			pause();
-			stop();
-			return;
+			nowPoint = nowLine.getInPoint();
+			println("c" + nowPoint.isInput() + nowPoint.getTitle() + " " + nowPoint.getMaster().getTitle());
 		}
 		nowPoint.addStream(this);
+		/*
+		 * if (nowPoint.getMaster().inputIsAlready() &&
+		 * (!nowPoint.getMaster().computable())) { stop(); }
+		 * 
+		 * if ((!nowPoint.getMaster().isComputing()) &&
+		 * nowPoint.getMaster().getComputeTimes() <= 0) { stop(); }
+		 */
+
 		pause();
+
 	}
 
 	public static NStream clone(NStream target) {

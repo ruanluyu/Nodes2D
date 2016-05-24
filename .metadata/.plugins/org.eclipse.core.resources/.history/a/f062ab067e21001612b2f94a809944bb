@@ -339,6 +339,13 @@ class NodesSystem extends NObject {
 		println("************************\n RUN.\n\n************************");
 
 		generateStream();
+		println(streamList.size());
+		for (NodeLine nl : lineList) {
+			println(nl.getOutPoint().getMaster().getTitle() + "--*--" + nl.getInPoint().getMaster().getTitle());
+		}
+		for (Node nl : nodeList) {
+			println("-*-*-*-*" + nl.getTitle());
+		}
 		while ((delayerCheck() || generatorCheck() || (streamList.size() > 0)) && stepBelowMaxStep()) {
 
 			oneComputeStep();

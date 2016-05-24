@@ -197,13 +197,24 @@ class NodePoint extends NObject {
 
 	public void addLine(NodeLine target) {
 		if (inoutMode) {
-			if (target.getOutPoint() == this) {
-				outLinesList.add(target);
-			} else if (target.getInPoint() == this) {
-				if (inLine != null) {
-					println("Warning:You overrided an input point when it connected.Occured on NodePoint ");
+			if (input) {
+				if (target.getOutPoint() == this) {
+					outLinesList.add(target);
+				} else if (target.getInPoint() == this) {
+					if (inLine != null) {
+						println("Warning:You overrided an input point when it connected.Occured on NodePoint ");
+					}
+					inLine = target;
 				}
-				inLine = target;
+			} else {
+				if (target.getOutPoint() == this) {
+					outLinesList.add(target);
+				} else if (target.getInPoint() == this) {
+					if (inLine != null) {
+						println("Warning:You overrided an input point when it connected.Occured on NodePoint ");
+					}
+					inLine = target;
+				}
 			}
 			return;
 		}

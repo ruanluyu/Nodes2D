@@ -31,8 +31,8 @@ class NodesSystem extends NObject {
 		nodeList.add(node);
 		node.setMaster(this);
 	}
-
-	public void addStream(NStream ns) {
+	
+	public void addStream(NStream ns){
 		streamList.add(ns);
 	}
 
@@ -99,6 +99,13 @@ class NodesSystem extends NObject {
 
 	}
 
+	public void disconnect(NodeLine line) {
+		line.delete();
+		lineList.remove(line);
+		println(line.getOutPoint().getMaster().getTitle() + "(in " + line.getOutPoint().getTitle() + ") - / - "
+				+ line.getInPoint().getMaster().getTitle() + "(out " + line.getInPoint().getTitle() + ") disconnected");
+	}
+
 	private NodeLine connectNormal(NodePoint outpoint, NodePoint inpoint) {
 
 		if (!NBox.inTheSameBox(outpoint.getMaster(), inpoint.getMaster())) {
@@ -146,6 +153,12 @@ class NodesSystem extends NObject {
 
 	// 将线从NBox外部inpoint链接到NBox内部inpoint 的情况
 	private NodeLine connectInBox(NodePoint boxpoint, NodePoint innerpoint) {
+		if ((boxpoint.getNumOfLines(false) > 0)) {
+			println("Warning:You overrided an input point when it connected.Occured on NodePoint " + boxpoint.getTitle()
+					+ "(" + boxpoint.getMaster().getTitle() + ")");
+			disconnect(boxpoint.getLine());
+		} // 检测boxpoint是否已存在连线，若存在，则断开存在的线并发出警告。
+			// ps.由于目前的框架结构不太合理，导致boxpoint作为对外输入点和对内输出点时只允许一根线链接。
 
 		if ((innerpoint.getNumOfLines() > 0)) {
 			println("Warning:You overrided an input point when it connected.Occured on NodePoint "
@@ -177,13 +190,6 @@ class NodesSystem extends NObject {
 		boxpoint.addLine(out);
 		innerpoint.getMaster().getBoxMaster().addLine(out);
 		return out;
-	}
-
-	public void disconnect(NodeLine line) {
-		line.delete();
-		lineList.remove(line);
-		println(line.getOutPoint().getMaster().getTitle() + "(in " + line.getOutPoint().getTitle() + ") - / - "
-				+ line.getInPoint().getMaster().getTitle() + "(out " + line.getInPoint().getTitle() + ") disconnected");
 	}
 
 	public static void cleanArrayNull(List<?> list) {
@@ -267,17 +273,6 @@ class NodesSystem extends NObject {
 
 	private boolean transportStream() {
 		boolean transported = false;
-		int pt = 0;
-		while(pt<streamList.size()){
-			NStream ns = streamList.get(pt++);
-			if (ns.isPause() || ns.isStop()){
-				continue;
-			}
-			ns.goToInpoint();
-			ns.pause();
-			transported = true;
-		}
-		
 		for (NStream ns : streamList) {
 			if (ns.isPause() || ns.isStop())
 				continue;
@@ -339,6 +334,13 @@ class NodesSystem extends NObject {
 		println("************************\n RUN.\n\n************************");
 
 		generateStream();
+		println(streamList.size());
+		for (NodeLine nl : lineList) {
+			println(nl.getOutPoint().getMaster().getTitle()+"--*--"+nl.getInPoint().getMaster().getTitle());
+		}
+		for (Node nl : nodeList) {
+			println("-*-*-*-*"+nl.getTitle());
+		}
 		while ((delayerCheck() || generatorCheck() || (streamList.size() > 0)) && stepBelowMaxStep()) {
 
 			oneComputeStep();

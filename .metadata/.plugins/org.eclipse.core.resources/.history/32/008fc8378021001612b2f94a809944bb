@@ -109,7 +109,7 @@ public class EntryPoint extends JFrame {
 	public static void main(String[] args) {
 		System.out.println("EntryPoint begin");
 		// JFrame nodeWindow = new EntryPoint("Nodes2D", "../icon/Icon_T.png");
-		test2();
+		 test2();
 		// test1();
 	}
 
