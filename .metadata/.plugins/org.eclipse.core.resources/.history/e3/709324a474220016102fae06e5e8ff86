@@ -259,7 +259,7 @@ class Node extends NObject {
 		NodePoint cur = outPointList.get(id);
 		cur.cleanStream();
 		for (int i = 0; i < cur.getNumOfLines(); i++) {
-			cur.addStream(new NStream(data.clone(), cur, cur.getLine(i)));
+			cur.addStream(new NStream(NData.clone(data, data.getType()), cur, cur.getLine(i)));
 		}
 	}
 

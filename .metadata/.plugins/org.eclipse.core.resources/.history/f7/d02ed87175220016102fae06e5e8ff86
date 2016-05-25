@@ -82,7 +82,7 @@ class NodesSystem extends NObject {
 			out = connectNormal(outpoint, inpoint);
 
 		} else {
-			if (inpoint.getMaster().getBoxMaster() == outpoint.getMaster()) {
+			if (inpoint.getMaster().getBoxMaster()==outpoint.getMaster()) {
 				NodePoint curNp = outpoint;
 				outpoint = inpoint;
 				inpoint = curNp;
@@ -203,13 +203,13 @@ class NodesSystem extends NObject {
 
 	private void cleanStopStream() {
 		cleanArrayNull(streamList);
-		for (int i = streamList.size() - 1; i >= 0; i--) {
-			NStream ns = streamList.get(i);
+		for (Iterator<NStream> i = streamList.iterator(); i.hasNext();) {
+			NStream ns = i.next();
 			if (ns == null)
 				continue;
 			if (ns.isStop()) {
 				ns.delete();
-				streamList.remove(i);
+				i.remove();
 			}
 		}
 	}

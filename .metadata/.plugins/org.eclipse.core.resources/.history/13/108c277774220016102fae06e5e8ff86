@@ -101,7 +101,7 @@ public class NStream extends NObject {
 	}
 
 	public NStream clone() {
-		return new NStream(data.clone(), nowPoint, nowLine);
+		return new NStream(data.clone(),nowPoint, nowLine);
 	}
 
 	public void setPoint(NodePoint np) {
