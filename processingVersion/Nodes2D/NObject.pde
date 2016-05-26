@@ -9,10 +9,16 @@
   }
 class NObject {
    
-  protected String CLASSNAME = "N_NULL";
+  protected String CLASSNAME = "NObject";
   protected String title;
   protected int thisId = 0;// Global this id.
   protected boolean idAddable = true;
+  PVector minSize = new PVector(200,100);
+  PVector size = new PVector(200,100);
+  PVector position = new PVector(width/2,height/2);
+  
+  void render(){}
+  
   ///////////////
 
   public NObject() {

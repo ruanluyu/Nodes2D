@@ -3,6 +3,20 @@ class NodeLine extends NObject {
   private NodePoint inP, outP;
   private boolean activated = false;
 
+  void render(){
+    PVector p1 = outP.position;
+    PVector p2 = outP.position;
+    float cen = (p1.x+p2.x)/2;
+    if(activated){
+      stroke(224, 67, 89);
+      strokeWeight(5);
+    }else{
+      stroke(20);
+      strokeWeight(3);
+    }
+    bezier(p1.x,p1.y,cen,p1.y,cen,p2.y,p2.x,p2.y);
+  }
+
   /////////////// initialObject
   @Override
   protected void initializeObject() {
@@ -12,12 +26,13 @@ class NodeLine extends NObject {
 
   ///////////////
   public NodeLine(NodePoint outpoint, NodePoint inpoint) {
-
     super();
     inP = inpoint;
     outP = outpoint;
-
-
+  }
+  
+  public void activate(boolean flag){
+     activated = flag;
   }
 
   public NodePoint getInPoint() {

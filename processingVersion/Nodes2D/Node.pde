@@ -12,6 +12,47 @@ class Node extends NObject {
   protected NBox boxMaster = null;
   protected boolean inPointAddable = false;
   protected boolean outPointAddable = false;
+  
+  PVector panelSize = new PVector(0,0);
+  float pointSize = 5;
+  float pointToEdge = 7;
+  float titleHeight = 20;
+  float downHeight = 20;
+  void panelRender(){}
+  
+  void render(){
+    pushMatrix();
+    translate(position.x,position.y);
+    fill(100);
+    stroke(200);
+    strokeWeight(3);
+    rect(0,0,size.x,size.y,4);
+    line(pointToEdge*2,titleHeight,size.x-pointToEdge*2,titleHeight);
+    line(pointToEdge*2,size.y-downHeight,size.x-pointToEdge*2,size.y-downHeight);
+    textAlign(CENTER,CENTER);
+    textSize(15);
+    fill(20);
+    text(title,size.x/2,titleHeight/2);
+    panelSize.set(size.x-pointToEdge*4,size.y-titleHeight-downHeight);
+    pushMatrix();
+    translate(pointToEdge*2,titleHeight);
+    panelRender();
+    popMatrix();
+    int inpSize = inPointList.size();
+    int outpSize = outPointList.size();
+    float dertaSize = size.y-40;
+    float inDerta = dertaSize/(inpSize+1);
+    float outDerta = dertaSize/(outpSize+1);
+    for(int i = 0;i<inpSize;i++){
+       ellipse(pointToEdge,titleHeight+(i+1)*inDerta,pointSize,pointSize);
+       inPointList.get(i).position.set(position.x+pointToEdge,position.y+titleHeight+(i+1)*inDerta);
+    }
+    for(int i = 0;i<outpSize;i++){
+       ellipse(size.x-pointToEdge,titleHeight+(i+1)*outDerta,pointSize,pointSize);
+       outPointList.get(i).position.set(position.x+size.x-pointToEdge,position.y+titleHeight+(i+1)*outDerta);
+    }
+    popMatrix();
+  }
 
   /////////////// initialObject
   @Override

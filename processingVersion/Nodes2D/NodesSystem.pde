@@ -1,4 +1,5 @@
-void cleanArrayNull(ArrayList<?> list) {
+
+  void cleanArrayNull(ArrayList<?> list) {
     for (Object obj : list) {
       if (obj == null) {
         list.remove(obj);
@@ -62,11 +63,11 @@ class NodesSystem extends NObject {
   public int getLineNum() {
     return lineList.size();
   }
+  
 
-
-  public NodeLine connect(NodePoint outpoint, NodePoint inpoint) {
-    masterCheck(outpoint.getMaster()); // 检测是否注册到nodeList中,
-    masterCheck(inpoint.getMaster()); // 如果没注册，则注册。
+   public NodeLine connect(NodePoint outpoint, NodePoint inpoint) {
+    masterCheck(outpoint.getMaster()); 
+    masterCheck(inpoint.getMaster()); 
     NodeLine out = null;
     if (!theyAreboxAndInnerNode(outpoint.getMaster(), inpoint.getMaster())) {
 
@@ -74,7 +75,7 @@ class NodesSystem extends NObject {
         NodePoint cur = outpoint;
         outpoint = inpoint;
         inpoint = cur;
-      } // 修正inpoint和outpoint的对应关系
+      } 
 
       out = connectNormal(outpoint, inpoint);
 
@@ -211,6 +212,12 @@ class NodesSystem extends NObject {
     }
     streamList.clear();
   }
+  
+  private void resetAllLinesActivate(){
+    for(NodeLine nl:lineList){
+      nl.activate(false);
+    }
+  }
 
   private boolean stepBelowMaxStep() {
     if (maxStep < 0)
@@ -319,6 +326,15 @@ class NodesSystem extends NObject {
       }
     }
   }
+  
+  public void render(){
+    for(Node nd:nodeList){
+      nd.render();
+    }
+    for(NodeLine nl:lineList){
+      nl.render();
+    }
+  }
 
   private void oneComputeStep() {
     generateStream();
@@ -328,6 +344,34 @@ class NodesSystem extends NObject {
       generateStream();
     }
   }
+  
+  void startLoop(){
+    println("************************\n RUN.\n\n************************");
+    generateStream();
+  }
+  
+  boolean loopCanRun(){
+    return ((delayerCheck() || generatorCheck() || (streamList.size() > 0)) && stepBelowMaxStep());
+  }
+  
+  void oneLoop(){
+      oneComputeStep();
+      cleanAllStream();
+      resetAllLinesActivate();
+      step++;
+      
+      println("************************\n Step " + step + " : Completed.\n\n************************");
+      if (sleepTime > 0) {
+        try {
+          Thread.sleep(sleepTime);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+  }
+  void loopOver(){
+    println("************************\n ALL DONE.\n\n************************");
+  }
 
   public void run() {
     println("************************\n RUN.\n\n************************");
@@ -336,9 +380,8 @@ class NodesSystem extends NObject {
     while ((delayerCheck() || generatorCheck() || (streamList.size() > 0)) && stepBelowMaxStep()) {
 
       oneComputeStep();
-      // cleanStopStream();
-      // println( streamList.size());
       cleanAllStream();
+      resetAllLinesActivate();
       step++;
 
       println("************************\n Step " + step + " : Completed.\n\n************************");
@@ -350,6 +393,6 @@ class NodesSystem extends NObject {
         }
       }
     }
-    println("All done");
+    println("************************\n ALL DONE.\n\n************************");
   }
 }
