@@ -13,6 +13,8 @@ class Node extends NObject {
   protected boolean inPointAddable = false;
   protected boolean outPointAddable = false;
   
+  boolean activated = false;
+  
   PVector panelSize = new PVector(0,0);
   float pointSize = 5;
   float pointToEdge = 7;
@@ -23,14 +25,18 @@ class Node extends NObject {
   void render(){
     pushMatrix();
     translate(position.x,position.y);
-    fill(100);
-    stroke(200);
-    strokeWeight(3);
+    if(activated){
+      fill(100,100,30);
+    }else{
+      fill(200);
+    }
+    stroke(20);
+    strokeWeight(2);
     rect(0,0,size.x,size.y,4);
     line(pointToEdge*2,titleHeight,size.x-pointToEdge*2,titleHeight);
     line(pointToEdge*2,size.y-downHeight,size.x-pointToEdge*2,size.y-downHeight);
     textAlign(CENTER,CENTER);
-    textSize(15);
+    textSize(13);
     fill(20);
     text(title,size.x/2,titleHeight/2);
     panelSize.set(size.x-pointToEdge*4,size.y-titleHeight-downHeight);
@@ -451,17 +457,6 @@ class Node extends NObject {
       }
     }
   }
-
-  /*
-   * private NodePoint selectPoint(boolean input,int index){ if(input){
-   * if(index<inPointList.size()&&index>=0){ return inPointList.get(index);
-   * }else{ try{ throw new NodeException("Node : "+title);
-   * }catch(NodeException e){ e.println(); } } }else{
-   * if(index<outPointList.size()&&index>=0){ return outPointList.get(index);
-   * }else{ try{ throw new NodeException("Node : "+title);
-   * }catch(NodeException e){ e.println(); } } } return null; }
-   */
-
 }
 
 /**
@@ -477,7 +472,14 @@ class Node extends NObject {
  *
  */
 class Node_Printer extends Node {
-
+  
+  String outMessage = "";
+void panelRender(){
+  textAlign(CENTER,CENTER);
+  textSize(15);
+  fill(20);
+  text(outMessage,panelSize.x/2,panelSize.y/2);
+}
   /////////////// initialObject
   @Override
   protected void initializeObject() {
@@ -513,7 +515,8 @@ class Node_Printer extends Node {
     if (flag) {
       return;
     }
-    String out = "Output message : \n";
+    //String out = "Output message : \n";
+    String out = "";
     boolean haveMessage = false;
     for (NodePoint np : inPointList) {
       if (np.getNumOfStream() > 0) {
@@ -541,7 +544,8 @@ class Node_Printer extends Node {
       }
     }
     if (haveMessage) {
-      println(out);
+      outMessage = out;
+      //println(out);
       cleanInPoint();
     }
     cleanInPoint();

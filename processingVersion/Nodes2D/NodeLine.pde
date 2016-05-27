@@ -1,20 +1,22 @@
 
 class NodeLine extends NObject {
   private NodePoint inP, outP;
-  private boolean activated = false;
+  boolean activated = false;
 
   void render(){
     PVector p1 = outP.position;
-    PVector p2 = outP.position;
-    float cen = (p1.x+p2.x)/2;
+    PVector p2 = inP.position;
+    float center = (p1.x+p2.x)/2;
+    //float cen = (p1.x+p2.x)/2;
     if(activated){
       stroke(224, 67, 89);
-      strokeWeight(5);
+      strokeWeight(3);
     }else{
       stroke(20);
-      strokeWeight(3);
+      strokeWeight(2);
     }
-    bezier(p1.x,p1.y,cen,p1.y,cen,p2.y,p2.x,p2.y);
+    noFill();
+    bezier(p1.x,p1.y,center,p1.y,center,p2.y,p2.x,p2.y);
   }
 
   /////////////// initialObject

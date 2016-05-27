@@ -1,15 +1,7 @@
 NodesSystem nst;
 boolean globalFlag = true;
-boolean setup = false;
 void setup(){
-  
   size(1280,720);
-  
-  
-}
-
-void draw(){
-  if(setup == false){
     nst = new NodesSystem();// 建立节点系统
     Node_SolidNumber n1 = new Node_SolidNumber(200);// 建立常数节点200
     Node_SolidNumber n2 = new Node_SolidNumber(580);// 建立常数节点580
@@ -48,10 +40,15 @@ void draw(){
     nst.connect(p2.getOutpoint(0), ns.getInpoint(1));// 链接加法节点2和流合成器
     nst.connect(ntl.getOutpoint(0), np.getInpoint(0));// 链接适配器和输出
 
-    nst.startLoop();
-  setup = true;
-  }
   
+  
+  nst.startLoop();
+  
+  
+}
+
+void draw(){
+  background(100);
   if(globalFlag){
     if(nst.loopCanRun()){
       nst.oneLoop();
@@ -61,6 +58,14 @@ void draw(){
     }
   }
   nst.render();
+}
+
+void mousePressed(){
+  nst.mousePress();
+}
+
+void mouseReleased(){
+  nst.mouseRelease();
 }
 
   

@@ -14,8 +14,8 @@ class NObject {
   protected int thisId = 0;// Global this id.
   protected boolean idAddable = true;
   PVector minSize = new PVector(200,100);
-  PVector size = new PVector(200,100);
-  PVector position = new PVector(width/2,height/2);
+  PVector size = new PVector(200,120);
+  PVector position = new PVector(width/2+random(-width/4,width/4),height/2+random(-height/4,height/4));
   
   void render(){}
   
@@ -57,23 +57,23 @@ class NObject {
   }
 
   public void println(Object num) {
-    println(num + "");
+    //println(num + "");
   }
 
   public void println(boolean num) {
-    println(num + "");
+    //println(num + "");
   }
 
   public void println(double num) {
-    println(num + "");
+    //println(num + "");
   }
 
   public void println(int num) {
-    println(num + "");
+    //println(num + "");
   }
 
   public void println(String message) {
-    println(this.title + " ( class : " + CLASSNAME + " $global_id " + thisId + " ) : \n" + message + "\n");
+    //println(this.title + " ( class : " + CLASSNAME + " $global_id " + thisId + " ) : \n" + message + "\n");
 
   }
 

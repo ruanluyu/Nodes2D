@@ -7,6 +7,55 @@
     }
   }
 
+  boolean pointInsideBox(PVector point,PVector upLeft,PVector downRight){
+    boolean flag = false;
+    if((point.x>=upLeft.x&&point.x<=downRight.x)&&(point.y>=upLeft.y&&point.y<=downRight.y)){
+      flag = true;
+    }
+    return flag;
+  }
+  
+  boolean boxInterSection(PVector ALU,PVector ARD,PVector BLU,PVector BRD){
+    float a1,a2,a3,a4,b1,b2,b3,b4;
+    
+    a1 = ALU.x;
+    a2 = ALU.y;
+    a3 = ARD.x;
+    a4 = ARD.y;
+    b1 = BLU.x;
+    b2 = BLU.y;
+    b3 = BRD.x;
+    b4 = BRD.y;
+    if(a1>a3){
+      float cur = a1;
+      a1 = a3;
+      a3 = cur;
+    }
+    
+    if(a2>a4){
+      float cur = a2;
+      a2 = a4;
+      a4 = cur;
+    }
+    if(b1>b3){
+      float cur = b1;
+      b1 = b3;
+      b3 = cur;
+    }
+    
+    if(b2>b4){
+      float cur = b2;
+      b2 = b4;
+      b4 = cur;
+    }
+    
+    boolean flag = true;
+    if((a3<b1)||(a1>b3)||(a4<b2)||(a2>b4)){
+      flag = false;
+    }
+    return flag;
+  }
+
 class NodesSystem extends NObject {
   private ArrayList<Node> nodeList = new ArrayList<Node>();
   private ArrayList<NodeLine> lineList = new ArrayList<NodeLine>();
@@ -15,7 +64,85 @@ class NodesSystem extends NObject {
   private int sleepTime = 100;
   private int step = 0;
   private int maxStep = 20;
-
+  private ArrayList<Node> activatedNode = new ArrayList<Node>();
+  boolean mouseDown = false;
+  boolean clickBit = false;
+  boolean chooseSq = false;
+  PVector chooseSqStartPoint = new PVector(0,0);
+  PVector moveStartPoint = new PVector(0,0);
+  void itemMove(){
+    if(mouseDown&&(!clickBit)){
+      for(Node nd:activatedNode){
+        nd.position.set(nd.position.x+mouseX-moveStartPoint.x,nd.position.y+mouseY-moveStartPoint.y);
+      }
+      moveStartPoint.set(mouseX,mouseY);
+    }
+  }
+  
+  void itemChoose(){
+    if(clickBit){
+      chooseSq = true;
+      Node cur = null;
+      for(Node nd : nodeList){
+        if(pointInsideBox(new PVector(mouseX,mouseY),nd.position,new PVector(nd.position.x+nd.size.x,nd.position.y+nd.size.y))){
+          cur = nd;
+          break;
+        }
+      }
+      
+      if(cur != null){
+        chooseSq = false;
+        if(activatedNode.size()>0){
+          if(activatedNode.indexOf(cur)<0){
+            for(Node nd2:activatedNode){
+              nd2.activated = false;
+            }
+            activatedNode.clear();
+            cur.activated = true;
+            activatedNode.add(cur);
+          }
+        }else{
+          activatedNode.add(cur);
+          cur.activated = true;
+        }
+      }else{
+        chooseSq = true;
+        for(Node nd2:activatedNode){
+              nd2.activated = false;
+            }
+        activatedNode.clear();
+      }
+      chooseSqStartPoint.set(mouseX,mouseY);
+      moveStartPoint.set(mouseX,mouseY);
+      clickBit = false;
+    }
+  }
+  void renderChooseSq(){
+    if(chooseSq){
+      stroke(235,235,23,200);
+      fill(155,142,23,25);
+      rect(chooseSqStartPoint.x,chooseSqStartPoint.y,mouseX-chooseSqStartPoint.x,mouseY-chooseSqStartPoint.y);
+    }
+  }
+  
+  void mousePress(){
+    mouseDown = true;
+    clickBit = true;
+  }
+  void mouseRelease(){
+    mouseDown = false;
+    if(chooseSq){
+      activatedNode.clear();
+      for(Node nd:nodeList){
+        nd.activated = false;
+        if(boxInterSection(chooseSqStartPoint,new PVector(mouseX,mouseY),nd.position,new PVector(nd.position.x+nd.size.x,nd.position.y+nd.size.y))){
+          activatedNode.add(nd);
+          nd.activated = true;
+        }
+      }
+      chooseSq = false;
+    }
+  }
   /////////////// initialObject
   @Override
   protected void initializeObject() {
@@ -33,6 +160,7 @@ class NodesSystem extends NObject {
 
   public void addNode(Node node) {
     masterCheck(node);
+    nodeList.add(node);
   }
 
   public void addStream(NStream ns) {
@@ -99,8 +227,8 @@ class NodesSystem extends NObject {
   private NodeLine connectNormal(NodePoint outpoint, NodePoint inpoint) {
 
     if (!inTheSameBox(outpoint.getMaster(), inpoint.getMaster())) {
-      println("Warning : connection between " + outpoint.getClassName() + " -and-" + inpoint.getClassName()
-          + " failed.");
+      /*println("Warning : connection between " + outpoint.getClassName() + " -and-" + inpoint.getClassName()
+          + " failed.");*/
       return null;
     } // 检测是否在同一个作用域
 
@@ -125,8 +253,8 @@ class NodesSystem extends NObject {
     } // 检测点的数据类型是否匹配
 
     if ((inpoint.getNumOfLines() > 0)) {
-      println("Warning:You override an input point when it connected.Occured on NodePoint " + inpoint.getTitle()
-          + "(" + inpoint.getMaster().getTitle() + ")");
+      /*println("Warning:You override an input point when it connected.Occured on NodePoint " + inpoint.getTitle()
+          + "(" + inpoint.getMaster().getTitle() + ")");*/
       disconnect(inpoint.getLine());
     } // 检测inpoint是否已存在连线，若存在，则断开存在的线并发出警告。
 
@@ -136,8 +264,8 @@ class NodesSystem extends NObject {
     if (outpoint.getMaster().getBoxMaster() != null) {
       outpoint.getMaster().getBoxMaster().addLine(out);
     }
-    println(outpoint.getMaster().getTitle() + "(in " + outpoint.getTitle() + ") ----- "
-        + inpoint.getMaster().getTitle() + "(out " + inpoint.getTitle() + ") connected");
+    /*println(outpoint.getMaster().getTitle() + "(in " + outpoint.getTitle() + ") ----- "
+        + inpoint.getMaster().getTitle() + "(out " + inpoint.getTitle() + ") connected");*/
 
     return out;
   }
@@ -155,8 +283,8 @@ class NodesSystem extends NObject {
     boxpoint.addLine(out);
     innerpoint.addLine(out);
     innerpoint.getMaster().getBoxMaster().addLine(out);
-    println(boxpoint.getMaster().getTitle() + "(in " + boxpoint.getTitle() + ") ----- "
-        + innerpoint.getMaster().getTitle() + "(out " + innerpoint.getTitle() + ") connected");
+    /*println(boxpoint.getMaster().getTitle() + "(in " + boxpoint.getTitle() + ") ----- "
+        + innerpoint.getMaster().getTitle() + "(out " + innerpoint.getTitle() + ") connected");*/
 
     return out;
   }
@@ -173,15 +301,15 @@ class NodesSystem extends NObject {
     innerpoint.addLine(out);
     boxpoint.addLine(out);
     innerpoint.getMaster().getBoxMaster().addLine(out);
-    println(innerpoint.getMaster().getTitle() + "(in " + innerpoint.getTitle() + ") ----- "
-        + boxpoint.getMaster().getTitle() + "(out " + boxpoint.getTitle() + ") connected");
+    /*println(innerpoint.getMaster().getTitle() + "(in " + innerpoint.getTitle() + ") ----- "
+        + boxpoint.getMaster().getTitle() + "(out " + boxpoint.getTitle() + ") connected");*/
 
     return out;
   }
 
   public void disconnect(NodeLine line) {
-    println(line.getOutPoint().getMaster().getTitle() + "(in " + line.getOutPoint().getTitle() + ") - / - "
-        + line.getInPoint().getMaster().getTitle() + "(out " + line.getInPoint().getTitle() + ") disconnected");
+   /* println(line.getOutPoint().getMaster().getTitle() + "(in " + line.getOutPoint().getTitle() + ") - / - "
+        + line.getInPoint().getMaster().getTitle() + "(out " + line.getInPoint().getTitle() + ") disconnected");*/
     line.delete();
     lineList.remove(line);
 
@@ -328,12 +456,17 @@ class NodesSystem extends NObject {
   }
   
   public void render(){
-    for(Node nd:nodeList){
-      nd.render();
+    itemChoose();
+    itemMove();
+    for(int i = nodeList.size()-1;i>=0;i--){
+      nodeList.get(i).render();
     }
     for(NodeLine nl:lineList){
       nl.render();
     }
+    renderChooseSq();
+    resetAllLinesActivate();
+    
   }
 
   private void oneComputeStep() {
@@ -357,7 +490,7 @@ class NodesSystem extends NObject {
   void oneLoop(){
       oneComputeStep();
       cleanAllStream();
-      resetAllLinesActivate();
+      
       step++;
       
       println("************************\n Step " + step + " : Completed.\n\n************************");
