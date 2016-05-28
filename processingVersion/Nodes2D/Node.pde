@@ -18,7 +18,7 @@ class Node extends NObject {
   PVector panelSize = new PVector(0,0);
   float pointSize = 5;
   float pointToEdge = 7;
-  float titleHeight = 20;
+  float titleHeight = 25;
   float downHeight = 20;
   void panelRender(){}
   

@@ -1,5 +1,7 @@
 NodesSystem nst;
 boolean globalFlag = true;
+boolean computed = false;
+
 void setup(){
   size(1280,720);
     nst = new NodesSystem();// 建立节点系统
@@ -7,6 +9,10 @@ void setup(){
     Node_SolidNumber n2 = new Node_SolidNumber(580);// 建立常数节点580
     Node_SolidNumber n3 = new Node_SolidNumber(155);// 建立常数节点155
     Node_SolidNumber n4 = new Node_SolidNumber(176);// 建立常数节点5
+    n1.position.set(100,100);
+    n2.position.set(100,250);
+    n3.position.set(100,400);
+    n4.position.set(100,550);
     n4.setGenerating(true);
     Node_Pluser p1 = new Node_Pluser(3);// 建立三个输入点的加法计算器
     Node_Pluser p2 = new Node_Pluser();// 建立默认加法计算器
@@ -15,7 +21,15 @@ void setup(){
     Node_NDataToElse ntl = new Node_NDataToElse();// 创建NData适配器1
     Node_NDataToElse ntl2 = new Node_NDataToElse();// 创建NData适配器2
     Node_StreamMerge ns = new Node_StreamMerge(2);// 创建流合成器
-
+  
+    p1.position.set(400,100);
+    ns.position.set(650,100);
+    nd.position.set(650,250);
+    ntl.position.set(650,400);
+    ntl2.position.set(650,550);
+    p2.position.set(400,500);
+    np.position.set(900,100);
+    
     nst.addNode(n1);// 将节点加入节点系统
     nst.addNode(n2);// 将节点加入节点系统
     nst.addNode(n3);// 将节点加入节点系统
@@ -49,6 +63,7 @@ void setup(){
 
 void draw(){
   background(100);
+  if(computed == false){
   if(globalFlag){
     if(nst.loopCanRun()){
       nst.oneLoop();
@@ -58,6 +73,11 @@ void draw(){
     }
   }
   nst.render();
+  computed = true;
+}else{
+  nst.render();
+  computed = false;
+}
 }
 
 void mousePressed(){

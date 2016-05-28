@@ -89,6 +89,13 @@ class Node_SolidNumber extends NodeGenerator {
 
   NData data;
 
+  void panelRender(){
+    textAlign(CENTER,CENTER);
+    textSize(30);
+    
+    text(data.getStringData(),panelSize.x/2,panelSize.y/2);
+  }
+
   @Override
   public Node_SolidNumber clone() {
     Node_SolidNumber cloned = new Node_SolidNumber(this.data.getDoubleData());

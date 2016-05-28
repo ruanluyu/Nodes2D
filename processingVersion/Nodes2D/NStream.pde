@@ -73,8 +73,12 @@ public class NStream extends NObject {
   public void goToInpoint() {
     if (!(nowPoint.getMaster() instanceof NodeGenerator))
       nowPoint.removeStream(this);// 因为Generator的流的注册方式是clone()所以NodePoint上不会登记clone()过的NStream
+    NodePoint curP = nowPoint;
     nowPoint = nowLine.getInPoint();
-    nowLine.activate(true);
+    if(nowPoint != curP){
+      nowLine.activate(true);
+    }
+    
     if (nowPoint.isInOutMode()) {
       if (nowPoint.getNumOfLines(false) == 0) {
         pause();

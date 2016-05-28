@@ -1,8 +1,9 @@
 
   void cleanArrayNull(ArrayList<?> list) {
-    for (Object obj : list) {
+    for (int i = list.size()-1 ;i>=0;i--) {
+      Object obj = list.get(i);
       if (obj == null) {
-        list.remove(obj);
+        list.remove(i);
       }
     }
   }
@@ -68,6 +69,9 @@ class NodesSystem extends NObject {
   boolean mouseDown = false;
   boolean clickBit = false;
   boolean chooseSq = false;
+  boolean choosePoint = false;
+  NodePoint chosenPoint1 = null;
+  NodePoint chosenPoint2 = null;
   PVector chooseSqStartPoint = new PVector(0,0);
   PVector moveStartPoint = new PVector(0,0);
   void itemMove(){
@@ -81,16 +85,44 @@ class NodesSystem extends NObject {
   
   void itemChoose(){
     if(clickBit){
+      choosePoint = false;
       chooseSq = true;
-      Node cur = null;
+      NObject cur = null;
       for(Node nd : nodeList){
         if(pointInsideBox(new PVector(mouseX,mouseY),nd.position,new PVector(nd.position.x+nd.size.x,nd.position.y+nd.size.y))){
+          float psr = nd.pointSize;
+          for(int i = 0;i<nd.getInPointNum();i++){
+            if(pointInsideBox(new PVector(mouseX,mouseY),new PVector(nd.getInpoint(i).position.x-psr,nd.getInpoint(i).position.y-psr),new PVector(nd.getInpoint(i).position.x+psr,nd.getInpoint(i).position.y+psr))){
+              choosePoint = true;
+              chooseSq = false;
+              cur = nd.getInpoint(i);
+              break;
+            }
+          }
+          if(!choosePoint){
+            for(int i = 0;i<nd.getOutPointNum();i++){
+            if(pointInsideBox(new PVector(mouseX,mouseY),new PVector(nd.getOutpoint(i).position.x-psr,nd.getOutpoint(i).position.y-psr),new PVector(nd.getOutpoint(i).position.x+psr,nd.getOutpoint(i).position.y+psr))){
+              choosePoint = true;
+              chooseSq = false;
+              cur = nd.getOutpoint(i);
+              break;
+            }
+          }
+          }
+          if(choosePoint){
+            for(Node nd4:activatedNode){
+              nd4.activated = false;
+            }
+            activatedNode.clear();
+            break;
+          }
           cur = nd;
           break;
         }
       }
       
       if(cur != null){
+        if(cur instanceof Node){
         chooseSq = false;
         if(activatedNode.size()>0){
           if(activatedNode.indexOf(cur)<0){
@@ -98,13 +130,16 @@ class NodesSystem extends NObject {
               nd2.activated = false;
             }
             activatedNode.clear();
-            cur.activated = true;
-            activatedNode.add(cur);
+            ((Node)cur).activated = true;
+            activatedNode.add(((Node)cur));
           }
         }else{
-          activatedNode.add(cur);
-          cur.activated = true;
+          activatedNode.add(((Node)cur));
+          ((Node)cur).activated = true;
         }
+      }else if(cur instanceof NodePoint){
+        chosenPoint1 = ((NodePoint)cur);
+      }
       }else{
         chooseSq = true;
         for(Node nd2:activatedNode){
@@ -118,11 +153,15 @@ class NodesSystem extends NObject {
     }
   }
   void renderChooseSq(){
-    if(chooseSq){
       stroke(235,235,23,200);
       fill(155,142,23,25);
       rect(chooseSqStartPoint.x,chooseSqStartPoint.y,mouseX-chooseSqStartPoint.x,mouseY-chooseSqStartPoint.y);
-    }
+  }
+  
+  void renderChosenPoint(){
+    stroke(210,210,100,150);
+    strokeWeight(5);
+    line(chosenPoint1.position.x,chosenPoint1.position.y,mouseX,mouseY);
   }
   
   void mousePress(){
@@ -142,6 +181,34 @@ class NodesSystem extends NObject {
       }
       chooseSq = false;
     }
+    
+    if(choosePoint){
+      for(Node nd:nodeList){
+        float psr = nd.pointSize;
+          for(int i = 0;i<nd.getInPointNum();i++){
+            if(pointInsideBox(new PVector(mouseX,mouseY),new PVector(nd.getInpoint(i).position.x-psr,nd.getInpoint(i).position.y-psr),new PVector(nd.getInpoint(i).position.x+psr,nd.getInpoint(i).position.y+psr))){
+              chosenPoint2 = nd.getInpoint(i);
+              break;
+            }
+          }
+          if(chosenPoint2 == null){
+            for(int i = 0;i<nd.getOutPointNum();i++){
+            if(pointInsideBox(new PVector(mouseX,mouseY),new PVector(nd.getOutpoint(i).position.x-psr,nd.getOutpoint(i).position.y-psr),new PVector(nd.getOutpoint(i).position.x+psr,nd.getOutpoint(i).position.y+psr))){
+              chosenPoint2 = nd.getOutpoint(i);
+              break;
+            }
+          }
+      }
+      if(chosenPoint2 != null){
+        break;
+      }
+      }
+      if(chosenPoint2!=null){
+        connect(chosenPoint1,chosenPoint2);
+      }
+      choosePoint = false;
+    }
+    
   }
   /////////////// initialObject
   @Override
@@ -461,10 +528,16 @@ class NodesSystem extends NObject {
     for(int i = nodeList.size()-1;i>=0;i--){
       nodeList.get(i).render();
     }
+    cleanArrayNull(lineList);
     for(NodeLine nl:lineList){
       nl.render();
     }
-    renderChooseSq();
+    if(chooseSq){
+      renderChooseSq();
+    }
+    if(choosePoint){
+      renderChosenPoint();
+    }
     resetAllLinesActivate();
     
   }
