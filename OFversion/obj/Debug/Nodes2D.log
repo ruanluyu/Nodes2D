@@ -1,0 +1,8 @@
+﻿  main.cpp
+  NSystem.cpp
+  NNodeObject.cpp
+g:\of\v0.9.8\apps\nodes2d\nodes2d\src\nnodeobject.cpp(62): warning C4715: “NNodeObject::calculatable”: 不是所有的控件路径都返回值
+    正在创建库 bin\Nodes2D_debug.lib 和对象 bin\Nodes2D_debug.exp
+  Nodes2D.vcxproj -> G:\OF\v0.9.8\apps\Nodes2D\Nodes2D\bin\Nodes2D_debug.exe
+  
+  	                   9	G:\OF\v0.9.8\export\vs\Win32\
