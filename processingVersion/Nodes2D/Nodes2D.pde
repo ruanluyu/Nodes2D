@@ -1,7 +1,7 @@
 NodesSystem nst;
 boolean globalFlag = true;
 boolean computed = false;
-
+//Hello world
 void setup(){
   size(1280,720);
     nst = new NodesSystem();// 建立节点系统
